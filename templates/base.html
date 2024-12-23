@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PanelPrincipal{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="bg-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg fixed-top custom-border-bottom mr-1">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><img src="{% static 'imagenes/icono.png' %}" alt="" size="100" height="50"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" 
+                aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+                aria-labelledby="offcanvasDarkNavbarLabel">
+                <div class="offcanvas-header">
+                    <div class="user-circle" id="userCircle">
+                        <span id="userInitials" class="user-initials">EG</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li>
+                            <form class="d-flex" role="search">
+                                <input class="form-control mt-2 mr-2 d-none d-lg-block" type="search" placeholder="Buscar"
+                                    aria-label="Search">
+                            </form>
+                        </li>
+                        <li class="nav-item mx-lg-2 d-lg-block d-none">
+                            <div class="user-circle">
+                                <span id="userInitials" class="user-initials">EG</span>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="nav-link active d-lg-none d-block" aria-current="page" href="#">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="row max-expanded-width mg-auto flex-grow">
+            <!-- Sidebar -->
+            <div class="menu col-sm-3 col-lg-2 bg-dark d-none d-sm-block text-center align-items-center">
+                <div class="box align-items-center justify-content-center">
+                    <a href="{% url 'home' %}" class="text-decoration-none text-white">
+                        <i class="bi bi-house-door-fill"></i> Home
+                    </a>
+                </div>
+
+                <!-- Servicios -->
+                <div class="box align-items-center justify-content-center" id="Servicios"
+                    onclick="submenu('subServicios')">
+                    <i class="bi bi-file-earmark-text"></i> Servicios
+                </div>
+                <div id="subServicios" class="sub-boxes" style="display: none;">
+                    <div class="sub-box">
+                        <a href="" class="text-decoration-none text-white">Polivalente</a>
+                    </div>
+                    <div class="sub-box">
+                        <a href="" class="text-decoration-none text-white">Clinica</a>
+                    </div>
+                </div>
+
+                <!-- Servicios Enfermeria -->
+                <div class="box align-items-center justify-content-center" id="Enfermeria"
+                    onclick="submenu('subEnfermeria')">
+                    <i class="bi bi-activity"></i> Enfermeria
+                </div>
+                <div id="subEnfermeria" class="sub-boxes" style="display: none;">
+                    <div class="sub-box">
+                        <a href="" class="text-decoration-none text-white">
+                            <i class="bi bi-file-earmark"></i> Protocolos Digitales
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Servicios Generales -->
+                <div class="box align-items-center justify-content-center" id="serviciosGenerales"
+                    onclick="submenu('subServiciosGenerales')">
+                    <i class="bi bi-person-fill-gear"></i> Servicios Generales
+                </div>
+                <div id="subServiciosGenerales" class="sub-boxes" style="display: none;">
+                    <div class="sub-box">
+                        <a href="{% url 'internos' %}" class="text-decoration-none text-white">
+                            <i class="bi bi-telephone"></i> Internos
+                        </a>
+                    </div>
+                    <div class="sub-box">
+                        <a href="" class="text-decoration-none text-white">
+                            <i class="bi bi-car-front-fill"></i> Plaza Automotor
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Gestión de Pacientes -->
+                <div class="box align-items-center justify-content-center">
+                    <a href="" class="text-decoration-none text-white">
+                        <i class="bi bi-person-badge"></i> Gestión de Pacientes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contenido Principal -->
+            <div class="contenido-principal col-sm-9 col-lg-10 bg-light align-items-center">
+                <div class="row max-expanded-width mg-auto flex-grow text-center">
+                    <div class="container p-4">
+                        {% block main_content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-center">
+        <div class="text-white">
+            <p>Salud Digital</p>
+            <p>Hospital Dr Arturo Oñativia</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+</body>
+</html>

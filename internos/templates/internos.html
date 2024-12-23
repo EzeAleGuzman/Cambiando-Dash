@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <h1>Nº de Internos</h1>
+            </div>
+        </div>
+
+        <form>
+            <label for="buscador" class="visually-hidden">Buscar</label>
+            <div class="mx-auto w-75">
+                <input type="search" id="buscador" class="form-control form-control-lg" placeholder="Buscar Interno" required>
+            </div>
+        </form>
+        
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Interno</th>
+                    {% if user == "admin" %}
+                    <th>Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for interno in internos %}
+                <tr>
+                    <td>{{ interno.servicio }}</td>
+                    <td>{{ interno.interno }}</td>
+                    {% if user == "admin" %}
+                    <th>Acciones</th>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buscador = document.getElementById("buscador"); // Asegúrate de que el ID coincida con el input
+            const filas = document.querySelectorAll("tr"); // Se asume que todas las filas están dentro de una tabla
+    
+            buscador.addEventListener("input", function () {
+                const filtro = buscador.value.toLowerCase();
+    
+                filas.forEach(function (fila) {
+                    const servicio = fila.querySelector("td:nth-child(1)") ? fila.querySelector("td:nth-child(1)").textContent.toLowerCase() : '';
+                    const interno = fila.querySelector("td:nth-child(2)") ? fila.querySelector("td:nth-child(2)").textContent.toLowerCase() : '';
+    
+                    // Verifica si el filtro coincide con alguno de los valores de las columnas
+                    if (servicio.includes(filtro) || interno.includes(filtro)) {
+                        fila.style.display = "table-row";
+                    } else {
+                        fila.style.display = "none";
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
