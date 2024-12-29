@@ -115,3 +115,31 @@
      font-size: 18px;
      /* Tamaño de las iniciales */
  }
+
+
+ /* Aplica el color de fondo a toda la tabla, incluyendo filas y celdas */
+ .custom-table {
+     background-color: #17a2b8 !important; /* Color de fondo personalizado */
+     color: white !important; /* Color del texto */
+ }
+
+ /* Color de fondo para los encabezados */
+ .custom-table th {
+     background-color: #138496 !important; /* Color de fondo del encabezado */
+     color: white !important; /* Color del texto en el encabezado */
+ }
+
+ /* Color de fondo para las filas pares */
+ .custom-table tbody tr:nth-child(even) {
+     background-color: #17a2b8 !important; /* Color para las filas pares */
+ }
+
+ /* Color de fondo para las filas impares */
+ .custom-table tbody tr:nth-child(odd) {
+     background-color: #17a2b8 !important; /* Color para las filas impares */
+ }
+
+ /* Cambiar el color cuando el mouse pase sobre una fila */
+ .custom-table tbody tr:hover {
+     background-color: #138496 !important; /* Color al hacer hover */
+ }
