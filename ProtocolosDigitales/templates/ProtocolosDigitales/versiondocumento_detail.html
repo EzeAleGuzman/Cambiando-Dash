@@ -1,0 +1,30 @@
+{% extends 'base.html' %} {% block main_content %}
+<h2 class="my-4">
+  {{ version.documento.nombre }} - Versión {{ version.version }}
+</h2>
+
+<!-- Contenedor responsivo para el archivo PDF -->
+<div class="embed-responsive embed-responsive-16by9">
+  <embed
+    src="{{ version.archivo_pdf.url }}"
+    type="application/pdf"
+    class="embed-responsive-item"
+    width="100%"
+    height="600px"
+  />
+</div>
+
+<p class="my-3">
+  Si tu navegador no puede mostrar el archivo PDF,
+  <a href="{{ version.archivo_pdf.url }}" target="_blank"
+    >descarga el PDF aquí</a
+  >.
+</p>
+
+<a
+  href="{% url 'documento_detail' version.documento.pk %}"
+  class="btn btn-secondary"
+  >Volver al documento</a
+>
+
+{% endblock %}

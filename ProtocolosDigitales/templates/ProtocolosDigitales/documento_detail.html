@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block main_content %}
+<div class="container py-5">
+  <!-- Título del Documento -->
+  <h2 class="display-4 text-center mb-4">
+    Detalle del Documento: {{ documento.nombre }}
+  </h2>
+
+  <!-- Información del Documento en una tabla -->
+  <table class="table table-bordered table-striped table-hover mb-4">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Atributo</th>
+        <th scope="col">Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Clase:</strong></td>
+        <td>{{ documento.clase }}</td>
+      </tr>
+      <tr>
+        <td><strong>Código:</strong></td>
+        <td>{{ documento.codigo }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Versiones Disponibles en una tabla -->
+  <h3 class="h4 mb-3">Versiones Disponibles:</h3>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Versión</th>
+        <th scope="col">Fecha de Creación</th>
+        <th scope="col">Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for version in versiones %}
+      <tr>
+        <td>Versión {{ version.version }}</td>
+        <td>{{ version.fecha_creacion }}</td>
+        <td>
+          <a
+            href="{% url 'version_detail' version.pk %}"
+            class="btn btn-primary btn-sm"
+          >
+            <i class="fas fa-eye"></i> Ver Documento
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">No hay versiones disponibles.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Enlace para Volver -->
+  <div class="text-center mt-4">
+    <a href="{% url 'documento_list' %}" class="btn btn-secondary btn-lg">
+      <i class="fas fa-arrow-left"></i> Volver a la lista de documentos
+    </a>
+  </div>
+</div>
+{% endblock %}
