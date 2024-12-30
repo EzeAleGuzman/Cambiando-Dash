@@ -31,6 +31,9 @@ INSTALLED_APPS = [
     "import_export",
     "internos",
     "ProtocolosDigitales",
+    "users",
+    "pacientes",
+    "gestioncamas",
 ]
 
 MIDDLEWARE = [
@@ -74,7 +77,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL = "users.User"
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -121,3 +124,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Configuración para enviar correos desde Gmail en settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'saluddigitalona@gmail.com'  # Tu correo de Gmail
+EMAIL_HOST_PASSWORD = 'zcng plfk ubwp hpdt'  # Contraseña de aplicación generada
+DEFAULT_FROM_EMAIL = 'saluddigitalona@gmail.com'  # Dirección desde donde se envían los correos
+
+# Opcional: Lista de administradores a los que se les enviará la notificación
+ADMINS = [('Admin', 'saluddigitalona@gmail.com')]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación de Actualización de Usuario</title>
+    <style>
+        /* Aquí puedes agregar estilos adicionales si lo deseas */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            background-color: darkgray;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .email-header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-body {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .email-footer {
+            background-color: #f4f4f9;
+            padding: 10px;
+            text-align: center;
+        }
+        .email-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+    <div class="container">
+        <div class="email-header">
+            <h1>Notificación de Actualización de Usuario</h1>
+        </div>
+        <div class="email-body">
+            <h2>¡Hola!</h2>
+            <p>Se ha <strong>{{ action }}</strong> el siguiente usuario:</p>
+            <table class="table">
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ name }} {{ lastname }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ email }}</td>
+                </tr>
+                <tr>
+                    <th>Teléfono</th>
+                    <td>{{ cellphone }}</td>
+                </tr>
+                <tr>
+                    <th>Servicio</th>
+                    <td>{{ servicio }}</td>
+                </tr>
+                <tr>
+                    <th>Cargo</th>
+                    <td>{{ cargo }}</td>
+                </tr>
+            </table>
+            <p>Para más detalles, puedes visitar el <a href="{{ admin_url }}" class="btn">Panel de Administración</a>.</p>
+        </div>
+        <div class="email-footer">
+            <p>Gracias por utilizar nuestros servicios.</p>
+            <p><a href="{{ contact_url }}">Contáctanos</a> si tienes alguna duda o pregunta.</p>
+        </div>
+    </div>
+</body>
+</html>
