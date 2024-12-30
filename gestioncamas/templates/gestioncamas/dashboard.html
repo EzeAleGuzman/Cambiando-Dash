@@ -19,7 +19,13 @@
                     <h2 class="card-text text-success">{{ ocupacion|default:0 }} / {{ total_camas|default:1 }}</h2>
                     <small class="text-muted">
                         {% if total_camas %}
-                            ({{ ocupacion|default:0|divisibleby:total_camas }}%)
+                            {% with ocupacion_percentage=ocupacion|divisibleby:total_camas %}
+                                {% if total_camas != 0 %}
+                                    ({{ ocupacion|floatformat:2 }} %)
+                                {% else %}
+                                    No disponible
+                                {% endif %}
+                            {% endwith %}
                         {% else %}
                             No disponible
                         {% endif %}
@@ -46,7 +52,7 @@
     </div>
 
     <!-- Optional additional section for detailed data -->
-    <div class="row mt-5">
+    <!-- <div class="row mt-5">
         <div class="col-md-12">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Atención:</strong> Se recomienda revisar las camas en estado "En Refacción" para evitar futuras complicaciones.
@@ -55,6 +61,6 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
 {% endblock %}
