@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Estado de Habitaciones por Servicio{% endblock %}
+
+{% block main_content %}
+    <div class="container">
+        <h2>Estado de Habitaciones por Servicio</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Ubicación</th>
+                    <th>Total Camas</th>
+                    <th>Camas Libres</th>
+                    <th>Camas Ocupadas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                    <tr class="
+                        {% if item.camas_libres == 0 %}
+                            table-danger  <!-- Rojo cuando no hay camas libres -->
+                        {% elif item.camas_libres > 0 %}
+                            table-success  <!-- Verde cuando hay camas libres -->
+                        {% else %}
+                            table-warning  <!-- Amarillo cuando hay algún otro estado -->
+                        {% endif %}
+                    ">
+                        <td>{{ item.servicio.nombre }}</td>
+                        <td>{{ item.ubicacion.nombre }}</td>
+                        <td>{{ item.total_camas }}</td>
+                        <td>{{ item.camas_libres }}</td>
+                        <td>{{ item.camas_ocupadas }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
