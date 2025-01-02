@@ -1,39 +1,63 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}Estado de Habitaciones por
+Servicio{%endblock %} {% block main_content %}
+<div class="container">
+  <h2>Estado de Habitaciones por Servicio</h2>
 
-{% block title %}Estado de Habitaciones por Servicio{% endblock %}
+  <!-- Select para filtrar por servicio -->
+  <div class="form-group">
+    <label for="servicio">Seleccionar Servicio:</label>
+    <select name="servicio" id="servicio" class="form-control">
+      <option value="">Todos los Servicios</option>
+      {% for servicio in servicios %}
+      <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-{% block main_content %}
-    <div class="container">
-        <h2>Estado de Habitaciones por Servicio</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Servicio</th>
-                    <th>Ubicación</th>
-                    <th>Total Camas</th>
-                    <th>Camas Libres</th>
-                    <th>Camas Ocupadas</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in data %}
-                    <tr class="
-                        {% if item.camas_libres == 0 %}
-                            table-danger  <!-- Rojo cuando no hay camas libres -->
-                        {% elif item.camas_libres > 0 %}
-                            table-success  <!-- Verde cuando hay camas libres -->
-                        {% else %}
-                            table-warning  <!-- Amarillo cuando hay algún otro estado -->
-                        {% endif %}
-                    ">
-                        <td>{{ item.servicio.nombre }}</td>
-                        <td>{{ item.ubicacion.nombre }}</td>
-                        <td>{{ item.total_camas }}</td>
-                        <td>{{ item.camas_libres }}</td>
-                        <td>{{ item.camas_ocupadas }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <table class="table table-striped mt-3" id="estado-habitaciones">
+    <thead>
+      <tr>
+        <th>Servicio</th>
+        <th>Ubicación</th>
+        <th>Total Camas</th>
+        <th>Camas Libres</th>
+        <th>Camas Ocupadas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in data %}
+      <tr
+        class="fila-servicio {% if item.camas_libres == 0 %} table-danger {% elif item.camas_libres > 0 %} table-success {% else %} table-warning {% endif %}"
+        data-servicio-id="{{ item.servicio.id }}"
+      >
+        <td>{{ item.servicio.nombre }}</td>
+        <td>
+          <a href="{% url 'ubicacion_detalle' item.ubicacion.id %}"
+            >{{ item.ubicacion.nombre }}</a
+          >
+        </td>
+        <td>{{ item.total_camas }}</td>
+        <td>{{ item.camas_libres }}</td>
+        <td>{{ item.camas_ocupadas }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById("servicio").addEventListener("change", function () {
+    const selectedService = this.value; // Obtener el valor seleccionado
+    const rows = document.querySelectorAll(".fila-servicio"); // Obtener todas las filas de la tabla
+
+    rows.forEach((row) => {
+      const servicioId = row.getAttribute("data-servicio-id");
+      if (selectedService === "" || servicioId === selectedService) {
+        row.style.display = ""; // Mostrar fila
+      } else {
+        row.style.display = "none"; // Ocultar fila
+      }
+    });
+  });
+</script>
 {% endblock %}

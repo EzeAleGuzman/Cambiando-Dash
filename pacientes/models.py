@@ -1,33 +1,39 @@
 from django.db import models
-
-
-
+from django.utils import timezone
 
 
 class Paciente(models.Model):
-    GÉNERO_CHOICES = [
-        ('M', 'Masculino'),
-        ('F', 'Femenino'),
-        ('O', 'Otro'),
-        ('N', 'No especificado'),
-        ('P', 'Prefiero no decirlo'),
-    ]
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    dni = models.CharField(max_length=100)
+    # Datos personales
+    nombre_completo = models.CharField(max_length=255, null=True, blank=True)
+    dni = models.CharField(max_length=15, unique=True)
     fecha_nacimiento = models.DateField()
-    genero = models.CharField(max_length=1, choices=GÉNERO_CHOICES)
-    direccion = models.CharField(max_length=100, blank=True, null=True)
-    telefono = models.CharField(max_length=100, blank=True, null=True)
-    email = models.CharField(max_length=100, blank=True, null=True)
-    
-    def __str__(self):
-        return f'{self.nombre} {self.apellido}'	
+    domicilio = models.CharField(max_length=255, null=True, blank=True)
+    localidad = models.CharField(max_length=100, null=True, blank=True)
+    telefono = models.CharField(max_length=20)
+    obra_social = models.CharField(max_length=100, null=True, blank=True)
 
-class Registro(models.Model):
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    fecha = models.DateField()
-    registro = models.TextField()
+    # Información de internación
+    fecha_ingreso = models.DateField(default=timezone.now)
+    diagnostico = models.CharField(max_length=255, null=True, blank=True)
+    causa_externa = models.CharField(
+        max_length=255, null=True, blank=True
+    )  # Solo para pediatría/guardia
+    arm = models.BooleanField(default=False)  # Si necesita asistencia respiratoria
+    tipo_egreso = models.CharField(
+        max_length=50, null=True, blank=True
+    )  # Alta, Derivado, etc.
+    fecha_egreso = models.DateField(null=True, blank=True)
+
+    # Información para pediatría
+    nombre_tutor = models.CharField(max_length=255, null=True, blank=True)
+    dni_tutor = models.CharField(max_length=15, null=True, blank=True)
+
+    # Historia clínica y pases entre servicios
+    historia_clinica = models.CharField(max_length=50, null=True, blank=True)
+    pases = models.CharField(
+        max_length=255, null=True, blank=True
+    )  # Detalle de los pases
+    fecha_pase = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.paciente.nombre} {self.paciente.apellido}'
+        return f"{self.nombre_completo} ({self.dni})"

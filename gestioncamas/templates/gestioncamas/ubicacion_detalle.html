@@ -1,0 +1,52 @@
+{% extends 'base.html' %} {% block title %}Detalles de Ubicación: {{
+ubicacion.nombre }}{% endblock %} {% block main_content %}
+<div class="container">
+  <h2>Detalles de la Ubicación: {{ ubicacion.nombre }}</h2>
+
+  <h3>Camas Ocupadas</h3>
+  {% if camas_con_paciente %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Número de Cama</th>
+        <th>Paciente</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cama in camas_con_paciente %}
+      <tr class="table-success">
+        <td>{{ cama.numero }}</td>
+        <td>{{ cama.paciente.nombre }}</td>
+        <td>{{ cama.estado }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No hay camas ocupadas en esta ubicación.</p>
+  {% endif %}
+
+  <h3>Camas Libres</h3>
+  {% if camas_libres %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Número de Cama</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cama in camas_libres %}
+      <tr class="table-warning">
+        <td>{{ cama.numero }}</td>
+        <td>{{ cama.estado }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No hay camas libres en esta ubicación.</p>
+  {% endif %}
+</div>
+{% endblock %}
