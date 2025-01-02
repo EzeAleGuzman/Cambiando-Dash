@@ -14,7 +14,7 @@
             left: 0;
             height: 100vh;
             width: 250px;
-            background-color: #3498db;
+            background-color: #17a2b8;
             padding-top: 20px;
             transition: all 0.3s;
         }
@@ -47,8 +47,22 @@
             transform: translateY(-5px);
         }
 
+        .btn-custum {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-custum:hover {
+            background-color: #138496;
+        }
+
         .card-header {
-            background-color: #3498db;
+            background-color: #17a2b8;
             color: white;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
@@ -123,7 +137,7 @@
                         <h5 class="card-title">Buscar Paciente por DNI</h5>
                         <div class="input-group">
                             <input type="text" id="buscar-dni" class="form-control" placeholder="Ingrese DNI">
-                            <button class="btn btn-primary" type="button" onclick="buscarPaciente()">Buscar</button>
+                            <button class="btn btn-custum" type="button" onclick="buscarPaciente()">Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -222,8 +236,9 @@
             const paciente = pacientes.find(p => p.id === id);
             if (paciente) {
                 const fichaHTML = `
+                    <h2><strong>Servicio:</strong> ${paciente.servicio}</h2>
                     <h4>${paciente.nombre_completo}</h4>
-                     <p><strong>Servicio> ${paciente.servicio}</p>
+                     
                     <p><strong>DNI:</strong> ${paciente.dni}</p>
                     <p><strong>Fecha de Nacimiento:</strong> ${paciente.fecha_nacimiento}</p>
                     <p><strong>Domicilio:</strong> ${paciente.domicilio}</p>

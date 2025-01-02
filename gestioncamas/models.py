@@ -53,16 +53,27 @@ class Cama(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Cama {self.numero}, Ubicación {self.ubicacion.nombre}, Servicio {self.ubicacion.servicio.nombre}"
+        return f"{self.ubicacion.nombre}, {self.numero}, Servicio {self.ubicacion.servicio.nombre}"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
 
 class PacienteCama(models.Model):
-     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-     cama = models.ForeignKey(Cama, on_delete=models.CASCADE) 
-     fecha_asignacion = models.DateTimeField(default=timezone.now) 
-     fecha_liberacion = models.DateTimeField(null=True, blank=True) 
-     def __str__(self): 
-         return f"{self.paciente} - {self.cama}"
+    paciente = models.ForeignKey(
+        Paciente, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    cama = models.ForeignKey(Cama, on_delete=models.CASCADE)
+    fecha_asignacion = models.DateTimeField(default=timezone.now)
+    fecha_liberacion = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.paciente} - {self.cama}"
+
+    def save(self, *args, **kwargs):
+        if not self.fecha_liberacion:
+            self.cama.estado = "OCUPADA"
+        else:
+            self.cama.estado = "LIBRE"
+        self.cama.save()
+        super().save(*args, **kwargs)
