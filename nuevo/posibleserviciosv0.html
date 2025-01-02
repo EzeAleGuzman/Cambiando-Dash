@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Servicio - Dashboard de Gestión Hospitalaria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #3498db;
+            padding-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .sidebar a {
+            padding: 15px;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #2980b9;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #3498db;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            border-top: none;
+        }
+
+        .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <span class="fs-4">Hospital Dashboard</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link text-white">
+                    <i class='bx bxs-dashboard'></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link active" aria-current="page">
+                    <i class='bx bx-building-house'></i> Servicios
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class='bx bx-map-alt'></i> Ubicaciones
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <i class='bx bx-bed'></i> Camas
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1 class="mb-4">Detalle del Servicio</h1>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Información del Servicio</h5>
+                    </div>
+                    <div class="card-body">
+                        <h2 id="servicio-nombre" class="card-title mb-4"></h2>
+                        <p id="servicio-descripcion" class="card-text"></p>
+                        <p class="card-text">
+                            <strong>Color identificativo:</strong>
+                            <span id="servicio-color" class="color-indicator"></span>
+                        </p>
+                        <p class="card-text"><strong>Orden de visualización:</strong> <span id="servicio-orden"></span>
+                        </p>
+                        <p class="card-text"><strong>Capacidad total:</strong> <span id="servicio-capacidad"></span></p>
+                        <p class="card-text"><strong>Nivel de alerta de ocupación:</strong> <span
+                                id="servicio-alerta"></span>%</p>
+                        <p class="card-text"><strong>Estado:</strong> <span id="servicio-estado"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Estadísticas de Ocupación</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ocupacion-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ubicaciones del Servicio</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Capacidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ubicaciones-table-body">
+                                <!-- Datos de ubicaciones se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Camas del Servicio</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="camas-table-body">
+                                <!-- Datos de camas se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos de ejemplo (en una aplicación real, estos datos vendrían de una API)
+        const servicio = {
+            nombre: "Cardiología",
+            descripcion: "Servicio especializado en el diagnóstico y tratamiento de enfermedades del corazón y sistema circulatorio.",
+            color_identificativo: "#FF5733",
+            orden_visualizacion: 1,
+            capacidad_total: 50,
+            nivel_alerta_ocupacion: 80,
+            activo: true
+        };
+
+        const ubicaciones = [
+            { nombre: "Habitación 201", tipo: "HABITACION", capacidad: 2 },
+            { nombre: "Habitación 202", tipo: "HABITACION", capacidad: 2 },
+            { nombre: "Sala de Espera Cardiología", tipo: "AREA", capacidad: 15 },
+            { nombre: "UCI Cardiológica", tipo: "AREA", capacidad: 10 }
+        ];
+
+        const camas = [
+            { numero: "201-A", ubicacion: "Habitación 201", estado: "OCUPADA" },
+            { numero: "201-B", ubicacion: "Habitación 201", estado: "LIBRE" },
+            { numero: "202-A", ubicacion: "Habitación 202", estado: "OCUPADA" },
+            { numero: "202-B", ubicacion: "Habitación 202", estado: "RESERVADA" },
+            { numero: "UCI-1", ubicacion: "UCI Cardiológica", estado: "OCUPADA" },
+            { numero: "UCI-2", ubicacion: "UCI Cardiológica", estado: "OCUPADA" }
+        ];
+
+        // Función para cargar los datos del servicio
+        function cargarDatosServicio() {
+            document.getElementById('servicio-nombre').textContent = servicio.nombre;
+            document.getElementById('servicio-descripcion').textContent = servicio.descripcion;
+            document.getElementById('servicio-color').style.backgroundColor = servicio.color_identificativo;
+            document.getElementById('servicio-orden').textContent = servicio.orden_visualizacion;
+            document.getElementById('servicio-capacidad').textContent = servicio.capacidad_total;
+            document.getElementById('servicio-alerta').textContent = servicio.nivel_alerta_ocupacion;
+            document.getElementById('servicio-estado').textContent = servicio.activo ? 'Activo' : 'Inactivo';
+        }
+
+        // Función para cargar los datos de ubicaciones
+        function cargarDatosUbicaciones() {
+            const ubicacionesBody = document.getElementById('ubicaciones-table-body');
+            ubicaciones.forEach(ubicacion => {
+                const row = `<tr>
+                    <td>${ubicacion.nombre}</td>
+                    <td>${ubicacion.tipo}</td>
+                    <td>${ubicacion.capacidad}</td>
+                </tr>`;
+                ubicacionesBody.innerHTML += row;
+            });
+        }
+
+        // Función para cargar los datos de camas
+        function cargarDatosCamas() {
+            const camasBody = document.getElementById('camas-table-body');
+            camas.forEach(cama => {
+                const row = `<tr>
+                    <td>${cama.numero}</td>
+                    <td>${cama.ubicacion}</td>
+                    <td>${cama.estado}</td>
+                </tr>`;
+                camasBody.innerHTML += row;
+            });
+        }
+
+        // Función para crear el gráfico de ocupación
+        function crearGraficoOcupacion() {
+            const ctx = document.getElementById('ocupacion-chart').getContext('2d');
+            const ocupadas = camas.filter(cama => cama.estado === 'OCUPADA').length;
+            const libres = camas.filter(cama => cama.estado === 'LIBRE').length;
+            const reservadas = camas.filter(cama => cama.estado === 'RESERVADA').length;
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Ocupadas', 'Libres', 'Reservadas'],
+                    datasets: [{
+                        data: [ocupadas, libres, reservadas],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Distribución de Camas'
+                    }
+                }
+            });
+        }
+
+        // Cargar los datos cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarDatosServicio();
+            cargarDatosUbicaciones();
+            cargarDatosCamas();
+            crearGraficoOcupacion();
+        });
+    </script>
+</body>
+
+</html>
