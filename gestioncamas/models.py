@@ -1,5 +1,6 @@
 from django.db import models
 from pacientes.models import Paciente
+from django.utils import timezone
 
 
 class Servicio(models.Model):
@@ -50,30 +51,18 @@ class Cama(models.Model):
     activo = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    paciente = models.ForeignKey(
-        Paciente, null=True, blank=True, on_delete=models.SET_NULL
-    )
 
     def __str__(self):
-        return f"Cama {self.numero}"
+        return f"Cama {self.numero}, Ubicación {self.ubicacion.nombre}, Servicio {self.ubicacion.servicio.nombre}"
 
     def save(self, *args, **kwargs):
-        # Si hay un paciente asignado, validar que no esté asignado a otra cama
-        if self.paciente:
-            # Buscar si el paciente ya está asignado a otra cama
-            cama_ocupada = (
-                Cama.objects.filter(paciente=self.paciente).exclude(id=self.id).first()
-            )
-            if cama_ocupada:
-                raise ValueError(
-                    f"El paciente {self.paciente} ya está asignado a la cama {cama_ocupada.numero} en {cama_ocupada.ubicacion}."
-                )
-
-            # Si el paciente está asignado, cambiar automáticamente el estado a "OCUPADA"
-            self.estado = "OCUPADA"
-        else:
-            # Si no hay paciente, cambiar el estado a "LIBRE"
-            self.estado = "LIBRE"
-
-        # Guardar el estado y el paciente
         super().save(*args, **kwargs)
+
+
+class PacienteCama(models.Model):
+     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+     cama = models.ForeignKey(Cama, on_delete=models.CASCADE) 
+     fecha_asignacion = models.DateTimeField(default=timezone.now) 
+     fecha_liberacion = models.DateTimeField(null=True, blank=True) 
+     def __str__(self): 
+         return f"{self.paciente} - {self.cama}"

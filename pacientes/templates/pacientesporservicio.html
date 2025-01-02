@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #3498db;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        border-top: none;
+    }
+</style>
+
+<div class="main-content">
+    <h1 class="mb-4">Vista General de Pacientes por Servicio</h1>
+
+    <!-- Filtro de Servicios -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Filtrar por Servicio</h5>
+                    <form method="get" action="{% url 'pacientes_por_servicio' %}">
+                        <div class="form-group">
+                            <select class="form-control" name="servicio" onchange="this.form.submit()">
+                                <option value="">Seleccione un servicio</option>
+                                {% for servicio in servicios %}
+                                    <option value="{{ servicio.id }}" {% if servicio.id == servicio_seleccionado %}selected{% endif %}>
+                                        {{ servicio.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Pacientes -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Lista de Pacientes</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre y Apellido</th>
+                        <th>DNI</th>
+                        <th>Servicio</th>
+                        <th>Ubicación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    {% with info_cama=paciente.obtener_info_cama %}
+                    <tr>
+                        <td>{{ paciente.nombre_completo }}</td>
+                        <td>{{ paciente.dni }}</td>
+                        <td>{{ info_cama.servicio }}</td>
+                        <td>{{ info_cama.ubicacion }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fichaModal" onclick="mostrarFicha({{ paciente.id }})">Ficha Paciente</button>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para la ficha del paciente -->
+<div class="modal fade" id="fichaModal" tabindex="-1" aria-labelledby="fichaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fichaModalLabel">Ficha del Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="ficha-paciente">
+                <!-- Los detalles del paciente se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock main_content %}

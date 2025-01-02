@@ -8,4 +8,5 @@ urlpatterns = [
     path("", include("internos.urls")),
     path("", include("ProtocolosDigitales.urls")),
     path("", include("gestioncamas.urls")),
+    path("", include("pacientes.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

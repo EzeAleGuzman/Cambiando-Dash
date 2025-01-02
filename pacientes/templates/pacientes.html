@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #3498db;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        border-top: none;
+    }
+
+</style>
+
+<div class="main-content">
+    <h1 class="mb-4">Vista General de Pacientes</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Buscar Paciente</h5>
+                    <div class="input-group">
+                        <input type="text" id="buscador" class="form-control" placeholder="Buscar por nombre, apellido o DNI">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Lista de Pacientes</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre y Apellido</th>
+                        <th>DNI</th>
+                        <th>Servicio</th>
+                        <th>Ubicación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="pacientes-table-body">
+                    {% for paciente in pacientes %}
+                    {% with info_cama=paciente.obtener_info_cama %}
+                    <tr style="display: none;">
+                        <td>{{ paciente.nombre_completo }}</td>
+                        <td>{{ paciente.dni }}</td>
+                        <td>{{ info_cama.servicio }}</td>
+                         <td>{{ info_cama.ubicacion }}</td>
+                          <td>{{ info_cama.numero }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fichaModal" onclick="mostrarFicha({{ paciente.id }})">Ficha Paciente</button>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para la ficha del paciente -->
+<div class="modal fade" id="fichaModal" tabindex="-1" aria-labelledby="fichaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fichaModalLabel">Ficha del Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="ficha-paciente">
+                <!-- Los detalles del paciente se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buscador = document.getElementById("buscador");
+        const filas = document.querySelectorAll("#pacientes-table-body tr");
+
+        buscador.addEventListener("input", function () {
+            const filtro = buscador.value.toLowerCase();
+
+            filas.forEach(function (fila) {
+                const nombre = fila.querySelector("td:nth-child(1)") ? fila.querySelector("td:nth-child(1)").textContent.toLowerCase() : '';
+                const dni = fila.querySelector("td:nth-child(2)") ? fila.querySelector("td:nth-child(2)").textContent.toLowerCase() : '';
+
+                if (filtro === '') {
+                    fila.style.display = "none";
+                } else if (nombre.includes(filtro) || dni.includes(filtro)) {
+                    fila.style.display = "table-row";
+                } else {
+                    fila.style.display = "none";
+                }
+            });
+        });
+    });
+
+    const pacientes = [
+        {% for paciente in pacientes %}
+            {
+                id: {{ paciente.id }},
+                nombre_completo: "{{ paciente.nombre_completo }}",
+                dni: "{{ paciente.dni }}",
+                servicio: "{{ paciente.obtener_info_cama.servicio }}",
+                cargo: "{{ paciente.obtener_info_cama.ubicacion }}",
+                ubicacion: "{{ paciente.obtener_info_cama.numero }}"
+            }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    function mostrarFicha(id) {
+        const paciente = pacientes.find(p => p.id == id);
+        const modalBody = document.getElementById('ficha-paciente');
+        
+        modalBody.innerHTML = '';
+        
+        const campos = [
+            ['Nombre', paciente.nombre_completo],
+            ['DNI', paciente.dni],
+            ['Servicio', paciente.servicio],
+            ['Ubicación', paciente.ubicacion]
+        ];
+        
+        campos.forEach(([label, valor]) => {
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = label + ': ';
+            p.appendChild(strong);
+            p.appendChild(document.createTextNode(valor));
+            modalBody.appendChild(p);
+        });
+    }
+</script>
+
+{% endblock main_content %}

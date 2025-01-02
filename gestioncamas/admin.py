@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Servicio, Ubicacion, Cama
+from .models import Servicio, Ubicacion, Cama, PacienteCama
 
 
 class ServicioAdmin(admin.ModelAdmin):
@@ -37,7 +37,12 @@ class CamaAdmin(admin.ModelAdmin):
     search_fields = ("numero", "estado")
     ordering = ("numero",)
 
+class PacienteCamaAdmin(admin.ModelAdmin):
+    list_display = ("paciente", "cama", "fecha_liberacion", "fecha_asignacion")
+    search_fields = ("numero", "estado")
+
 
 admin.site.register(Servicio, ServicioAdmin)
 admin.site.register(Ubicacion, UbicacionAdmin)
 admin.site.register(Cama, CamaAdmin)
+admin.site.register(PacienteCama, PacienteCamaAdmin)
