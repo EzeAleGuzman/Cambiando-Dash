@@ -29,3 +29,36 @@ def pacientesporservicio(request):
             'servicio_seleccionado': servicio_seleccionado
         }
     )
+    
+def nuevopaciente(request):
+    if request.method == 'POST':
+        # Crear un nuevo paciente
+        dni = request.POST.get('dni', None)
+        nombre = request.POST.get('nombre', None)
+        apellido = request.POST.get('apellido', None)
+        fecha_nacimiento = request.POST.get('fecha_nacimiento', None)
+        sexo = request.POST.get('sexo', None)
+        direccion = request.POST.get('direccion', None)
+        telefono = request.POST.get('telefono', None)
+        email = request.POST.get('email', None)
+        
+        paciente = Paciente(
+            dni=dni,
+            nombre=nombre,
+            apellido=apellido,
+            fecha_nacimiento=fecha_nacimiento,
+            sexo=sexo,
+            direccion=direccion,
+            telefono=telefono,
+            email=email
+        )
+        paciente.save()
+        return render(request, 'nuevopaciente.html', {'paciente': paciente})
+    else:
+        return render(request, 'nuevopaciente.html', {'paciente': None})
+
+
+def eliminarpaciente(request, pk):
+    paciente = Paciente.objects.get(pk=pk)
+    paciente.delete()
+    return render(request, 'eliminarpaciente.html', {'paciente': paciente}) 

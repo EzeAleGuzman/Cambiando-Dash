@@ -3,64 +3,178 @@
 {% block title %}Dashboard - Gestión de Camas{% endblock %}
 
 {% block main_content %}
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm border-light rounded">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Total de Camas</h5>
-                    <h2 class="card-text text-primary">{{ total_camas }}</h2>
+
+<style>
+    .main-content {
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #3498db;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        border-top: none;
+    }
+</style>
+    <div class="main-content">
+        <h1 class="mb-4">Dashboard de Gestión Hospitalaria</h1>
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm border-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total de Camas</h5>
+                        <h2 class="card-text text-primary">{{ total_camas }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Ocupación</h5>
+                        <h2 class="card-text text-success">{{ ocupacion_total }} / {{ total_camas }}</h2>
+                        <small class="text-muted">
+                            {% if total_camas %}
+                                {% with ocupacion_percentage=ocupacion_total|divisibleby:total_camas %}
+                                    {% if total_camas != 0 %}
+                                        ({{ ocupacion_percentage|floatformat:2 }} %)
+                                    {% else %}
+                                        No disponible
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Capacidad Disponible</h5>
+                        <h2 class="card-text text-warning">{{ capacidad_disponible }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-light rounded">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Alertas Críticas</h5>
+                        <h2 class="card-text text-danger">{{ alertas_criticas }}</h2>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-light rounded">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Ocupación</h5>
-                    <h2 class="card-text text-success">{{ ocupacion|default:0 }} / {{ total_camas|default:1 }}</h2>
-                    <small class="text-muted">
-                        {% if total_camas %}
-                            {% with ocupacion_percentage=ocupacion|divisibleby:total_camas %}
-                                {% if total_camas != 0 %}
-                                    ({{ ocupacion|floatformat:2 }} %)
-                                {% else %}
-                                    No disponible
-                                {% endif %}
-                            {% endwith %}
-                        {% else %}
-                            No disponible
-                        {% endif %}
-                    </small>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Servicios</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Capacidad</th>
+                                    <th>Ocupación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for servicio in servicios %}
+                                <tr>
+                                    <td>{{ servicio.nombre }}</td>
+                                    <td>{{ servicio.capacidad_total }}</td>
+                                    <td>{{ servicio.nivel_alerta_ocupacion }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ubicaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Capacidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ubicacion in ubicaciones %}
+                                <tr>
+                                    <td>{{ ubicacion.nombre }}</td>
+                                    <td>{{ ubicacion.tipo }}</td>
+                                    <td>{{ ubicacion.capacidad }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-light rounded">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Capacidad Disponible</h5>
-                    <h2 class="card-text text-warning">{{ capacidad_disponible }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-light rounded">
-                <div class="card-body">
-                    <h5 class="card-title text-muted">Alertas Críticas</h5>
-                    <h2 class="card-text text-danger">{{ alertas_criticas }}</h2>
+
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Estado de Camas</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                    <th>Paciente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cama in camas %}
+                                <tr>
+                                    <td>{{ cama.numero }}</td>
+                                    <td>{{ cama.ubicacion.nombre }}</td>
+                                    <td>{{ cama.estado }}</td>
+                                    <td>{{ cama.paciente.nombre_completo }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Optional additional section for detailed data -->
-    <!-- <div class="row mt-5">
-        <div class="col-md-12">
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Atención:</strong> Se recomienda revisar las camas en estado "En Refacción" para evitar futuras complicaciones.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-    </div> -->
-
 {% endblock %}
+
+

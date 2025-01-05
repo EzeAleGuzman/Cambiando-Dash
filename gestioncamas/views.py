@@ -1,30 +1,54 @@
-# En views.py
-from django.views.generic import ListView
-from .models import Cama, Servicio, Ubicacion
-from django.shortcuts import render
+
+from .models import Cama, Servicio, Ubicacion, PacienteCama
+from django.shortcuts import render, get_object_or_404
 
 
-class DashboardView(ListView):
-    model = Cama
-    template_name = "gestioncamas/dashboard.html"
+def Dashbord(request):
+    #obtener datos de los servicios
+    servicios = Servicio.objects.all()
+    total_servicios = servicios.count()
+    capacidad_total = 0
+    ocupacion_total = 0
+   
+    for servicio in servicios:
+        ubicaciones = Ubicacion.objects.filter(servicio=servicio)
+        capacidad_servicio = sum(ubicacion.capacidad for ubicacion in ubicaciones)
+        camas_ocupadas_servicio = sum(Cama.objects.filter(ubicacion=ubicacion, estado="OCUPADA").count() for ubicacion in ubicaciones)
 
-    def get_queryset(self):
-        return Cama.objects.all()
+        capacidad_total += capacidad_servicio
+        ocupacion_total += camas_ocupadas_servicio
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        total_camas = Cama.objects.count()
-        ocupacion = Cama.objects.filter(estado="OCUPADA").count()
+        servicio.capacidad_total = capacidad_servicio
+        servicio.ocupacion_total = camas_ocupadas_servicio
+    
+    nivel_ocupacion = round((ocupacion_total / capacidad_total) * 100, 2) if capacidad_total != 0 else 0
 
-        # Asegurarse de que total_camas no sea cero
-        context["total_camas"] = total_camas if total_camas > 0 else 1
-        context["ocupacion"] = ocupacion if ocupacion is not None else 0
 
-        # Calcular la capacidad disponible
-        context["capacidad_disponible"] = context["total_camas"] - context["ocupacion"]
-        context["alertas_criticas"] = 0  # Cambia según tu lógica
+    #obtener datos de ubicaciones
+    ubicaciones = Ubicacion.objects.all()
+    total_ubicaciones = ubicaciones.count()
+    habitaciones = ubicaciones.filter(tipo="HABITACION").count()
+    area = ubicaciones.filter(tipo="AREA").count()
 
-        return context
+    #obtener datos de camas
+    camas = Cama.objects.all()
+    total_camas = camas.count()
+    camas_ocupadas = camas.filter(estado="OCUPADA").count()
+    camas_disponibles = total_camas - camas_ocupadas
+
+    context = {
+        "total_servicios": total_servicios,
+        "capacidad_total": capacidad_total,
+        "ocupacion_total": ocupacion_total,
+        "nivel_ocupacion": nivel_ocupacion,
+        "total_camas": total_camas,
+        "camas_ocupadas": camas_ocupadas,
+        "camas_disponibles": camas_disponibles,
+        "servicios": servicios,
+        "camas": camas,
+        "ubicaciones": ubicaciones,
+    }
+    return render(request, "gestioncamas/dashboard.html", context)
 
 
 def habitaciones_por_servicio(request):
@@ -32,9 +56,7 @@ def habitaciones_por_servicio(request):
     data = []
 
     for servicio in servicios:
-        ubicaciones = (
-            servicio.ubicacion_set.all()
-        )  # Obtener todas las ubicaciones asociadas al servicio
+        ubicaciones = servicio.ubicacion_set.all()  # Obtener todas las ubicaciones asociadas al servicio
         for ubicacion in ubicaciones:
             camas = ubicacion.cama_set.all()  # Obtener todas las camas de la ubicación
             total_camas = camas.count()
@@ -66,16 +88,17 @@ def habitaciones_por_servicio(request):
     )
 
 
+
 def ubicacion_detalle(request, ubicacion_id):
     # Obtener la ubicación seleccionada
-    ubicacion = Ubicacion.objects.get(id=ubicacion_id)
+    ubicacion = get_object_or_404(Ubicacion, id=ubicacion_id)
 
     # Obtener las camas asociadas a esa ubicación
-    camas = Cama.objects.filter(ubicacion=ubicacion).select_related("paciente")
+    camas = Cama.objects.filter(ubicacion=ubicacion)
 
     # Filtrar pacientes asignados
-    camas_con_paciente = camas.filter(paciente__isnull=False)
-    camas_libres = camas.filter(paciente__isnull=True)
+    camas_con_paciente = PacienteCama.objects.filter(cama__in=camas, paciente__isnull=False)
+    camas_libres = camas.filter(pacientecama__isnull=True)
 
     context = {
         "ubicacion": ubicacion,
@@ -84,3 +107,5 @@ def ubicacion_detalle(request, ubicacion_id):
     }
 
     return render(request, "gestioncamas/ubicacion_detalle.html", context)
+
+

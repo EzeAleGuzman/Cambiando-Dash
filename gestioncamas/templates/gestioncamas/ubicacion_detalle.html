@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}Detalles de Ubicación: {{
 ubicacion.nombre }}{% endblock %} {% block main_content %}
 <div class="container">
-  <h2>Detalles de la Ubicación: {{ ubicacion.nombre }}</h2>
+  <h2>Habitacion: {{ ubicacion.nombre }}</h2>
 
   <h3>Camas Ocupadas</h3>
   {% if camas_con_paciente %}
@@ -10,15 +10,19 @@ ubicacion.nombre }}{% endblock %} {% block main_content %}
       <tr>
         <th>Número de Cama</th>
         <th>Paciente</th>
-        <th>Estado</th>
+        <th>acciones</th>
+        
       </tr>
     </thead>
     <tbody>
-      {% for cama in camas_con_paciente %}
+      {% for paciente_camma in camas_con_paciente %}
       <tr class="table-success">
-        <td>{{ cama.numero }}</td>
-        <td>{{ cama.paciente.nombre }}</td>
-        <td>{{ cama.estado }}</td>
+        <td>{{ paciente_camma.cama.numero }}</td>
+        <td>{{ paciente_camma.paciente.nombre_completo }}</td>
+        <td>
+          <a href="{% url 'Pacientes' paciente_cama.paciente.id %}" class="btn btn-primary">Ver detalles</a>
+        </td>
+       
       </tr>
       {% endfor %}
     </tbody>
