@@ -72,7 +72,7 @@
                          <td>{{ info_cama.ubicacion }}</td>
                           <td>{{ info_cama.numero }}</td>
                         <td>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#fichaModal" onclick="mostrarFicha({{ paciente.id }})">Ficha Paciente</button>
+                            <a href="{% url 'detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>
                         </td>
                     </tr>
                     {% endwith %}
@@ -134,28 +134,6 @@
         {% endfor %}
     ];
 
-    function mostrarFicha(id) {
-        const paciente = pacientes.find(p => p.id == id);
-        const modalBody = document.getElementById('ficha-paciente');
-        
-        modalBody.innerHTML = '';
-        
-        const campos = [
-            ['Nombre', paciente.nombre_completo],
-            ['DNI', paciente.dni],
-            ['Servicio', paciente.servicio],
-            ['Ubicación', paciente.ubicacion]
-        ];
-        
-        campos.forEach(([label, valor]) => {
-            const p = document.createElement('p');
-            const strong = document.createElement('strong');
-            strong.textContent = label + ': ';
-            p.appendChild(strong);
-            p.appendChild(document.createTextNode(valor));
-            modalBody.appendChild(p);
-        });
-    }
 </script>
 
 {% endblock main_content %}
