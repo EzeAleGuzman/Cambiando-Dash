@@ -67,11 +67,11 @@ class PacienteForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         required=False
     )
-    arm = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=100, 
+    arm = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
         required=False
-    )
+        )
+   
     tipo_egreso = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         max_length=100, 

@@ -196,7 +196,8 @@
                             <div class="row mb-3">
                                 <div class="col-sm-4"><strong>ARM:</strong></div>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="arm" value="{{ paciente.arm }}">
+                                    <input type="checkbox" name="arm" 
+                                           {% if paciente.arm %} checked="checked" {% endif %}>
                                 </div>
                             </div>
                             <div class="row mb-3">
