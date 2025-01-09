@@ -14,4 +14,14 @@ urlpatterns = [
         views.ubicacion_detalle,
         name="ubicacion_detalle",
     ),
+    path(
+        "ingresar-paciente-cama/<int:servicio_seleccionado>/",
+        views.ingresarpacienteacama,
+        name="ingresarpacienteacama",
+    ),
+    path(
+        "seleccionar-servicio/",
+        views.seleccionar_servicio,
+        name="seleccionar_servicio",
+    ),
 ]

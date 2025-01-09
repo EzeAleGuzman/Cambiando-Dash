@@ -1,7 +1,9 @@
 
 from .models import Cama, Servicio, Ubicacion, PacienteCama
 from django.shortcuts import render, get_object_or_404
-
+from pacientes.models import Paciente
+from .forms import IngresarPacienteCamaForm
+from django.shortcuts import redirect
 
 def Dashbord(request):
     #obtener datos de los servicios
@@ -108,4 +110,52 @@ def ubicacion_detalle(request, ubicacion_id):
 
     return render(request, "gestioncamas/ubicacion_detalle.html", context)
 
+
+
+
+def seleccionar_servicio(request):
+    servicios_con_camas_libres = Servicio.objects.filter(ubicacion__cama__estado="LIBRE")
+    servicio_seleccionado = None
+    camas_libres = []
+
+    if request.method == "POST":
+        seleccionar_servicio = request.POST.get("servicio")
+        ubicaciones = Ubicacion.objects.filter(servicio=servicio_seleccionado)
+        camas_libres = Cama.objects.filter(ubicacion__in=ubicaciones, estado="LIBRE")
+
+        return redirect("ingresarpacienteacama",servicio_id = servicio_seleccionado)
+    context = {
+        "servicios_con_camas_libres": servicios_con_camas_libres,
+        "servicio_seleccionado": servicio_seleccionado,
+        "camas_libres": camas_libres,
+    }
+    return render(request, "gestioncamas/seleccionar_servicio.html", context)
+
+
+def ingresarpacienteacama(request):
+    servicios = Servicio.objects.all()
+    ubicaciones = Ubicacion.objects.filter(servicio=servicio_seleccionado)
+    camas_libres = Cama.objects.filter(ubicacion__in=ubicaciones, estado="LIBRE")
+    
+    if request.method == "POST":
+        form = IngresarPacienteCamaForm(request.POST)
+        if form.is_valid():
+            paciente = form.cleaned_data['dni_paciente']  # Aquí obtenemos el paciente validado
+            cama = form.cleaned_data['cama']
+            
+            # Asignar el paciente a la cama
+            paciente_cama = PacienteCama(paciente=paciente, cama=cama)
+            paciente_cama.save()
+            
+            # Redirigir a una página de éxito o recargar la misma página
+            return redirect('pagina_de_exito')
+    else:
+        form = IngresarPacienteCamaForm()
+    
+    context = {
+        "servicios": servicios,
+        "form": form,
+        "camas_libres": camas_libres,
+    }
+    return render(request, "gestioncamas/ingresarpacienteacama.html", context)
 

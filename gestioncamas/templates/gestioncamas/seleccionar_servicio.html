@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+<div class="container mt-5">
+    <h2>Seleccionar Servicio</h2>
+    
+    <!-- Mensajes de error -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <form method="post" class="form-horizontal">
+        {% csrf_token %}
+        
+        <!-- Seleccionar Servicio -->
+        <div class="form-group row">
+            <label for="servicio" class="col-sm-2 col-form-label">Servicio</label>
+            <div class="col-sm-10">
+                <select id="servicio" class="form-control" name="servicio">
+                    {% for servicio in servicios_con_camas_libres %}
+                        <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Botón de envío -->
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Seleccionar Servicio</button>
+            </div>
+        </div>
+    </form>
+
+    {% if servicio_seleccionado %}
+     <ul>
+        {% for camas in camas_libres %}
+            <li>{{ camas.nombre }}</li>
+        {% endfor %}
+     </ul>
+     {% endif %}
+</div>
+
+{% endblock %}

@@ -111,9 +111,12 @@
             id="Servicios"
             onclick="submenu('subServicios')"
           >
-            <i class="bi bi-file-earmark-text"></i> Pacientes
+          <i class="bi bi-person-badge"></i> Gestión de Pacientes
           </div>
           <div id="subServicios" class="sub-boxes" style="display: none">
+            <div class="sub-box">
+              <a href="{% url 'nuevopaciente' %}" class="text-decoration-none text-white">Nuevo Paciente</a>
+            </div>
             <div class="sub-box">
               <a href="{% url 'Pacientes' %}" class="text-decoration-none text-white">Busqueda Paciente</a>
             </div>
