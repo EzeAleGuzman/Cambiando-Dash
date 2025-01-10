@@ -2,9 +2,10 @@
 from .models import Cama, Servicio, Ubicacion, PacienteCama
 from django.shortcuts import render, get_object_or_404
 from pacientes.models import Paciente
-from .forms import AsignacionCamaForm
+from .forms import AsignacionCamaForm, LiberarCamaForm
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.utils import timezone
 
 def Dashbord(request):
     #obtener datos de los servicios
@@ -137,6 +138,41 @@ def asignar_cama(request, paciente_id):
         'paciente': paciente,
     })
         
+
+def liberar_cama(request, paciente_id):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+    asignacion_actual = paciente.pacientecama_set.filter(fecha_liberacion__isnull=True).first()
+
+    if not asignacion_actual:
+        messages.warning(request, 'El paciente no tiene una cama asignada actualmente')
+        return redirect('pacientes:detallepaciente', 
+                        id=paciente_id)
+
+    if request.method == 'POST':
+        form = LiberarCamaForm(request.POST)
+        if form.is_valid():
+            # Actualizar la asignación
+            asignacion_actual.fecha_liberacion = timezone.now()
+            asignacion_actual.save()
+            
+            # Registrar el motivo y observaciones
+            cama = asignacion_actual.cama
+            cama.notas = (f"Liberada el {timezone.now().strftime('%d/%m/%Y %H:%M')}. "
+                         f"Motivo: {form.cleaned_data['motivo_liberacion']}. "
+                         f"Observaciones: {form.cleaned_data['observaciones']}")
+            cama.estado = 'LIBRE'
+            cama.save()
+
+            messages.success(request, 'Cama liberada exitosamente')
+            return redirect('pacientes:detallepaciente', id=paciente_id)
+    else:
+        form = LiberarCamaForm()
+
+    return render(request, 'gestioncamas/liberar_cama.html', {
+        'form': form,
+        'paciente': paciente,
+        'asignacion': asignacion_actual
+    })
 
 
 

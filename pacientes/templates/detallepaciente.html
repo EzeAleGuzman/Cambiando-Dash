@@ -217,6 +217,10 @@
                                 <a href="{% url 'gestioncamas:asignar_cama' paciente.id %}" class="btn btn-primary">
                                     <i class="fas fa-bed"></i>Asignar Cama
                                 </a>
+                                {% else %}
+                                 <a href="{% url 'gestioncamas:liberar_cama' paciente.id %}" class="btn btn-warning">
+                                    <i class="fas fa-door-open"></i> Liberar Cama
+                                </a>
                                 {% endif%}
                             </div>
                         </div>

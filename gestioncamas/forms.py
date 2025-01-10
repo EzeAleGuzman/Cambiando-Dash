@@ -60,3 +60,8 @@ class AsignacionCamaForm(forms.ModelForm):
                 )
             except (ValueError, TypeError):
                 pass
+
+
+class LiberarCamaForm(forms.Form):
+    motivo_liberacion = forms.CharField(max_length=255, widget=forms.Textarea, label="Motivo de liberación")
+    observaciones = forms.CharField(max_length=255, widget=forms.Textarea, label="Observaciones")

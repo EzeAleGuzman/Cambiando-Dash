@@ -17,5 +17,6 @@ urlpatterns = [
         name="ubicacion_detalle",
     ),
     path('asignar-cama/<int:paciente_id>/', views.asignar_cama, name='asignar_cama'),
+    path('liberar-cama/<int:paciente_id>/', views.liberar_cama, name='liberar_cama'),
    
 ]

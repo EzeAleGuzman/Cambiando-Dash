@@ -1,0 +1,19 @@
+<!-- liberar_cama.html -->
+{% extends 'base.html' %}
+
+{% block main_content %}
+  <h2>Liberar Cama - Paciente: {{ paciente.nombre }} {{ paciente.apellido }}</h2>
+
+  <p><strong>Cama actual:</strong> {{ asignacion.cama.numero }}</p>
+  <p><strong>Fecha de asignación:</strong> {{ asignacion.fecha_asignacion }}</p>
+
+  <h3>Detalles de la Liberación</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Liberar Cama</button>
+  </form>
+
+  <p><a href="{% url 'pacientes:detallepaciente' paciente.id %}">Volver al detalle del paciente</a></p>
+{% endblock %}

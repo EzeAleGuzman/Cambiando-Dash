@@ -108,3 +108,5 @@ class PacienteForm(forms.ModelForm):
             self.fields['fecha_egreso'].initial = self.instance.fecha_egreso
         if self.instance and self.instance.fecha_pase:
             self.fields['fecha_pase'].initial = self.instance.fecha_pase
+
+

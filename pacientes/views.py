@@ -4,6 +4,7 @@ from gestioncamas.models import Servicio
 from django.shortcuts import get_object_or_404, redirect
 from .forms import PacienteForm
 
+
 # Create your views here.
 def Pacientes(request):
     pacientes = Paciente.objects.all()
@@ -90,3 +91,6 @@ def editarpaciente(request, id):
 
     # Renderizar el template con el formulario
     return render(request, 'editarpaciente.html', {'paciente': paciente, 'form': form})
+
+
+
