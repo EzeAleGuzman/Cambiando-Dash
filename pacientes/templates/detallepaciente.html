@@ -112,7 +112,7 @@
             <h1 class="h2">{{paciente.nombre_completo}}</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group me-2">
-                    <a href="{% url 'editarpaciente' paciente.id %}">
+                    <a href="{% url 'pacientes:editarpaciente' paciente.id %}">
                         <button type="button" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-edit"></i> Editar
                         </button>
@@ -210,6 +210,15 @@
                         <div class="row">
                             <div class="col-sm-4"><strong>Número de Cama:</strong></div>
                             <div class="col-sm-8">{{ paciente.obtener_info_cama.numero }}</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                {% if not paciente.cama_actual%}
+                                <a href="{% url 'gestioncamas:asignar_cama' paciente.id %}" class="btn btn-primary">
+                                    <i class="fas fa-bed"></i>Asignar Cama
+                                </a>
+                                {% endif%}
+                            </div>
                         </div>
                     </div>
                 </div>

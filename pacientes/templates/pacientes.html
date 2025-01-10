@@ -72,7 +72,7 @@
                          <td>{{ info_cama.ubicacion }}</td>
                           <td>{{ info_cama.numero }}</td>
                         <td>
-                            <a href="{% url 'detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>
+                            <a href="{% url 'pacientes:detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>
                         </td>
                     </tr>
                     {% endwith %}

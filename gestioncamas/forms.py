@@ -1,19 +1,62 @@
+# forms.py
 from django import forms
-from .models import PacienteCama
-from pacientes.models import Paciente
+from .models import Servicio, Ubicacion, Cama, PacienteCama
 
+class AsignacionCamaForm(forms.ModelForm):
+    servicio = forms.ModelChoiceField(
+        queryset=Servicio.objects.filter(activo=True),
+        empty_label="Seleccione un servicio...",
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'select-servicio'
+        })
+    )
+    
+    ubicacion = forms.ModelChoiceField(
+        queryset=Ubicacion.objects.none(),
+        empty_label="Seleccione una ubicación...",
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'select-ubicacion'
+        })
+    )
 
-class IngresarPacienteCamaForm(forms.ModelForm):
-    dni_paciente = forms.CharField(label="DNI del Paciente", max_length=15)
+    cama = forms.ModelChoiceField(
+        queryset=Cama.objects.none(),
+        empty_label="Seleccione una cama...",
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'select-cama'
+        })
+    )
 
     class Meta:
         model = PacienteCama
-        fields = ['cama']
+        fields = ['servicio', 'ubicacion', 'cama']
 
-    def clean_dni_paciente(self):
-        dni = self.cleaned_data.get('dni_paciente')
-        try:
-            paciente = Paciente.objects.get(dni=dni)
-        except Paciente.DoesNotExist:
-            raise forms.ValidationError("No se encontró ningún paciente con ese DNI.")
-        return paciente
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        if 'servicio' in self.data:
+            try:
+                servicio_id = int(self.data.get('servicio'))
+                self.fields['ubicacion'].queryset = Ubicacion.objects.filter(
+                    servicio_id=servicio_id,
+                    activo=True
+                )
+            except (ValueError, TypeError):
+                pass
+
+        if 'ubicacion' in self.data:
+            try:
+                ubicacion_id = int(self.data.get('ubicacion'))
+                self.fields['cama'].queryset = Cama.objects.filter(
+                    ubicacion_id=ubicacion_id,
+                    estado='LIBRE',
+                    activo=True
+                )
+            except (ValueError, TypeError):
+                pass

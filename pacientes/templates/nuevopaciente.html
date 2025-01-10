@@ -106,7 +106,7 @@
 
 <h1>Nuevo Paciente</h1>
 
-<form method="POST" action="{% url 'nuevopaciente' %}">
+<form method="POST" action="{% url 'pacientes:nuevopaciente' %}">
     {% csrf_token %}
     
     <div class="row">
