@@ -1,180 +1,139 @@
-{% extends 'base.html' %}
-
-{% block title %}Dashboard - Gestión de Camas{% endblock %}
-
-{% block main_content %}
+{% extends 'base.html' %} {% block title %}Dashboard - Gestión de
+Camas{%endblock %} {% block main_content %}
 
 <style>
+  .main-content {
+    padding: 20px;
+  }
+
+  .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-header {
+    background-color: #3498db;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
     .main-content {
-        padding: 20px;
+      padding: 10px;
     }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-    }
-
-    .card-header {
-        background-color: #3498db;
-        color: white;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-    .table {
-        margin-bottom: 0;
-    }
-
-    .table th {
-        border-top: none;
-    }
+  }
 </style>
-    <div class="main-content">
-        <h1 class="mb-4">Dashboard de Gestión Hospitalaria</h1>
 
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card shadow-sm border-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Total de Camas</h5>
-                        <h2 class="card-text text-primary">{{ total_camas }}</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card shadow-sm border-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Ocupación</h5>
-                        <h2 class="card-text text-success">{{ ocupacion_total }} / {{ total_camas }}</h2>
-                        <small class="text-muted">
-                            {% if total_camas %}
-                                {% with ocupacion_percentage=ocupacion_total|divisibleby:total_camas %}
-                                    {% if total_camas != 0 %}
-                                        ({{ ocupacion_percentage|floatformat:2 }} %)
-                                    {% else %}
-                                        No disponible
-                                    {% endif %}
-                                {% endwith %}
-                            {% else %}
-                                No disponible
-                            {% endif %}
-                        </small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card shadow-sm border-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Capacidad Disponible</h5>
-                        <h2 class="card-text text-warning">{{ capacidad_disponible }}</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card shadow-sm border-light rounded">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Alertas Críticas</h5>
-                        <h2 class="card-text text-danger">{{ alertas_criticas }}</h2>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid main-content">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Ocupación de Camas</h5>
         </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Servicios</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Capacidad</th>
-                                    <th>Ocupación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for servicio in servicios %}
-                                <tr>
-                                    <td>{{ servicio.nombre }}</td>
-                                    <td>{{ servicio.capacidad_total }}</td>
-                                    <td>{{ servicio.nivel_alerta_ocupacion }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Ubicaciones</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Tipo</th>
-                                    <th>Capacidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ubicacion in ubicaciones %}
-                                <tr>
-                                    <td>{{ ubicacion.nombre }}</td>
-                                    <td>{{ ubicacion.tipo }}</td>
-                                    <td>{{ ubicacion.capacidad }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        <div class="card-body">
+          <div
+            class="chart-container"
+            style="position: relative; height: 60vh; width: 100%"
+          >
+            <canvas id="ocupacionChart"></canvas>
+          </div>
         </div>
-
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Estado de Camas</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Número</th>
-                                    <th>Ubicación</th>
-                                    <th>Estado</th>
-                                    <th>Paciente</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for cama in camas %}
-                                <tr>
-                                    <td>{{ cama.numero }}</td>
-                                    <td>{{ cama.ubicacion.nombre }}</td>
-                                    <td>{{ cama.estado }}</td>
-                                    <td>{{ cama.paciente.nombre_completo }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function actualizarGrafico() {
+    $.ajax({
+      url: "{% url 'gestioncamas:obtener_ocupacion' %}",
+      method: "GET",
+      success: function (data) {
+        var ocupacionData = data.ocupacion_data;
+        var labels = ocupacionData.map(function (item) {
+          return item.servicio;
+        });
+        var ocupadas = ocupacionData.map(function (item) {
+          return item.ocupadas;
+        });
+        var libres = ocupacionData.map(function (item) {
+          return item.libres;
+        });
+
+        ocupacionChart.data.labels = labels;
+        ocupacionChart.data.datasets[0].data = ocupadas;
+        ocupacionChart.data.datasets[1].data = libres;
+        ocupacionChart.update();
+      },
+    });
+  }
+
+  var ctx = document.getElementById("ocupacionChart").getContext("2d");
+  var ocupacionChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: "Camas Ocupadas",
+          data: [],
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        },
+        {
+          label: "Camas Libres",
+          data: [],
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "Ocupación de Camas por Servicio",
+        },
+      },
+    },
+  });
+
+  // Actualizar el gráfico cada 5 segundos
+  setInterval(actualizarGrafico, 5000);
+  // Actualizar el gráfico al cargar la página
+  actualizarGrafico();
+
+  // Redimensionar el gráfico cuando cambia el tamaño de la ventana
+  window.addEventListener("resize", function () {
+    ocupacionChart.resize();
+  });
+</script>
+
 {% endblock %}
-
-

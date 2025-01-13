@@ -38,7 +38,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Filtrar por Servicio</h5>
-                    <form method="get" action="{% url 'pacientes_por_servicio' %}">
+                    <form method="get" action="{% url 'pacientes:pacientes_por_servicio' %}">
                         <div class="form-group">
                             <select class="form-control" name="servicio" onchange="this.form.submit()">
                                 <option value="">Seleccione un servicio</option>
@@ -80,7 +80,7 @@
                         <td>{{ info_cama.ubicacion }}</td>
                         <td>{{ info_cama.numero }}</td>
                         <td>
-                            <a href="{% url 'detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>                        </td>
+                            <a href="{% url 'pacientes:detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>                        </td>
                     </tr>
                     {% endwith %}
                     {% endfor %}
