@@ -50,8 +50,10 @@
         >
           <div class="offcanvas-header">
             <div class="user-circle" id="userCircle">
-              <span id="userInitials" class="user-initials">EG</span>
+              <a id="userInitials" class="user-initials">EG</a>
+              
             </div>
+
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -60,21 +62,30 @@
             ></button>
           </div>
           <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <li>
-                <form class="d-flex" role="search">
-                  <input
-                    class="form-control mt-2 mr-2 d-none d-lg-block"
-                    type="search"
-                    placeholder="Buscar"
-                    aria-label="Search"
-                  />
-                </form>
-              </li>
-              <li class="nav-item mx-lg-2 d-lg-block d-none">
-                <div class="user-circle">
-                  <span id="userInitials" class="user-initials">EG</span>
-                </div>
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 " >
+                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto"> <!-- Añadir ms-auto aquí -->
+                    <div class="dropdown">
+                        <div class="user-circle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="userInitials" class="user-initials">EG</span>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"> <!-- Añadir dropdown-menu-end aquí -->
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'users:login' %}">Iniciar Sesión</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+                <div class="offcanvas-body">
+                  <ul class="navbar-nav">
+                      <!-- Otros elementos del menú -->
+                     
+                  </ul>
+              </div>
               </li>
               <li>
                 <a

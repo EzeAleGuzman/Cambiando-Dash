@@ -92,9 +92,9 @@ Camas{%endblock %} {% block main_content %}
         {
           label: "Camas Ocupadas",
           data: [],
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
-          borderColor: "rgba(75, 192, 192, 1)",
-          borderWidth: 1,
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 2,
         },
         {
           label: "Camas Libres",
@@ -126,7 +126,7 @@ Camas{%endblock %} {% block main_content %}
   });
 
   // Actualizar el gráfico cada 5 segundos
-  setInterval(actualizarGrafico, 5000);
+  setInterval(actualizarGrafico, 50000);
   // Actualizar el gráfico al cargar la página
   actualizarGrafico();
 

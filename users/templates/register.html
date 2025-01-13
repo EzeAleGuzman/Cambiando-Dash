@@ -1,7 +1,125 @@
+
 {% extends "base.html" %} {% block main_content %}
-<h1>Registro de Usuario</h1>
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Registrarse</button>
-</form>
+<style>
+  ul {
+    list-style-type: none;
+    padding: 0;
+    color: red;
+  }
+ 
+  form {
+    width: 70%;
+    margin: 0 auto; /* Centra el formulario horizontalmente */
+  }
+</style>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="w-50">
+    <h1 class="text-center my-4">Registro de Usuario</h1>
+    <form method="post" class="needs-validation" novalidate>
+      {% csrf_token %} 
+        <!-- Campo Email -->
+    <div class="form-group mb-3">
+      {{ form.email }}
+      {% if form.email.errors %}
+          <div class="text-danger">
+              {{ form.email.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Nombre -->
+  <div class="form-group mb-3">
+      {{ form.name }}
+      {% if form.name.errors %}
+          <div class="text-danger">
+              {{ form.name.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Apellido -->
+  <div class="form-group mb-3">
+      {{ form.lastname }}
+      {% if form.lastname.errors %}
+          <div class="text-danger">
+              {{ form.lastname.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Celular -->
+  <div class="form-group mb-3">
+      {{ form.cellphone }}
+      {% if form.cellphone.errors %}
+          <div class="text-danger">
+              {{ form.cellphone.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Fecha de Servicio -->
+  <div class="form-group mb-3">
+      {{ form.servicio }}
+      {% if form.servicio.errors %}
+          <div class="text-danger">
+              {{ form.servicio.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo de cargo  -->
+  <div class="form-group mb-3">
+      {{ form.cargo }}
+      {% if form.cargo.errors %}
+          <div class="text-danger">
+              {{ form.cargo.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Contraseña -->
+  <div class="form-group mb-3">
+      {{ form.password1 }}
+      {% if form.password1.errors %}
+          <div class="text-danger">
+              {{ form.password1.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+  <!-- Campo Confirmar Contraseña -->
+  <div class="form-group mb-3">
+      {{ form.password2 }}
+      {% if form.password2.errors %}
+          <div class="text-danger">
+              {{ form.password2.errors }}
+          </div>
+      {% endif %}
+  </div>
+
+ 
+      <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+    </form>
+  </div>
+</div>
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
 {% endblock %}
