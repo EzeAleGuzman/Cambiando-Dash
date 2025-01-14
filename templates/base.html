@@ -50,7 +50,13 @@
         >
           <div class="offcanvas-header">
             <div class="user-circle" id="userCircle">
-              <a id="userInitials" class="user-initials">EG</a>
+              <span id="userInitials" class="user-initials">
+                {% if user.is_authenticated %}
+                    {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
+                {% else %}
+                    HO
+                {% endif %}
+            </span>
               
             </div>
 
@@ -63,10 +69,16 @@
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 " >
-                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto"> <!-- Añadir ms-auto aquí -->
+                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto" style="list-style: none;"> <!-- Añadir ms-auto aquí -->
                     <div class="dropdown">
                         <div class="user-circle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="userInitials" class="user-initials">EG</span>
+                          <span id="userInitials" class="user-initials">
+                            {% if user.is_authenticated %}
+                                {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
+                            {% else %}
+                                HO
+                            {% endif %}
+                        </span>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"> <!-- Añadir dropdown-menu-end aquí -->
                             <li><a class="dropdown-item" href="#">Action</a></li>
@@ -80,21 +92,14 @@
                 </li>
             </ul>
         </div>
-                <div class="offcanvas-body">
-                  <ul class="navbar-nav">
-                      <!-- Otros elementos del menú -->
-                     
-                  </ul>
-              </div>
-              </li>
-              <li>
+              
                 <a
                   class="nav-link active d-lg-none d-block"
                   aria-current="page"
-                  href="#"
+                  href="{% url 'home' %}"
                   >Home</a
                 >
-              </li>
+            
             </ul>
           </div>
         </div>
@@ -198,7 +203,7 @@
           <!-- Gestión de Pacientes -->
           <div class="box align-items-center justify-content-center w-100">
             <a href="" class="text-decoration-none text-white">
-              <i class="bi bi-person-badge"></i> Gestión de Pacientes
+              <i class="bi bi-person-badge"></i> Tele Enfermeria
             </a>
           </div>
         </div>

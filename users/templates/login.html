@@ -1,29 +1,35 @@
-{% extends "base.html" %}
-{% block main_content %}
-<div class="container d-flex justify-content-center align-items-center" >
+{% extends "base.html" %} {% block main_content %} {% load static%}
+<style>
+    .btn-onativia {
+        background-color: #02ACC6;
+        border-color: #02ACC6;
+    }
+
+    .btn-onativia:hover {
+        background-color: #5dbcca;
+        border-color: #02ACC6;
+    }
+</style>
+<div class="container d-flex justify-content-center align-items-center">
     <div class="w-50">
-        <h1 class="text-center my-4">Iniciar Sesión</h1>
+        <a class="navbar-brand" href="#"><img src="{% static 'imagenes/logonuevo.png' %}" alt="" size="200"
+                height="200" /></a>
+        <!-- <h1 class="text-center my-4">Iniciar Sesión</h1> -->
         <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
             <div class="form-group mb-3">
-                {{ form.username.label_tag }}
-                {{ form.username }}
+                {{ form.username.label_tag }} {{ form.username }}
                 {% if form.username.errors %}
-                    <div class="text-danger">
-                        {{ form.username.errors }}
-                    </div>
+                <div class="text-danger">{{ form.username.errors }}</div>
                 {% endif %}
             </div>
             <div class="form-group mb-3">
-                {{ form.password.label_tag }}
-                {{ form.password }}
+                {{ form.password.label_tag }} {{ form.password }}
                 {% if form.password.errors %}
-                    <div class="text-danger">
-                        {{ form.password.errors }}
-                    </div>
+                <div class="text-danger">{{ form.password.errors }}</div>
                 {% endif %}
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
+            <button type="submit" class="btn btn-onativia btn-block">Iniciar Sesion</button>
         </form>
     </div>
 </div>

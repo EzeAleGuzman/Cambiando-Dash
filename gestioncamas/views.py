@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def dashboard(request):
     servicios = Servicio.objects.all()
@@ -53,6 +54,7 @@ def obtener_ocupacion(request):
     return JsonResponse({"ocupacion_data": ocupacion_data})
 
 
+@login_required
 def habitaciones_por_servicio(request):
     servicios = Servicio.objects.all()
     data = []
@@ -114,6 +116,7 @@ def ubicacion_detalle(request, ubicacion_id):
     return render(request, "gestioncamas/ubicacion_detalle.html", context)
 
 
+@login_required
 def asignar_cama(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
 
@@ -146,6 +149,7 @@ def asignar_cama(request, paciente_id):
     )
 
 
+@login_required
 def liberar_cama(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
     asignacion_actual = paciente.pacientecama_set.filter(

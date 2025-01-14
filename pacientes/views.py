@@ -3,19 +3,22 @@ from .models import Paciente
 from gestioncamas.models import Servicio
 from django.shortcuts import get_object_or_404, redirect
 from .forms import PacienteForm
+from django.contrib.auth.decorators import login_required
 
 
-# Create your views here.
+@login_required
 def Pacientes(request):
     pacientes = Paciente.objects.all()
     return render(request, "pacientes.html", {"pacientes": pacientes})
 
 
+@login_required
 def detallepaciente(request, id):
     paciente = Paciente.objects.get(pk=id)
     return render(request, "detallepaciente.html", {"paciente": paciente})
 
 
+@login_required
 def pacientesporservicio(request):
     servicio_seleccionado = request.GET.get("servicio", None)
 
@@ -47,6 +50,7 @@ def pacientesporservicio(request):
     )
 
 
+@login_required
 def nuevopaciente(request):
     if request.method == "POST":
         form = PacienteForm(request.POST)
@@ -61,6 +65,7 @@ def nuevopaciente(request):
     return render(request, "nuevopaciente.html", {"form": form})
 
 
+@login_required
 def editarpaciente(request, id):
     # Obtener el paciente correspondiente
     paciente = get_object_or_404(Paciente, pk=id)
