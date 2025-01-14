@@ -68,8 +68,8 @@
             ></button>
           </div>
           <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 " >
-                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto" style="list-style: none;"> <!-- Añadir ms-auto aquí -->
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto" style="list-style: none;">
                     <div class="dropdown">
                         <div class="user-circle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                           <span id="userInitials" class="user-initials">
@@ -80,7 +80,7 @@
                             {% endif %}
                         </span>
                         </div>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"> <!-- Añadir dropdown-menu-end aquí -->
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
@@ -90,16 +90,46 @@
                         </ul>
                     </div>
                 </li>
-            </ul>
-        </div>
-              
-                <a
-                  class="nav-link active d-lg-none d-block"
-                  aria-current="page"
-                  href="{% url 'home' %}"
-                  >Home</a
-                >
-            
+                <!-- Menú móvil replicado -->
+                <li class="nav-item d-lg-none" >
+                    <a class="nav-link" href="{% url 'gestioncamas:dashboard' %}">Home</a>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="#subServiciosMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Gestión de Pacientes</a>
+                    <ul class="collapse list-unstyled" id="subServiciosMobile">
+                        <li>
+                            <a class="nav-link" href="{% url 'pacientes:nuevopaciente' %}">Nuevo Paciente</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{% url 'pacientes:Pacientes' %}">Busqueda Paciente</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="{% url 'pacientes:pacientes_por_servicio' %}">Mostrar Servicios</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="#subEnfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Enfermería</a>
+                    <ul class="collapse list-unstyled" id="subEnfermeriaMobile">
+                        <li>
+                            <a class="nav-link" href="{% url 'documento_list' %}">Protocolos Digitales</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="#subServiciosGeneralesMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Servicios Generales</a>
+                    <ul class="collapse list-unstyled" id="subServiciosGeneralesMobile">
+                        <li>
+                            <a class="nav-link" href="{% url 'internos' %}">Internos</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="#">Plaza Automotor</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="#">Tele Enfermería</a>
+                </li>
             </ul>
           </div>
         </div>
@@ -110,11 +140,11 @@
       <div class="row max-expanded-width mg-auto flex-grow">
         <!-- Sidebar -->
         <div
-          class="menu col-sm-3 col-lg-2 bg-dark d-none d-sm-block text-center align-items-center"
+          class="menu col-sm-3 col-lg-2 bg-dark d-none d-lg-block text-center align-items-center"
         >
           <div class="box align-items-center justify-content-center">
             <a
-              href="{% url 'home' %}"
+              href="{% url 'gestioncamas:dashboard' %}"
               class="text-decoration-none text-white w-100"
             >
               <i class="bi bi-house-door-fill"></i> Home
@@ -210,7 +240,7 @@
 
         <!-- Contenido Principal -->
         <div
-          class="contenido-principal col-sm-9 col-lg-10 bg-light align-items-center"
+          class="contenido-principal col-m-12 col-lg-10 bg-light align-items-center"
         >
           <div class="row max-expanded-width mg-auto flex-grow text-center">
             <div class="container p-4">

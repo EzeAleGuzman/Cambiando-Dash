@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from .models import User
+from django.utils.html import strip_tags
 
 @receiver(pre_save, sender=User)
 def save_old_user_data(sender, instance, **kwargs):
@@ -34,7 +35,7 @@ def send_admin_notification_on_update(sender, instance, created, **kwargs):
 
     if send_notification:
         # Crear el contenido del correo en formato HTML
-        message = render_to_string('emails/user_update_notification.html', {
+        html_message = render_to_string('emails/user_update_notification.html', {
             'name': instance.name,
             'lastname': instance.lastname,
             'email': instance.email,
@@ -43,11 +44,16 @@ def send_admin_notification_on_update(sender, instance, created, **kwargs):
             'cargo': instance.cargo,
         })
 
-        # Enviar el correo electrónico
+        plain_message = strip_tags(html_message)
+        from_email = 'saluddigitalona@gmail.com'
+        to = ['saluddigitalona@gmail.com']
+
         send_mail(
             subject,
-            message,
-            'from@example.com',
-            ['admin@example.com'],
+            plain_message,
+            from_email,
+            to,
             fail_silently=False,
-        )
+            html_message=html_message,
+         )
+

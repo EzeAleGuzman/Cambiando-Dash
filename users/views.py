@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from .forms import CustomUserCreationForm, EmailAuthenticationForm
- 
-
 
 def register(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            auth_login(request, user)  # Usar auth_login para iniciar sesión automáticamente
             return redirect("users:confirmacionregistro")
     else:
         form = CustomUserCreationForm()
@@ -26,12 +24,15 @@ def login(request):
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=email, password=password)
             if user is not None:
-                auth_login(request, user)
-                return redirect("home")
+                if user.is_active:
+                    auth_login(request, user)  # Usar auth_login para evitar conflicto
+                    return redirect("gestioncamas:dashboard")
+                else:
+                    return render(request, "account_inactive.html")
             else:
-                print("Invalid login")
+                return render(request, "login.html", {"form": form, "error": "Invalid login"})
         else:
-            print("Invalid form")
+            return render(request, "login.html", {"form": form, "error": "Invalid form"})
     else:
         form = EmailAuthenticationForm()
     return render(request, "login.html", {"form": form})
@@ -40,4 +41,6 @@ def logout(request):
     auth_logout(request)
     return redirect("users:login")
 
+def recover_password(request):
+    return render(request, "recover_password.html")
     

@@ -5,85 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificación de Actualización de Usuario</title>
     <style>
-        /* Aquí puedes agregar estilos adicionales si lo deseas */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
             margin: 0;
             padding: 0;
-            background-color: darkgray;
+            background-color: #f4f4f9;
         }
         .container {
-            margin-top: 30px;
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .email-header {
-            background-color: #007bff;
+            background-color: #0056b3;
             color: white;
             padding: 20px;
             text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
         }
         .email-body {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
         }
-        .email-footer {
-            background-color: #f4f4f9;
+        .email-body h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+        .user-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .user-info th, .user-info td {
             padding: 10px;
-            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
         }
-        .email-footer a {
-            color: #007bff;
-            text-decoration: none;
+        .user-info th {
+            font-weight: 600;
+            color: #0056b3;
+            width: 30%;
         }
         .btn {
-            background-color: #007bff;
+            display: inline-block;
+            background-color: #0056b3;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 5px;
             text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #003d82;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .email-footer a {
+            color: #0056b3;
+            text-decoration: none;
         }
     </style>
 </head>
-<body class="bg-dark">
+<body>
     <div class="container">
         <div class="email-header">
             <h1>Notificación de Actualización de Usuario</h1>
         </div>
         <div class="email-body">
-            <h2>¡Hola!</h2>
+            <h2>¡Hola! </h2>
             <p>Se ha <strong>{{ action }}</strong> el siguiente usuario:</p>
-            <table class="table">
-                <tr>
-                    <th>Nombre</th>
-                    <td>{{ name }} {{ lastname }}</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td>{{ email }}</td>
-                </tr>
-                <tr>
-                    <th>Teléfono</th>
-                    <td>{{ cellphone }}</td>
-                </tr>
-                <tr>
-                    <th>Servicio</th>
-                    <td>{{ servicio }}</td>
-                </tr>
-                <tr>
-                    <th>Cargo</th>
-                    <td>{{ cargo }}</td>
-                </tr>
-            </table>
-            <p>Para más detalles, puedes visitar el <a href="{{ admin_url }}" class="btn">Panel de Administración</a>.</p>
+            <div class="user-info">
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <td>{{ name }} {{ lastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono</th>
+                        <td>{{ cellphone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Servicio</th>
+                        <td>{{ servicio }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cargo</th>
+                        <td>{{ cargo }}</td>
+                    </tr>
+                </table>
+            </div>
+            <p>Para más detalles, puedes acceder al panel de administración:</p>
+            <a href="{{ admin_url }}" class="btn">Ir al Panel de Administración</a>
         </div>
         <div class="email-footer">
-            <p>Gracias por utilizar nuestros servicios.</p>
-            <p><a href="{{ contact_url }}">Contáctanos</a> si tienes alguna duda o pregunta.</p>
+            <p>Gracias por utilizar nuestros servicios. Si tienes alguna duda o pregunta, no dudes en <a href="{{ contact_url }}">contactarnos</a>.</p>
         </div>
     </div>
 </body>

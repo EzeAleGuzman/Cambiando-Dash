@@ -11,26 +11,20 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def dashboard(request):
-    servicios = Servicio.objects.all()
-    ocupacion_data = []
-
-    for servicio in servicios:
-        camas_totales = Cama.objects.filter(ubicacion__servicio=servicio).count()
-        camas_ocupadas = PacienteCama.objects.filter(
-            cama__ubicacion__servicio=servicio, fecha_liberacion__isnull=True
-        ).count()
-        camas_libres = camas_totales - camas_ocupadas
-        ocupacion_data.append(
-            {
-                "servicio": servicio.nombre,
-                "ocupadas": camas_ocupadas,
-                "libres": camas_libres,
-            }
-        )
-
-    return render(
-        request, "gestioncamas/dashboard.html", {"ocupacion_data": ocupacion_data}
-    )
+    total_pacientes = Paciente.objects.count()
+    camas_ocupadas = Cama.objects.filter(estado='OCUPADA').count()
+    camas_libres = Cama.objects.filter(estado='LIBRE').count()
+    total_camas_funcionales = camas_ocupadas + camas_libres  # Total de camas funcionales es la suma de camas ocupadas y libres
+    pacientes_internados = PacienteCama.objects.filter(fecha_liberacion__isnull=True).count()  # Pacientes con cama asignada y fecha de egreso null
+    print(camas_ocupadas)
+    context = {
+        'total_pacientes': total_pacientes,
+        'camas_ocupadas': camas_ocupadas,
+        'camas_libres': camas_libres,
+        'total_camas_funcionales': total_camas_funcionales,
+        'pacientes_internados': pacientes_internados,
+    }
+    return render(request, 'gestioncamas/dashboard.html', context)
 
 
 def obtener_ocupacion(request):

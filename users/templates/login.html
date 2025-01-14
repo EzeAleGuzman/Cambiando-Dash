@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block main_content %} {% load static%}
+{% extends "base.html" %} 
+{% block main_content %} 
+{% load static %}
 <style>
     .btn-onativia {
         background-color: #02ACC6;
@@ -10,11 +12,9 @@
         border-color: #02ACC6;
     }
 </style>
-<div class="container d-flex justify-content-center align-items-center">
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="w-50">
-        <a class="navbar-brand" href="#"><img src="{% static 'imagenes/logonuevo.png' %}" alt="" size="200"
-                height="200" /></a>
-        <!-- <h1 class="text-center my-4">Iniciar Sesión</h1> -->
+        <a class="navbar-brand" href="#"><img src="{% static 'imagenes/logonuevo.png' %}" alt="" size="200" height="200" /></a>
         <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
             <div class="form-group mb-3">
@@ -29,8 +29,17 @@
                 <div class="text-danger">{{ form.password.errors }}</div>
                 {% endif %}
             </div>
-            <button type="submit" class="btn btn-onativia btn-block">Iniciar Sesion</button>
+            {% if error %}
+            <div class="text-danger mb-3">Cuenta No Activada</div>
+            {% endif %}
+            <button type="submit" class="btn btn-onativia btn-block">Iniciar Sesión</button>
         </form>
+        <div class="text-center mt-3">
+            <a href="{% url 'users:register' %}">¿No tienes cuenta? Regístrate</a>
+        </div>
+        <div class="text-center mt-3">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
     </div>
 </div>
 {% endblock %}
