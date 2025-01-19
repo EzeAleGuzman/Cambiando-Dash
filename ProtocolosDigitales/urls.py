@@ -1,5 +1,10 @@
 from django.urls import path
-from .views import DocumentoListView, DocumentoDetailView, VersionDocumentoDetailView
+from .views import (
+    DocumentoListView,
+    DocumentoDetailView,
+    VersionDocumentoDetailView,
+    chat_pdf,
+)
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -13,6 +18,7 @@ urlpatterns = [
         VersionDocumentoDetailView.as_view(),
         name="version_detail",
     ),
+    path("chat/", chat_pdf, name="chat_pdf"),
 ]
 
 if settings.DEBUG:

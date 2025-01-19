@@ -1,5 +1,11 @@
 from django.views.generic import ListView, DetailView
 from .models import Documento, VersionDocumento
+import openai
+import PyPDF2
+from django.shortcuts import render
+from django.http import JsonResponse
+import os
+from .key import api_key
 
 
 class DocumentoListView(ListView):
@@ -32,3 +38,56 @@ class VersionDocumentoDetailView(DetailView):
     model = VersionDocumento
     template_name = "ProtocolosDigitales/versiondocumento_detail.html"
     context_object_name = "version"
+
+
+# Función para extraer texto del PDF
+def extract_text_from_pdf(pdf_path):
+    with open(pdf_path, "rb") as file:
+        lector = PyPDF2.PdfReader(file)
+        texto = ""
+        for pagina in lector.pages:
+            texto += pagina.extract_text()
+    return texto
+
+
+def chat_pdf(request):
+    if request.method == "POST":
+        documento_id = request.POST.get("documento_id")
+        question = request.POST.get("question")
+
+        if not documento_id or not question:
+            return JsonResponse(
+                {"error": "Documento ID and question are required."}, status=400
+            )
+
+        try:
+            documento = VersionDocumento.objects.get(id=documento_id)
+        except VersionDocumento.DoesNotExist:
+            return JsonResponse({"error": "Documento not found."}, status=404)
+
+        # Extraer el texto del PDF
+        texto_del_documento = extract_text_from_pdf(documento.archivo_pdf.path)
+
+        # Define el prompt que quieres enviar al modelo
+        prompt = f"Este es el contenido del documento:\n\n{texto_del_documento}\n\nPregunta: {question}"
+
+        # Configura la clave de API
+        openai.api_key = api_key
+
+        # Realiza la solicitud a la API de OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=150,
+            temperature=0.7,
+        )
+
+        # Obtén la respuesta del modelo
+        answer = response.choices[0].message["content"].strip()
+
+        return JsonResponse({"answer": answer})
+
+    return JsonResponse({"error": "Invalid request method."}, status=405)

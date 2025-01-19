@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% block main_content %}
-<title>{{ version.documento.nombre }} - Versión {{ version.version }}</title>
+{% extends "base.html" %}
+
+{% block main_content %}
 <style>
     #chat-box {
         width: 100%;
@@ -15,8 +16,7 @@
 </style>
 </head>
 <body>
-<h2>{{ version.documento.nombre }} - Versión {{ version.version }}</h2>
-
+<h1>Detalle de la Versión del Documento</h1>
 <!-- Contenedor responsivo para el archivo PDF -->
 <div class="embed-responsive embed-responsive-16by9">
     <embed
@@ -28,25 +28,17 @@
     />
 </div>
 
-<p class="my-3">
-    Si tu navegador no puede mostrar el archivo PDF,
-    <a href="{{ version.archivo_pdf.url }}" target="_blank">descarga el PDF aquí</a>.
-</p>
-
-<a href="{% url 'documento_detail' version.documento.pk %}" class="btn btn-secondary">Volver al documento</a>
-<div class="my-3 container">
 <h2>Chat con el Asistente</h2>
 <div id="chat-box"></div>
 <input type="text" id="chat-input" placeholder="Escribe tu pregunta aquí...">
 <button id="send-button">Enviar</button>
-</div>
 
 <script>
     document.getElementById('send-button').addEventListener('click', async function() {
         const question = document.getElementById('chat-input').value;
         if (!question) return;
 
-        const response = await fetch("{% url 'chat_pdf' %}", {
+        const response = await fetch("{% url 'chat_with_pdf' %}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -66,5 +58,5 @@
         document.getElementById('chat-input').value = '';
     });
 </script>
-
+</body>
 {% endblock %}
