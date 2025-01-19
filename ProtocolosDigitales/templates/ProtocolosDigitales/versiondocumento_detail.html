@@ -1,70 +1,87 @@
 {% extends 'base.html' %} {% block main_content %}
 <title>{{ version.documento.nombre }} - Versión {{ version.version }}</title>
 <style>
-    #chat-box {
-        width: 100%;
-        height: 300px;
-        border: 1px solid #ccc;
-        overflow-y: scroll;
-        padding: 10px;
-    }
-    #chat-input {
-        width: 100%;
-        padding: 10px;
-    }
+  #chat-box {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+      overflow-y: scroll;
+      padding: 10px;
+      background-color: #f8f9fa;
+  }
+  #chat-input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+  }
+  .chat-message {
+      margin-bottom: 10px;
+  }
+  .chat-message.user {
+      text-align: right;
+  }
+  .chat-message.assistant {
+      text-align: left;
+  }
 </style>
 </head>
 <body>
-<h2>{{ version.documento.nombre }} - Versión {{ version.version }}</h2>
+<div class="container my-4">
+  <h2>{{ version.documento.nombre }} - Versión {{ version.version }}</h2>
 
-<!-- Contenedor responsivo para el archivo PDF -->
-<div class="embed-responsive embed-responsive-16by9">
-    <embed
-        src="{{ version.archivo_pdf.url }}"
-        type="application/pdf"
-        class="embed-responsive-item"
-        width="100%"
-        height="600px"
-    />
-</div>
+  <!-- Contenedor responsivo para el archivo PDF -->
+  <div class="embed-responsive embed-responsive-16by9 mb-4">
+      <embed
+          src="{{ version.archivo_pdf.url }}"
+          type="application/pdf"
+          class="embed-responsive-item"
+          width="100%"
+          height="600px"
+      />
+  </div>
 
-<p class="my-3">
-    Si tu navegador no puede mostrar el archivo PDF,
-    <a href="{{ version.archivo_pdf.url }}" target="_blank">descarga el PDF aquí</a>.
-</p>
+  <p class="my-3">
+      Si tu navegador no puede mostrar el archivo PDF,
+      <a href="{{ version.archivo_pdf.url }}" target="_blank">descarga el PDF aquí</a>.
+  </p>
 
-<a href="{% url 'documento_detail' version.documento.pk %}" class="btn btn-secondary">Volver al documento</a>
-<div class="my-3 container">
-<h2>Chat con el Asistente</h2>
-<div id="chat-box"></div>
-<input type="text" id="chat-input" placeholder="Escribe tu pregunta aquí...">
-<button id="send-button">Enviar</button>
+  <a href="{% url 'documento_detail' version.documento.pk %}" class="btn btn-secondary mb-4">Volver al documento</a>
+
+  <h2>Chat con el Documento</h2>
+  <div id="chat-box" class="mb-3 "></div>
+  <div class="input-group">
+      <input type="text" id="chat-input" class="form-control" placeholder="Escribe tu pregunta aquí...">
+      <div class="input-group-append container">
+          <button id="send-button" class="btn btn-primary mt-2">Enviar</button>
+      </div>
+  </div>
 </div>
 
 <script>
-    document.getElementById('send-button').addEventListener('click', async function() {
-        const question = document.getElementById('chat-input').value;
-        if (!question) return;
+  document.getElementById('send-button').addEventListener('click', async function() {
+      const question = document.getElementById('chat-input').value;
+      if (!question) return;
 
-        const response = await fetch("{% url 'chat_pdf' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: new URLSearchParams({
-                'documento_id': '{{ version.id }}',
-                'question': question
-            })
-        });
+      const response = await fetch("{% url 'chat_pdf' %}", {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: new URLSearchParams({
+              'documento_id': '{{ version.id }}',
+              'question': question
+          })
+      });
 
-        const result = await response.json();
-        const chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML += `<p><strong>Tú:</strong> ${question}</p>`;
-        chatBox.innerHTML += `<p><strong>Asistente:</strong> ${result.answer || result.error}</p>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-        document.getElementById('chat-input').value = '';
-    });
+      const result = await response.json();
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML += `<div class="chat-message user"><strong>Tú:</strong> ${question}</div>`;
+      chatBox.innerHTML += `<div class="chat-message assistant"><strong>Asistente:</strong> ${result.answer || result.error}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      document.getElementById('chat-input').value = '';
+  });
 </script>
+</body>
 
 {% endblock %}

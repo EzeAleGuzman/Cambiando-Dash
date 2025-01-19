@@ -69,7 +69,12 @@ def chat_pdf(request):
         texto_del_documento = extract_text_from_pdf(documento.archivo_pdf.path)
 
         # Define el prompt que quieres enviar al modelo
-        prompt = f"Este es el contenido del documento:\n\n{texto_del_documento}\n\nPregunta: {question}"
+        prompt = (
+            f"Este es el contenido del documento:\n\n{texto_del_documento}\n\n"
+            f"Por favor, responde solo sobre el contenido del documento anterior.\n\n"
+            f"Si la consulta es distinta a lo que se encuentra en el documento, Contesta que es no se puede utilizar el servicio para esto"
+            f"Pregunta: {question}"
+        )
 
         # Configura la clave de API
         openai.api_key = api_key
