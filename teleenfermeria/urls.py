@@ -1,8 +1,23 @@
 from django.urls import path
 from . import views
 
+app_name = "teleenfermeria"
+
 urlpatterns = [
-    path('crear_teleseguimiento/', views.crear_teleseguimiento, name='crear_teleseguimiento'),
-    path('teleseguimiento/<int:pk>/', views.detalle_teleseguimiento, name='detalle_teleseguimiento'),
-    path('teleseguimiento/<int:teleseguimiento_id>/crear_seguimiento/', views.crear_seguimiento, name='crear_seguimiento'),
+    path(
+        "crear_teleseguimiento/<int:paciente_id>/",
+        views.solicitarteleseguimiento,
+        name="crear_teleseguimiento",
+    ),
+    path("derivados/", views.derivadosteleseguimiento, name="derivados"),
+    path(
+        "detalle/<int:teleseguimiento_id>/",
+        views.detalleteleseguimiento,
+        name="detalleteleseguimiento",
+    ),
+    path(
+        "crear_seguimiento/<int:teleseguimiento_id>/",
+        views.crearseguimiento,
+        name="crear_seguimiento",
+    ),
 ]
