@@ -39,7 +39,7 @@ class TeleseguimientoForm(forms.ModelForm):
 class SeguimientoForm(forms.ModelForm):
     class Meta:
         model = Seguimiento
-        fields = ["descripcion", "estado"]
+        fields = ["descripcion"]
         widgets = {
             "descripcion": forms.Textarea(
                 attrs={

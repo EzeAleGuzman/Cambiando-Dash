@@ -20,4 +20,9 @@ urlpatterns = [
         views.crearseguimiento,
         name="crear_seguimiento",
     ),
+    path(
+        "modificar_consentimiento/<int:teleseguimiento_id>/<str:nuevo_estado>/",
+        views.modificar_consentimiento,
+        name="modificar_consentimiento",
+    ),
 ]

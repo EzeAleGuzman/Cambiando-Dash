@@ -1,35 +1,108 @@
-{% extends "base.html" %} {% block main_content %}
-<div class="container">
-  <h2>Detalle del Teleseguimiento</h2>
-  <p>
-    <strong>Paciente:</strong> {{ teleseguimiento.paciente.nombre_completo }}
-  </p>
-  <p><strong>Telefono:</strong> {{ teleseguimiento.paciente.telefono }}</p>
-  <p>
-    <strong>Fecha de Solicitud:</strong> {{ teleseguimiento.fecha_solicitud }}
-  </p>
-  <p><strong>Descripción:</strong> {{ teleseguimiento.descripcion }}</p>
-  <p><strong>Condición:</strong> {{ teleseguimiento.condicion }}</p>
-  <p>
-    <strong>Consentimiento:</strong>
-    {{ teleseguimiento.consentimiento_seguimiento }}
-  </p>
-  <p><strong>Estado:</strong> {{ teleseguimiento.estado }}</p>
+ {%  extends "base.html"  %}
+ {% load static %}
+ {% block title %}Detalle del Teleseguimiento{% endblock %}
+ {% block main_content %}
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<div class="container py-4">
+  <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+          <h4 class="mb-0 text-center">Detalle del Teleseguimiento</h4>
+      </div>
+      <div class="card-body">
 
-  <h3>Seguimientos</h3>
-  <ul>
-    {% for seguimiento in seguimientos %}
-    <li>
-      {{ seguimiento.fecha }} - {{ seguimiento.descripcion }} - {{
-      seguimiento.estado }}
-    </li>
-    {% endfor %}
-  </ul>
+          
+          <div class="row g-3">
+              <div class="col-md-6">
+                  <div class="card h-100 border-0 bg-light">
+                      <div class="card-body">
+                          <h6 class=" mb-2 bg-primary text-white">Información del Paciente</h6>
+                          <dl class="row mb-0">
+                              <dt class="col-sm-4">Paciente:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
+                              
+                              <dt class="col-sm-4">Fecha de solicitud:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
 
-  <a
-    href="{% url 'teleenfermeria:crear_seguimiento' teleseguimiento.id %}"
-    class="btn btn-primary"
-    >Agregar Seguimiento</a
-  >
+                            <dt class="col-sm-4 ">DNI: </dt>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
+
+                            <dt class="col-sm-4 ">Telefono: </dt>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} <button class="btn btn-success">
+                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
+                            </button></dd>
+                              <dt class="col-sm-4">Obra Social: </dt>
+                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>  
+
+                              {% if teleseguimiento.paciente.nombre_tutor %}
+                              <dt class="col-sm-4">Tutor:</dt>
+                                <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_tutor }}</dd>
+                                {% endif %}
+                          </dl>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="col-md-6">
+                  <div class="card h-100 border-0 bg-light">
+                      <div class="card-body">
+                          <h6 class="text-white mb-2 bg-primary">Estado del Seguimiento</h6>
+                          <dl class="row mb-0">
+                              <dt class="col-sm-4">Descripción:</dt>
+                              <dd class="col-sm-8">Derivado por irab</dd>
+                              
+                              <dt class="col-sm-4">Condición:</dt>
+                              <dd class="col-sm-8"><span class="badge bg-secondary">Otro</span></dd>
+                              
+                              <dt class="col-sm-4">Consentimiento:</dt>
+                              <dd class="col-sm-8">
+                                <span class="badge 
+                                {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
+                                    bg-success
+                                {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
+                                    bg-danger
+                                {% else %}
+                                    bg-warning text-dark
+                                {% endif %}
+                            ">{{ teleseguimiento.consentimiento_seguimiento}}</span>
+                                  <div class="mt-2">
+                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
+                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'Rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
+                                  </div>
+                              </dd>
+                          </dl>
+                               
+                                </dd>
+                          </dl>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="card mt-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Medicacion</h5>
+    </div>
+    <div class="card-body text-center p-4">
+        <button class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Agregar Medicacion
+        </button>
+    </div>
 </div>
+</div>
+
+  <div class="card mt-4 shadow-sm">
+      <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Seguimientos</h5>
+      </div>
+      <div class="card-body text-center p-4">
+          <button class="btn btn-warning">
+              <i class="fas fa-plus me-2"></i>Agregar Seguimiento
+          </button>
+      </div>
+  </div>
+</div>
+
+
 {% endblock %}

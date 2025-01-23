@@ -47,7 +47,7 @@ class Teleseguimiento(models.Model):
         max_length=100,
         choices=[
             ("aceptado", "Aceptado"),
-            ("finalizado", "Finalizado"),
+            ("Rechazado", "Rechazado"),
             ("En espera", "En espera"),
         ],
         default="en_espera",
@@ -77,16 +77,8 @@ class Seguimiento(models.Model):
     )  # Asignar directamente del usuario logueado
     fecha = models.DateTimeField(auto_now_add=True)
     descripcion = models.TextField(max_length=1000)
-    estado = models.BooleanField(default=False)
-    estado = models.CharField(
-        max_length=20,
-        choices=[
-            ("Derivado", "Derivado"),
-            ("realizado", "Realizado"),
-            ("no_realizado", "No Realizado"),
-        ],
-        default="en_proceso",
-    )
+   
+    
 
     def __str__(self):
-        return f"Seguimiento de {self.teleseguimiento.paciente.nombre} - {self.fecha.strftime('%Y-%m-%d %H:%M') - {self.estado}}"
+        return f"Seguimiento de {self.teleseguimiento.paciente.nombre} - {self.fecha.strftime('%Y-%m-%d %H:%M')}"

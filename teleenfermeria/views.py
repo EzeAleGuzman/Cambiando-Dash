@@ -34,11 +34,19 @@ def derivadosteleseguimiento(request):
 
 def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
+    
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
         {"teleseguimiento": teleseguimiento},
+        
     )
+
+def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
+    teleseguimiento = get_object_or_404(Teleseguimiento, pk=teleseguimiento_id)
+    teleseguimiento.consentimiento_seguimiento = nuevo_estado
+    teleseguimiento.save()
+    return redirect('teleenfermeria:detalleteleseguimiento', teleseguimiento_id=teleseguimiento_id)
 
 
 def crearseguimiento(request, teleseguimiento_id):
