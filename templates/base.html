@@ -253,11 +253,19 @@
                 </a>
               </div>
               <div class="sub-box w-100">
-                <a href="" class="text-decoration-none text-white btn w-100">
+                <a href="{% url 'teleenfermeria:en_proceso' %}" class="text-decoration-none text-white btn w-100">
                     <i class="bi bi-check-circle-fill"></i> Teleseguimientos Activos
                 </a>
               </div>
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
+                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
+                </a>
+              </div>
             </div>
+           
+            
+            
 
 
         </div>

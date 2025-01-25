@@ -81,4 +81,4 @@ class Seguimiento(models.Model):
     
 
     def __str__(self):
-        return f"Seguimiento de {self.teleseguimiento.paciente.nombre} - {self.fecha.strftime('%Y-%m-%d %H:%M')}"
+        return f"Seguimiento de {self.teleseguimiento.paciente.nombre_completo} - {self.fecha.strftime('%Y-%m-%d %H:%M')}"

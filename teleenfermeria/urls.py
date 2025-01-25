@@ -25,4 +25,14 @@ urlpatterns = [
         views.modificar_consentimiento,
         name="modificar_consentimiento",
     ),
+    path(
+        "en_proceso/",
+        views.enprocesoteleseguimiento,
+        name="en_proceso",
+    ),
+    path(
+        "rechazados/",
+        views.telezeguimientosrechazados,
+        name="rechazados",
+    ),
 ]
