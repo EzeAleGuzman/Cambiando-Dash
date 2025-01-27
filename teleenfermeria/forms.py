@@ -1,5 +1,5 @@
 from django import forms
-from .models import Teleseguimiento, Seguimiento
+from .models import Teleseguimiento, Seguimiento, Prescripcion
 
 
 class TeleseguimientoForm(forms.ModelForm):
@@ -48,4 +48,17 @@ class SeguimientoForm(forms.ModelForm):
                     "placeholder": "Describe el seguimiento...",
                 }
             ),
+        }
+
+class PrescripcionForm(forms.ModelForm):
+    
+    class Meta:
+        model = Prescripcion
+        fields = ("medicacion", "tipo", "dosis", "via", "indicacion")
+        widgets = {
+            "medicacion": forms.Select(attrs={"class": "form-control"}),
+            "tipo": forms.Select(attrs={"class": "form-control"}),
+            "dosis": forms.TextInput(attrs={"class": "form-control", "placeholder": "Dosis"}),
+            "via": forms.Select(attrs={"class": "form-control"}),
+            "indicacion": forms.Select(attrs={"class": "form-control"}),
         }

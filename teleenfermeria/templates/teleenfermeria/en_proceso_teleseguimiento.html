@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block main_content %}
+{% extends "base.html" %} 
+{% block title %}Teleseguimientos Activos{% endblock %}
+{% block main_content %}
 <div class="container mt-4">
   <h2 class="mb-4">Teleseguimientos Activos</h2>
   <div class="row">
@@ -7,19 +9,18 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Paciente</th>
-              <th>Fecha de Solicitud</th>
+              <th>Fecha de ultimo seguimiento</th>
               <th>Descripción</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {% for teleseguimiento in teleseguimientos %}
-            <tr>
-              <td>{{ teleseguimiento.id }}</td>
+            <tr  class="{% if teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}">
+              
               <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
-              <td>{{ teleseguimiento.fecha_solicitud }}</td>
+              <td>{{ teleseguimiento.fecha_ultimo_seguimiento }}</td>
               <td>{{ teleseguimiento.descripcion }}</td>
               <td>
                 <a

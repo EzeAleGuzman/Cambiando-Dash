@@ -50,6 +50,9 @@ class Teleseguimiento(models.Model):
     def __str__(self):
         return f"Teleseguimiento de {self.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
 
+    def fecha_ultimo_seguimiento(self):
+        ultimo_seguimiento = self.seguimiento_set.order_by('-fecha').first()
+        return ultimo_seguimiento.fecha if ultimo_seguimiento else None
 
 class Prescripcion(models.Model):
     teleseguimiento = models.ForeignKey(
@@ -101,8 +104,46 @@ class Seguimiento(models.Model):
     usuario = models.ForeignKey(
         User, on_delete=models.CASCADE
     )  # Asignar directamente del usuario logueado
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=timezone.now)
     descripcion = models.TextField(max_length=1000)
 
     def __str__(self):
         return f"Seguimiento de {self.teleseguimiento.paciente.nombre_completo} - {self.fecha.strftime('%Y-%m-%d %H:%M')}"
+
+
+class SolicitudTurno(models.Model):
+    teleseguimiento = models.ForeignKey(Teleseguimiento, on_delete=models.CASCADE)
+    fecha_solicitud = models.DateTimeField(default=timezone.now)
+    estado = models.CharField(
+        max_length=20,
+        choices=[("pendiente", "Pendiente"), ("confirmado", "Confirmado"), ("cancelado", "Cancelado")],
+        default="pendiente"
+    )
+    especialidad = models.CharField(
+        max_length=50,
+        choices=[
+            ("Otorrinolaringología", "Otorrinolaringología"),
+            ("cardiologia", "Cardiología"),
+            ("dermatologia", "Dermatología"),
+            ("neurologia", "Neurología"),
+            ("pediatria", "Pediatría"),
+            ("psiquiatria", "Psiquiatría"),
+            ("traumatologia", "Traumatología"),
+            ("urologia", "Urología"),
+            ("ginecologia", "Ginecología"),
+            ("oftalmologia", "Oftalmología"),
+        ],
+        )
+
+    def __str__(self):
+        return f"Solicitud de turno para {self.teleseguimiento.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
+
+
+class Turno(models.Model):
+    solicitud_turno = models.ForeignKey(SolicitudTurno, on_delete=models.CASCADE)
+    fecha_turno = models.DateTimeField()
+    hora_turno = models.TimeField()
+    profesional = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Turno de {self.solicitud_turno.teleseguimiento.paciente.nombre_completo} - {self.fecha_turno.strftime('%Y-%m-%d %H:%M')}"

@@ -35,4 +35,14 @@ urlpatterns = [
         views.telezeguimientosrechazados,
         name="rechazados",
     ),
+    path(
+        "crear_prescripcion/<int:teleseguimiento_id>/",
+        views.agregar_prescripcion,
+        name="crear_prescripcion",
+    ),
+    path(
+        "solicitar_turno/<int:teleseguimiento_id>/",
+        views.solicitarturno,
+        name="solicitar_turno",
+        ),
 ]

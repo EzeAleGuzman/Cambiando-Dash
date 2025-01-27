@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from pacientes.models import Paciente
-from .models import Teleseguimiento, Seguimiento
-from .forms import TeleseguimientoForm, SeguimientoForm
+from .models import Teleseguimiento, Seguimiento, Prescripcion, Medicacion
+from .forms import TeleseguimientoForm, SeguimientoForm, PrescripcionForm
 from django.utils.timezone import now
-
+from users.models import User
 
 def solicitarteleseguimiento(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
@@ -38,6 +38,12 @@ def derivadosteleseguimiento(request):
 
 def enprocesoteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="en_proceso")
+    for teleseguimiento in teleseguimientos:
+        ultimo_seguimiento_fecha = teleseguimiento.fecha_ultimo_seguimiento()
+        if ultimo_seguimiento_fecha:
+            teleseguimiento.tiempo_espera = now() - ultimo_seguimiento_fecha
+        else:
+            teleseguimiento.tiempo_espera = None
     return render(
         request,
         "teleenfermeria/en_proceso_teleseguimiento.html",
@@ -57,11 +63,13 @@ def telezeguimientosrechazados(request):
 def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
+    prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
+    
 
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
-        {"teleseguimiento": teleseguimiento, "seguimientos": seguimientos},
+        {"teleseguimiento": teleseguimiento, "seguimientos": seguimientos, "prescripciones": prescripciones},
     )
 
 
@@ -99,3 +107,39 @@ def crearseguimiento(request, teleseguimiento_id):
         "teleenfermeria/crear_seguimiento.html",
         {"form": form, "teleseguimiento": teleseguimiento},
     )
+
+
+
+def agregar_prescripcion(request, teleseguimiento_id):
+    teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
+    if request.method == "POST":
+        form = PrescripcionForm(request.POST)
+        if form.is_valid():
+            prescripcion = form.save(commit=False)
+            prescripcion.teleseguimiento = teleseguimiento
+            prescripcion.save()
+            return redirect(
+                "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
+            )
+    else:
+        form = PrescripcionForm()
+    return render(
+        request,
+        "teleenfermeria/agregar_prescripcion.html",
+        {"form": form, "teleseguimiento": teleseguimiento},
+    )
+
+def teleseguimientosusuario(request):
+    user = User.objects.filter(groups__name="Teleenfermeria").first()
+    teleseguimientos = Teleseguimiento.objects.filter(usuario=request.user)
+    return render(
+        request,
+        "teleenfermeria/teleseguimientos_usuario.html",
+        {"teleseguimientos": teleseguimientos},
+    )
+
+def solicitarturno(request, teleseguimiento_id):
+    teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
+    teleseguimiento.estado = "En Proceso"
+    teleseguimiento.save()
+    return redirect("teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id)

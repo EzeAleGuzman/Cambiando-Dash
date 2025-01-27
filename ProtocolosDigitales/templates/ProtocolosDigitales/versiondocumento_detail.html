@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>
-      {{ version.documento.nombre }} - Versión {{ version.version }}
-    </title>
+{% extends "base.html "%}
+{% block title %}{{ version.documento.nombre }} - Versión {{ version.version }}{% endblock %}
+{% block main_content %}
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -38,8 +34,7 @@
         margin-left: 10px;
       }
     </style>
-  </head>
-  <body>
+
     <div class="container my-4">
       <h2>{{ version.documento.nombre }} - Versión {{ version.version }}</h2>
 
@@ -128,5 +123,5 @@
           document.getElementById("chat-input").value = "";
         });
     </script>
-  </body>
-</html>
+
+{% endblock %}

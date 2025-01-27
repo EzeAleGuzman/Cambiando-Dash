@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block main_content %}
+{% extends "base.html" %} 
+{% block title %}Derivados a Teleseguimientos{% endblock %}
+{% block main_content %}
 <style>
   .table-warning {
     background-color: #fff3cd;
@@ -28,10 +30,10 @@
       <tbody>
         {% for teleseguimiento in teleseguimientos %}
         <tr
-          class="{% if teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}"
+            class="{% if teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}"
         >
           <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
-          <td>{{ teleseguimiento.fecha_solicitud }}</td>
+          <td>{{ teleseguimiento.fecha_solicitud|default_if_none:"Sin Datos" }}</td>
           <td>{{ teleseguimiento.diagnostico }}</td>
           <td>{{ teleseguimiento.descripcion }}</td>
           <td>
