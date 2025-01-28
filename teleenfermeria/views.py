@@ -16,6 +16,8 @@ from datetime import timedelta, datetime
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import Group
+
 
 def group_required(*group_names):
     def in_groups(user):
@@ -28,6 +30,8 @@ def group_required(*group_names):
 def is_administrativo(user):
     return user.groups.filter(name='administrativo').exists() | user.is_superuser
 
+def user_in_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()
 
 def no_permisos(request):
     return render(request, 'teleenfermeria/no_permisos.html')
@@ -242,6 +246,7 @@ def turnosporsemana(request):
         'start_of_week': start_of_week,
         'end_of_week': end_of_week,
         'selected_week': selected_date.strftime("%Y-W%W"),
+        "is_turnero": user_in_group(request.user, "Turnera")
     }
 
     return render(request, "teleenfermeria/solicitudesrecientes.html", context)

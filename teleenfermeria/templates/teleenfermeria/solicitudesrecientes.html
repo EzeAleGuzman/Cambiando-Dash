@@ -43,6 +43,7 @@
                                 <a href="{% url 'teleenfermeria:detalleteleseguimiento' solicitud.teleseguimiento.id %}" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
+                                {% if is_turnero %}
                                 {% if solicitud.estado != "confirmado" %}
                                 <a href="{% url 'teleenfermeria:asignarturno' solicitud.id %}" class="btn btn-sm btn-success">
                                     <i class="fas fa-check"></i> Asignar
@@ -50,6 +51,7 @@
                                 <a href="{% url 'teleenfermeria:rechazarsolicitud' solicitud.id %}" class="btn btn-sm btn-danger">
                                     <i class="fas fa-times"></i> Rechazar
                                 </a>
+                                {% endif %}
                                 {% endif %}
                             </td>
                         </tr>
