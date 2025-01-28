@@ -214,6 +214,8 @@ def solicitarturno(request, teleseguimiento_id):
         {"teleseguimiento": teleseguimiento},
     )
 
+@login_required
+@group_required("Turnera", "Teleenfermeria")
 def turnosporsemana(request):
     """
     Vista que muestra las solicitudes de turno de una semana específica.
