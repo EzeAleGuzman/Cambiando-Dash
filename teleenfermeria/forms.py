@@ -1,5 +1,5 @@
 from django import forms
-from .models import Teleseguimiento, Seguimiento, Prescripcion
+from .models import Teleseguimiento, Seguimiento, Prescripcion, Turno
 
 
 class TeleseguimientoForm(forms.ModelForm):
@@ -61,4 +61,14 @@ class PrescripcionForm(forms.ModelForm):
             "dosis": forms.TextInput(attrs={"class": "form-control", "placeholder": "Dosis"}),
             "via": forms.Select(attrs={"class": "form-control"}),
             "indicacion": forms.Select(attrs={"class": "form-control"}),
+        }
+
+class AsignarTurnoForm(forms.ModelForm):
+    class Meta:
+        model = Turno
+        fields = ['fecha_turno', 'hora_turno', 'profesional']
+        widgets = {
+            'fecha_turno': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'hora_turno': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'profesional': forms.TextInput(attrs={'class': 'form-control'}),
         }

@@ -6,15 +6,34 @@ from .models import (
     Prescripcion,
     Medicacion,
     SolicitudTurno,
+    Turno,
 )
-from .forms import TeleseguimientoForm, SeguimientoForm, PrescripcionForm
+from django.db.models import Count
+from .forms import TeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
 from django.utils.timezone import now
 from users.models import User
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.utils import timezone
 from django.utils.timezone import localtime
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def group_required(*group_names):
+    def in_groups(user):
+        if user.is_authenticated:
+            if bool(user.groups.filter(name__in=group_names)) | user.is_superuser:
+                return True
+        return False
+    return user_passes_test(in_groups, login_url='/no_permisos/')
+
+def is_administrativo(user):
+    return user.groups.filter(name='administrativo').exists() | user.is_superuser
 
 
+def no_permisos(request):
+    return render(request, 'teleenfermeria/no_permisos.html')
+
+@login_required
+@group_required("Administrativo")
 def solicitarteleseguimiento(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
     if request.method == "POST":
@@ -33,7 +52,8 @@ def solicitarteleseguimiento(request, paciente_id):
         {"form": form, "paciente": paciente},
     )
 
-
+@login_required
+@group_required("Teleenfermeria")
 def derivadosteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="Derivado")
     for teleseguimiento in teleseguimientos:
@@ -45,7 +65,8 @@ def derivadosteleseguimiento(request):
         {"teleseguimientos": teleseguimientos},
     )
 
-
+@login_required
+@group_required("Teleenfermeria")
 def enprocesoteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="en_proceso")
     for teleseguimiento in teleseguimientos:
@@ -60,7 +81,8 @@ def enprocesoteleseguimiento(request):
         {"teleseguimientos": teleseguimientos},
     )
 
-
+@login_required
+@group_required("Teleenfermeria")
 def telezeguimientosrechazados(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="no_realizado")
     return render(
@@ -74,7 +96,7 @@ def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
     prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
-
+    turnos_aceptados = Turno.objects.filter(solicitud_turno__teleseguimiento=teleseguimiento)
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
@@ -82,6 +104,7 @@ def detalleteleseguimiento(request, teleseguimiento_id):
             "teleseguimiento": teleseguimiento,
             "seguimientos": seguimientos,
             "prescripciones": prescripciones,
+            "turnos_aceptados": turnos_aceptados,
         },
     )
 
@@ -165,7 +188,7 @@ def solicitarturno(request, teleseguimiento_id):
     solicitudes_recientes = SolicitudTurno.objects.filter(
         fecha_solicitud__gte=start_of_week
     ).count()
-    print(solicitudes_recientes)
+    
     if solicitudes_recientes >= 10:
         return render(
             request,
@@ -181,8 +204,6 @@ def solicitarturno(request, teleseguimiento_id):
         solicitud_turno = SolicitudTurno.objects.create(
             teleseguimiento=teleseguimiento, especialidad=especialidad
         )
-        teleseguimiento.estado = "En Proceso"
-        teleseguimiento.save()
         return redirect(
             "teleenfermeria:detalleteleseguimiento",
             teleseguimiento_id=teleseguimiento_id,
@@ -192,3 +213,54 @@ def solicitarturno(request, teleseguimiento_id):
         "teleenfermeria/solicitar_turno.html",
         {"teleseguimiento": teleseguimiento},
     )
+
+def turnosporsemana(request):
+    """
+    Vista que muestra las solicitudes de turno de una semana específica.
+    """
+    # Obtener la semana seleccionada del formulario
+    week_str = request.GET.get('week')
+    if week_str:
+        selected_date = datetime.strptime(week_str + '-1', "%Y-W%W-%w")
+    else:
+        selected_date = localtime(now())
+
+    # Calcular inicio/fin de semana
+    start_of_week = selected_date - timedelta(days=selected_date.weekday())
+    start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_of_week = start_of_week + timedelta(days=6, hours=23, minutes=59, seconds=59)
+
+    # Obtener solicitudes de la semana seleccionada
+    solicitudes_recientes = SolicitudTurno.objects.filter(
+        fecha_solicitud__range=(start_of_week, end_of_week)
+    ).order_by('-fecha_solicitud')
+
+    context = {
+        'solicitudes_recientes': solicitudes_recientes,
+        'start_of_week': start_of_week,
+        'end_of_week': end_of_week,
+        'selected_week': selected_date.strftime("%Y-W%W"),
+    }
+
+    return render(request, "teleenfermeria/solicitudesrecientes.html", context)
+
+def asignarturno(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudTurno, id=solicitud_id)
+    if request.method == "POST":
+        form = AsignarTurnoForm(request.POST)
+        if form.is_valid():
+            turno = form.save(commit=False)
+            turno.solicitud_turno = solicitud
+            turno.save()
+            solicitud.estado = 'confirmado'
+            solicitud.save()
+            return redirect('teleenfermeria:turnossemanales')
+    else:
+        form = AsignarTurnoForm()
+    return render(request, 'teleenfermeria/asignar_turno.html', {'form': form, 'solicitud': solicitud})
+
+def rechazarsolicitud(request, solicitud_id):
+    solicitud =get_object_or_404(SolicitudTurno, id=solicitud_id)
+    solicitud.estado = "rechazado"
+    solicitud.save()
+    return redirect('teleenfermeria:turnossemanales')

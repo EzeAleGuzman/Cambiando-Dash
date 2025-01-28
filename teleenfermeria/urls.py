@@ -45,4 +45,24 @@ urlpatterns = [
         views.solicitarturno,
         name="solicitar_turno",
         ),
-]
+    path(
+        "turnossolicitados/",
+        views.turnosporsemana,
+        name="turnossemanales",
+    ),
+    path(
+        "asignacionturno/<int:solicitud_id>/",
+        views.asignarturno,
+        name="asignarturno",
+    ),
+    path(
+        "rechazarsolicitud/<int:solicitud_id>/",
+        views.rechazarsolicitud,
+        name="rechazarsolicitud",
+    ),
+    path(
+        "no_permisos/",
+        views.no_permisos,
+        name="no_permisos",
+    ),
+    ]
