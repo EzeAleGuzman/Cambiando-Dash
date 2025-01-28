@@ -51,8 +51,9 @@ class Teleseguimiento(models.Model):
         return f"Teleseguimiento de {self.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
 
     def fecha_ultimo_seguimiento(self):
-        ultimo_seguimiento = self.seguimiento_set.order_by('-fecha').first()
+        ultimo_seguimiento = self.seguimiento_set.order_by("-fecha").first()
         return ultimo_seguimiento.fecha if ultimo_seguimiento else None
+
 
 class Prescripcion(models.Model):
     teleseguimiento = models.ForeignKey(
@@ -116,8 +117,12 @@ class SolicitudTurno(models.Model):
     fecha_solicitud = models.DateTimeField(default=timezone.now)
     estado = models.CharField(
         max_length=20,
-        choices=[("pendiente", "Pendiente"), ("confirmado", "Confirmado"), ("cancelado", "Cancelado")],
-        default="pendiente"
+        choices=[
+            ("pendiente", "Pendiente"),
+            ("confirmado", "Confirmado"),
+            ("cancelado", "Cancelado"),
+        ],
+        default="pendiente",
     )
     especialidad = models.CharField(
         max_length=50,
@@ -133,10 +138,10 @@ class SolicitudTurno(models.Model):
             ("ginecologia", "Ginecología"),
             ("oftalmologia", "Oftalmología"),
         ],
-        )
+    )
 
     def __str__(self):
-        return f"Solicitud de turno para {self.teleseguimiento.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
+        return f"Solicitud de turno para {self.teleseguimiento.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')} - {self.especialidad}"
 
 
 class Turno(models.Model):

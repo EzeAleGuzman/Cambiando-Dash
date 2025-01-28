@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Teleseguimiento, Seguimiento, Medicacion, Prescripcion
+from .models import (
+    Teleseguimiento,
+    Seguimiento,
+    Medicacion,
+    Prescripcion,
+    Turno,
+    SolicitudTurno,
+)
 
 app_name = "teleenfermeria"
 
@@ -32,3 +39,5 @@ admin.site.register(Teleseguimiento, TeleseguimientoAdmin)
 admin.site.register(Seguimiento)
 admin.site.register(Medicacion)
 admin.site.register(Prescripcion)
+admin.site.register(Turno)
+admin.site.register(SolicitudTurno)

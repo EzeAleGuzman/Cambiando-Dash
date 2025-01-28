@@ -1,9 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from pacientes.models import Paciente
-from .models import Teleseguimiento, Seguimiento, Prescripcion, Medicacion
+from .models import (
+    Teleseguimiento,
+    Seguimiento,
+    Prescripcion,
+    Medicacion,
+    SolicitudTurno,
+)
 from .forms import TeleseguimientoForm, SeguimientoForm, PrescripcionForm
 from django.utils.timezone import now
 from users.models import User
+from datetime import timedelta
+from django.utils import timezone
+from django.utils.timezone import localtime
+
 
 def solicitarteleseguimiento(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
@@ -64,12 +74,15 @@ def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
     prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
-    
 
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
-        {"teleseguimiento": teleseguimiento, "seguimientos": seguimientos, "prescripciones": prescripciones},
+        {
+            "teleseguimiento": teleseguimiento,
+            "seguimientos": seguimientos,
+            "prescripciones": prescripciones,
+        },
     )
 
 
@@ -109,7 +122,6 @@ def crearseguimiento(request, teleseguimiento_id):
     )
 
 
-
 def agregar_prescripcion(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     if request.method == "POST":
@@ -119,7 +131,8 @@ def agregar_prescripcion(request, teleseguimiento_id):
             prescripcion.teleseguimiento = teleseguimiento
             prescripcion.save()
             return redirect(
-                "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
+                "teleenfermeria:detalleteleseguimiento",
+                teleseguimiento_id=teleseguimiento_id,
             )
     else:
         form = PrescripcionForm()
@@ -128,6 +141,7 @@ def agregar_prescripcion(request, teleseguimiento_id):
         "teleenfermeria/agregar_prescripcion.html",
         {"form": form, "teleseguimiento": teleseguimiento},
     )
+
 
 def teleseguimientosusuario(request):
     user = User.objects.filter(groups__name="Teleenfermeria").first()
@@ -138,8 +152,43 @@ def teleseguimientosusuario(request):
         {"teleseguimientos": teleseguimientos},
     )
 
+
 def solicitarturno(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
-    teleseguimiento.estado = "En Proceso"
-    teleseguimiento.save()
-    return redirect("teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id)
+
+    # Calcular el inicio de la semana actual (lunes)
+    now = localtime(timezone.now())
+    start_of_week = now - timedelta(days=now.weekday())
+    start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+    print(now)
+    # Contar todas las solicitudes desde el inicio de la semana actual
+    solicitudes_recientes = SolicitudTurno.objects.filter(
+        fecha_solicitud__gte=start_of_week
+    ).count()
+    print(solicitudes_recientes)
+    if solicitudes_recientes >= 10:
+        return render(
+            request,
+            "teleenfermeria/solicitar_turno.html",
+            {
+                "teleseguimiento": teleseguimiento,
+                "error": "No se pueden realizar más de 10 solicitudes de turno por semana.",
+            },
+        )
+
+    if request.method == "POST":
+        especialidad = request.POST.get("especialidad")
+        solicitud_turno = SolicitudTurno.objects.create(
+            teleseguimiento=teleseguimiento, especialidad=especialidad
+        )
+        teleseguimiento.estado = "En Proceso"
+        teleseguimiento.save()
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento",
+            teleseguimiento_id=teleseguimiento_id,
+        )
+    return render(
+        request,
+        "teleenfermeria/solicitar_turno.html",
+        {"teleseguimiento": teleseguimiento},
+    )

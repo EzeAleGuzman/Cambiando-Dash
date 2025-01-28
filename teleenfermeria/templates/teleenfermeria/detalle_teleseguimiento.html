@@ -118,7 +118,7 @@
 </div>
 </div>
 
-<!-- Agregar después de la sección de medicación y antes de seguimientos -->
+<!-- Sección de solicitud de turno -->
 <div class="card mt-4 shadow-sm">
     <div class="card-header bg-primary text-white">
         <h5 class="mb-0">Solicitud de Turno</h5>
@@ -152,28 +152,23 @@
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th>Descripción</th>
-                    <th>Agente</th>
+                    <th>Especialidad</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
-                {% for solicitud in solicitudes %}
+                {% for solicitud in teleseguimiento.solicitudturno_set.all %}
                 <tr>
-                    <td>{{ seguimiento.fecha }}</td>
-                    <td>{{ seguimiento.descripcion }}</td>
-                    <td>{{ seguimiento.usuario.name }} {{ seguimiento.usuario.lastname }}</td>
-                    <td></td>
-                    <!-- <td>
-                        <a href="" class="btn btn-primary btn-sm">Modificar</a>
-                        <a href="" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td> -->
+                    <td>{{ solicitud.fecha_solicitud }}</td>
+                    <td>{{ solicitud.especialidad }}</td>
+                    <td>{{ solicitud.estado }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-     </div>
+    </div>
 </div>
-
+</div>
 <!-- seguimientos -->
   <div class="card mt-4 shadow-sm">
       <div class="card-header bg-primary text-white">
