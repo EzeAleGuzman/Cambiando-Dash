@@ -95,6 +95,18 @@ def telezeguimientosrechazados(request):
         {"teleseguimientos": teleseguimientos},
     )
 
+def televacunas(request, teleseguimiento_id):
+    teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
+    if request.method == "POST":
+        teleseguimiento.vacunas = request.POST.get("vacunas")
+        teleseguimiento.save()
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento",
+            teleseguimiento_id=teleseguimiento_id,
+        )
+     
+    
+
 
 def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)

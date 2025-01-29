@@ -31,6 +31,7 @@ class Teleseguimiento(models.Model):
             ("aceptado", "Aceptado"),
             ("Rechazado", "Rechazado"),
             ("En espera", "En espera"),
+            ("pasivo", "Pasivo"),
         ],
         default="en_espera",
     )
@@ -46,6 +47,15 @@ class Teleseguimiento(models.Model):
     )
     diagnostico = models.TextField(max_length=1000, blank=True, null=True)
     medicaciones = models.ManyToManyField(Medicacion, blank=True)
+    vacunas = models.CharField(
+        max_length=28,
+        choices=[
+            ("completo", "Completo"),
+            ("en_proceso", "En Proceso"),
+            ("incompleto", "Incompleto"),   
+        ],
+        default="En proceso",
+    )
 
     def __str__(self):
         return f"Teleseguimiento de {self.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"

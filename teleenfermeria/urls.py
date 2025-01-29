@@ -65,4 +65,9 @@ urlpatterns = [
         views.no_permisos,
         name="no_permisos",
     ),
+    path(
+        "vacunas/<int:teleseguimiento_id>",
+        views.televacunas,
+        name="tele_vacunas",
+    ),
     ]

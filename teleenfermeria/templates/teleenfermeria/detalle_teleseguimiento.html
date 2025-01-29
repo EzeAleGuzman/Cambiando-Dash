@@ -2,6 +2,11 @@
  {% load static %}
  {% block title %}Detalle del Teleseguimiento{% endblock %}
  {% block main_content %}
+ <style>
+     .turnos {
+    background-color: #9ee23f;
+  }
+ </style>
  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <div class="container py-4">
   <div class="card shadow-sm">
@@ -49,9 +54,34 @@
                           <dl class="row mb-0">
                               <dt class="col-sm-4">Descripción:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.descripcion}}</dd>
+
+                              <dt class="col-sm-4">Diagnostico:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.diagnostico}}</dd>
+
                               
-                              <dt class="col-sm-4">Condición:</dt>
-                              <dd class="col-sm-8"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
+                            <!-- Formulario para actualizar vacunas -->
+                            <dt class="col-sm-4">Vacunas:</dt>
+                            <form method="POST" action="{% url 'teleenfermeria:tele_vacunas' teleseguimiento.id %}">
+                                {% csrf_token %}
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <select name="vacunas" class="form-select" required>
+                                            <option value="">{{ teleseguimiento.vacunas }}</option>
+                                            <option value="En Proceso">En Proceso</option>
+                                            <option value="Completo">Completo</option>
+                                            <option value="Incompleto">Incompleto</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-save me-2"></i>Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                              
+                              <dt class="col-sm-4 mt-2">Condición:</dt>
+                              <dd class="col-sm-8 mt-2"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
                               
                               <dt class="col-sm-4">Consentimiento:</dt>
                               <dd class="col-sm-8">
@@ -81,7 +111,7 @@
           </div>
       </div>
   </div>
-  
+
 <!-- Medicacion -->
   <div class="card mt-4 shadow-sm">
     <div class="card-header bg-primary text-white">
@@ -175,8 +205,10 @@
 </div>
 
  <!-- Turnos aceptados -->
- <div class="mt-4">
+ <div class="card mt-4 shadow-sm">
+    <div class="card-header turnos ">
     <h5>Turnos Aceptados</h5>
+    </div>
     {% if turnos_aceptados %}
     <table class="table table-striped">
         <thead>
