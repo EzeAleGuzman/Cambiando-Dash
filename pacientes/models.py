@@ -9,7 +9,8 @@ class Paciente(models.Model):
     domicilio = models.CharField(max_length=255, null=True, blank=True)
     localidad = models.CharField(max_length=100, null=True, blank=True)
     telefono = models.CharField(max_length=20)
-    obra_social = models.CharField(max_length=100, null=True, blank=True)
+    telefono2 = models.CharField(max_length=20, null=True, blank=True, default="-")
+    obra_social = models.CharField(max_length=100, null=True, blank=True, default="sin Datos")
 
     # Información de internación
     fecha_ingreso = models.DateField(default=timezone.now)

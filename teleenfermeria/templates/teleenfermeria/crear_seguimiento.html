@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <h2 class="mb-4">Crear Seguimiento</h2>
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-12 mb-3">
+                        {{ form.descripcion.label_tag }}
+                        {{ form.descripcion }}
+                        <div class="invalid-feedback">
+                            Por favor, proporciona una descripción.
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form.condicion.label_tag }}
+                        {{ form.condicion }}
+                        <div class="invalid-feedback">
+                            Por favor, proporciona la condición.
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form.diagnostico.label_tag }}
+                        {{ form.diagnostico }}
+                        <div class="invalid-feedback">
+                            Por favor, proporciona el diagnóstico.
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Ejemplo de JavaScript para deshabilitar el envío del formulario si hay campos no válidos
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Obtener todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
+            var forms = document.getElementsByClassName('needs-validation');
+            // Bucle sobre ellos y evitar el envío
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{% endblock %}

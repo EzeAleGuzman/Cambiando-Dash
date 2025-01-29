@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Teleseguimientos Rechazados{% endblock %}
+ {% block main_content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Teleseguimientos Rechazados</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Paciente</th>
+        <th>Fecha de Solicitud</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for teleseguimiento in teleseguimientos %}
+      <tr>
+        <td>{{ teleseguimiento.id }}</td>
+        <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
+        <td>{{ teleseguimiento.fecha_solicitud }}</td>
+        <td>{{ teleseguimiento.descripcion }}</td>
+        <td>
+          <a
+            href="{% url 'teleenfermeria:detalleteleseguimiento' teleseguimiento.id %}"
+            class="btn btn-info btn-sm"
+            >Ver</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "users",
     "pacientes",
     "gestioncamas",
+    "teleenfermeria",
 ]
 
 MIDDLEWARE = [
@@ -129,13 +130,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Configuración para enviar correos desde Gmail en settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'saluddigitalona@gmail.com'  # Tu correo de Gmail
-EMAIL_HOST_PASSWORD = 'zcng plfk ubwp hpdt'  # Contraseña de aplicación generada
-DEFAULT_FROM_EMAIL = 'saluddigitalona@gmail.com'  # Dirección desde donde se envían los correos
+EMAIL_HOST_USER = "saluddigitalona@gmail.com"  # Tu correo de Gmail
+EMAIL_HOST_PASSWORD = "zcng plfk ubwp hpdt"  # Contraseña de aplicación generada
+DEFAULT_FROM_EMAIL = (
+    "saluddigitalona@gmail.com"  # Dirección desde donde se envían los correos
+)
 
 # Opcional: Lista de administradores a los que se les enviará la notificación
-ADMINS = [('Admin', 'saluddigitalona@gmail.com')]
+ADMINS = [("Admin", "saluddigitalona@gmail.com")]

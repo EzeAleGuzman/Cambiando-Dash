@@ -1,0 +1,277 @@
+ {%  extends "base.html"  %}
+ {% load static %}
+ {% block title %}Detalle del Teleseguimiento{% endblock %}
+ {% block main_content %}
+ <style>
+     .turnos {
+    background-color: #9ee23f;
+  }
+ </style>
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<div class="container py-4">
+  <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+          <h4 class="mb-0 text-center">Detalle del Teleseguimiento</h4>
+      </div>
+      <div class="card-body">
+
+<!-- seccion datos de paciente   -->
+          <div class="row g-3">
+              <div class="col-md-5">
+                  <div class="card h-100 border-0 bg-light">
+                      <div class="card-body">
+                          <h6 class=" mb-2 bg-primary text-white">Información del Paciente</h6>
+                          <dl class="row mb-0">
+                              <dt class="col-sm-4">Paciente:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
+                              
+                              <dt class="col-sm-4">Fecha de solicitud:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
+
+                            <dt class="col-sm-4 ">DNI: </dt>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
+
+                            <dt class="col-sm-4 ">Telefono: </dt>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }} <button class="btn btn-success">
+                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
+                            </button></dd>
+                              <dt class="col-sm-4">Obra Social: </dt>
+                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>  
+
+                              {% if teleseguimiento.paciente.nombre_tutor %}
+                              <dt class="col-sm-4">Tutor:</dt>
+                                <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_tutor }}</dd>
+                                {% endif %}
+                          </dl>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="col-md-7">
+                  <div class="card h-100 border-0 bg-light">
+                      <div class="card-body">
+                          <h6 class="text-white mb-2 bg-primary">Estado del Seguimiento</h6>
+                          <dl class="row mb-0">
+                              <dt class="col-sm-4">Descripción:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.descripcion}}</dd>
+
+                              <dt class="col-sm-4">Diagnostico:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.diagnostico}}</dd>
+
+                              
+                            <!-- Formulario para actualizar vacunas -->
+                            <dt class="col-sm-4">Vacunas:</dt>
+                            <form method="POST" action="{% url 'teleenfermeria:tele_vacunas' teleseguimiento.id %}">
+                                {% csrf_token %}
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <select name="vacunas" class="form-select" required>
+                                            <option value="">{{ teleseguimiento.vacunas }}</option>
+                                            <option value="En Proceso">En Proceso</option>
+                                            <option value="Completo">Completo</option>
+                                            <option value="Incompleto">Incompleto</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-save me-2"></i>Guardar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                              
+                              <dt class="col-sm-4 mt-2">Condición:</dt>
+                              <dd class="col-sm-8 mt-2"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
+                              
+                              <dt class="col-sm-4">Consentimiento:</dt>
+                              <dd class="col-sm-8">
+                                <span class="badge 
+                                {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
+                                    bg-success
+                                {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
+                                    bg-danger
+                                {% else %}
+                                    bg-warning text-dark
+                                {% endif %}
+                            ">{{ teleseguimiento.consentimiento_seguimiento}}</span>
+                            {% if teleseguimiento.consentimiento_seguimiento != "aceptado" %}
+                                  <div class="mt-2">
+                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
+                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'Rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
+                                  </div>
+                              </dd>
+                              {% endif %}
+                          </dl>
+                               
+                                </dd>
+                          </dl>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+<!-- Medicacion -->
+  <div class="card mt-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Medicación</h5>
+    </div>
+   <div>
+      <table class="table table-striped table-hover">
+          <thead>
+              <tr>
+                  <th>Medicacion</th>
+                  <th>Tipo</th>
+                  <th>Dosis</th>
+                  <th>indicacion</th>
+                  <th>Via</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for prescripcion in prescripciones %}
+              <tr>
+                  <td>{{prescripcion.medicacion }}</td>
+                  <td>{{prescripcion.tipo }}</td>
+                  <td>{{prescripcion.dosis }}</td>
+                  <td>{{prescripcion.indicacion }}</td>
+                  <td>{{prescripcion.via }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+   </div>
+    <div class="card-body text-center p-4">
+        <button class="btn btn-success">
+            <i class="fas fa-plus me-2" style="color: black;"></i><a href="{% url 'teleenfermeria:crear_prescripcion' teleseguimiento.id %}" style="text-decoration: none; color: white;">Agregar Medicacion</a>
+        </button>
+    </div>
+</div>
+</div>
+
+<!-- Sección de solicitud de turno -->
+<div class="card mt-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Solicitud de Turno</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{% url 'teleenfermeria:solicitar_turno' teleseguimiento.id %}">
+            {% csrf_token %}
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <select name="especialidad" class="form-select" required>
+                        <option value="">Seleccione una especialidad</option>
+                        <option value="Otorrinolaringología">Otorrinolaringología</option>
+                        <option value="Cardiología">Cardiología</option>
+                        <option value="Dermatología">Dermatología</option>
+                        <option value="Neurología">Neurología</option>
+                        <option value="Pediatría">Pediatría</option>
+                        <option value="Psiquiatría">Psiquiatría</option>
+                        <option value="Traumatología">Traumatología</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-calendar-plus me-2"></i>Solicitar Turno
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+       
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Especialidad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in teleseguimiento.solicitudturno_set.all %}
+                {% if solicitud.estado == "pendiente" %}
+                <tr>
+                    <td>{{ solicitud.fecha_solicitud }}</td>
+                    <td>{{ solicitud.especialidad }}</td>
+                    <td>{{ solicitud.estado }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+ <!-- Turnos aceptados -->
+ <div class="card mt-4 shadow-sm">
+    <div class="card-header turnos ">
+    <h5>Turnos Aceptados</h5>
+    </div>
+    {% if turnos_aceptados %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Fecha Turno</th>
+                <th>Hora Turno</th>
+                <th>Profesional</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for turno in turnos_aceptados %}
+            <tr>
+                <td>{{ turno.fecha_turno|date:"d/m/Y" }}</td>
+                <td>{{ turno.hora_turno|time:"H:i" }}</td>
+                <td>{{ turno.profesional }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay turnos aceptados.</p>
+    {% endif %}
+</div>
+</div>
+
+
+<!-- seguimientos -->
+  <div class="card mt-4 shadow-sm">
+      <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Seguimientos</h5>
+      </div>
+     <div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>Agente</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seguimiento in seguimientos %}
+                <tr>
+                    <td>{{ seguimiento.fecha }}</td>
+                    <td>{{ seguimiento.descripcion }}</td>
+                    <td>{{ seguimiento.usuario.name }} {{ seguimiento.usuario.lastname }}</td>
+                    <td></td>
+                    <!-- <td>
+                        <a href="" class="btn btn-primary btn-sm">Modificar</a>
+                        <a href="" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td> -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+     </div>
+      <div class="card-body text-center p-4">
+          <button class="btn btn-warning">
+              <i class="fas fa-plus me-2"></i><a href="{% url 'teleenfermeria:crear_seguimiento' teleseguimiento.id %}" style="text-decoration: none;">Agregar Seguimiento</a>
+          </button>
+      </div>
+  </div>
+</div>
+
+
+{% endblock %}

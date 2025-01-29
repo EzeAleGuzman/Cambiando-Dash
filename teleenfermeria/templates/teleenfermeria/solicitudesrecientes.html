@@ -1,0 +1,87 @@
+{% extends 'base.html' %} {% block main_content %}
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Solicitudes Turnos</h4>
+      <p class="mb-0">
+        Semana del {{ start_of_week|date:"d/m/Y" }} al {{ end_of_week|date:"d/m/Y" }}
+      </p>
+    </div>
+    <div class="card-body">
+      <form method="get" class="mb-4">
+        <div class="row">
+          <div class="col-md-4">
+            <input
+              type="week"
+              name="week"
+              class="form-control"
+              value="{{ selected_week }}"
+            />
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+          </div>
+        </div>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Fecha Solicitud</th>
+              <th>Paciente</th>
+              <th>Especialidad</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for solicitud in solicitudes_recientes %}
+            <tr>
+              <td>{{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+              <td>{{ solicitud.teleseguimiento.paciente.nombre_completo }}</td>
+              <td>{{ solicitud.especialidad }}</td>
+              <td>
+                <span
+                  class="badge {% if solicitud.estado == 'pendiente' %}bg-warning{% elif solicitud.estado == 'confirmado' %}bg-success{% else %}bg-danger{% endif %}"
+                >
+                  {{ solicitud.estado }}
+                </span>
+              </td>
+              <td>
+                <a
+                  href="{% url 'teleenfermeria:detalleteleseguimiento' solicitud.teleseguimiento.id %}"
+                  class="btn btn-sm btn-info"
+                >
+                  <i class="fas fa-eye"></i> Ver
+                </a>
+                {% if is_turnero %} {% if solicitud.estado != "confirmado" %}
+                <a
+                  href="{% url 'teleenfermeria:asignarturno' solicitud.id %}"
+                  class="btn btn-sm btn-success"
+                >
+                  <i class="fas fa-check"></i> Asignar
+                </a>
+                <a
+                  href="{% url 'teleenfermeria:rechazarsolicitud' solicitud.id %}"
+                  class="btn btn-sm btn-danger"
+                >
+                  <i class="fas fa-times"></i> Rechazar
+                </a>
+                {% endif %} {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">
+                No hay solicitudes recientes
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

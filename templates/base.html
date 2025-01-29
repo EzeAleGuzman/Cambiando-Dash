@@ -230,13 +230,51 @@
             </div>
           </div>
 
-          <!-- Gestión de Pacientes -->
-          <div class="box align-items-center justify-content-center w-100">
-            <a href="" class="text-decoration-none text-white">
-              <i class="bi bi-person-badge"></i> Tele Enfermeria
-            </a>
-          </div>
+        
+              <!-- Tele Enfermeria -->
+              <div
+              class="box align-items-center justify-content-center w-100"
+              id="teleenfermeria"
+              onclick="submenu('subTeleenfermeria')"
+            >
+              <i class="bi bi-person-fill-gear"></i> Tele Enfermeria
+            </div>
+            <div
+              id="subTeleenfermeria"
+              class="sub-boxes"
+              style="display: none"
+            >
+              <div class="sub-box w-100">
+                <a
+                  href="{% url 'teleenfermeria:derivados' %}"
+                  class="text-decoration-none text-white btn w-100"
+                >
+                    <i class="bi bi-arrow-right-circle"></i> Derivaciones
+                </a>
+              </div>
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:en_proceso' %}" class="text-decoration-none text-white btn w-100">
+                    <i class="bi bi-check-circle-fill"></i> Teleseguimientos Activos
+                </a>
+              </div>
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
+                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
+                </a>
+              </div>
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:turnossemanales' %}" class="text-decoration-none text-white btn w-100">
+                    <i class="bi bi-calendar-check-fill"></i> Solicitudes semanal de turnos
+                </a>
+              </div>
+            </div>
+           
+            
+            
+
+
         </div>
+
 
         <!-- Contenido Principal -->
         <div

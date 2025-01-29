@@ -101,7 +101,9 @@ Camas{%endblock %} {% block main_content %}
       url: "{% url 'gestioncamas:obtener_ocupacion' %}",
       method: "GET",
       success: function (data) {
-        var ocupacionData = data.ocupacion_data;
+        
+        var ocupacionData = data.ocupacion_data.sort((a, b) => a.servicio.localeCompare(b.servicio));
+        console.log(ocupacionData);
         var labels = ocupacionData.map(function (item) {
           return item.servicio;
         });
