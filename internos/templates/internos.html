@@ -1,97 +1,71 @@
-{% extends 'base.html' %}
-
-{% block main_content %}
-<style>
-     /* Aplica el color de fondo a toda la tabla, incluyendo filas y celdas */
- .custom-table {
-     background-color: #17a2b8 !important; /* Color de fondo personalizado */
-     color: white !important; /* Color del texto */
- }
-
- /* Color de fondo para los encabezados */
- .custom-table th {
-     background-color: #138496 !important; /* Color de fondo del encabezado */
-     color: white !important; /* Color del texto en el encabezado */
- }
-
- /* Color de fondo para las filas pares */
- .custom-table tbody td:nth-child(even) {
-     background-color: #17a2b8 !important; /* Color para las filas pares */
-    
- }
-
- /* Color de fondo para las filas impares */
- .custom-table tbody td:nth-child(odd) {
-     background-color: #17a2b8 !important; /* Color para las filas impares */
-    
- }
-
-
-
- 
-</style>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10">
-                <h1>Nº de Internos</h1>
-            </div>
-        </div>
-
-        <form>
-            <label for="buscador" class="visually-hidden">Buscar</label>
-            <div class="mx-auto w-75">
-                <input type="search" id="buscador" class="form-control form-control-lg" placeholder="Buscar Interno" required>
-            </div>
-        </form>
-        
-
-        <table class="table table-striped table-dark " >
-            <thead>
-                <tr>
-                    <th>Servicio</th>
-                    <th>Interno</th>
-                    {% if user.name == "admin" %}
-                    <th>Acciones</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for interno in internos %}
-                <tr>
-                    <td>{{ interno.servicio }}</td>
-                    <td>{{ interno.interno }}</td>
-                    {% if user == "admin" %}
-                    <th>Acciones</th>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        
+{% extends 'base.html' %} {% block main_content %}
+<div class="card mt-4 shadow-sm">
+  <h2 class="card-header bg-primary text-white">Nº de Internos</h2>
+  <form>
+    <label for="buscador" class="visually-hidden">Buscar</label>
+    <div class="col-md-4 mt-4 mb-4 container">
+      <input
+        type="search"
+        id="buscador"
+        class="form-control form-control-lg"
+        placeholder="Buscar Interno"
+        required
+      />
     </div>
+  </form>
+  <table class="table table-striped container">
+    <thead>
+      <thead>
+        <tr class="table-primary">
+          <th>Servicio</th>
+          <th>Interno</th>
+          {% if user.name == "admin" %}
+          <th>Acciones</th>
+          {% endif %}
+        </tr>
+      </thead>
+    </thead>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const buscador = document.getElementById("buscador"); // Asegúrate de que el ID coincida con el input
-            const filas = document.querySelectorAll("tr"); // Se asume que todas las filas están dentro de una tabla
-    
-            buscador.addEventListener("input", function () {
-                const filtro = buscador.value.toLowerCase();
-    
-                filas.forEach(function (fila) {
-                    const servicio = fila.querySelector("td:nth-child(1)") ? fila.querySelector("td:nth-child(1)").textContent.toLowerCase() : '';
-                    const interno = fila.querySelector("td:nth-child(2)") ? fila.querySelector("td:nth-child(2)").textContent.toLowerCase() : '';
-    
-                    // Verifica si el filtro coincide con alguno de los valores de las columnas
-                    if (servicio.includes(filtro) || interno.includes(filtro)) {
-                        fila.style.display = "table-row";
-                    } else {
-                        fila.style.display = "none";
-                    }
-                });
-            });
-        });
-    </script>
+    <tbody>
+      {% for interno in internos %}
+      <tr>
+        <td>{{ interno.servicio }}</td>
+        <td>{{ interno.interno }}</td>
+        {% if user == "admin" %}
+        <th>Acciones</th>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buscador = document.getElementById("buscador"); // Asegúrate de que el ID coincida con el input
+    const filas = document.querySelectorAll("tr"); // Se asume que todas las filas están dentro de una tabla
+
+    buscador.addEventListener("input", function () {
+      const filtro = buscador.value.toLowerCase();
+
+      filas.forEach(function (fila) {
+        const servicio = fila.querySelector("td:nth-child(1)")
+          ? fila.querySelector("td:nth-child(1)").textContent.toLowerCase()
+          : "";
+        const interno = fila.querySelector("td:nth-child(2)")
+          ? fila.querySelector("td:nth-child(2)").textContent.toLowerCase()
+          : "";
+
+        // Verifica si el filtro coincide con alguno de los valores de las columnas
+        if (servicio.includes(filtro) || interno.includes(filtro)) {
+          fila.style.display = "table-row";
+        } else {
+          fila.style.display = "none";
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

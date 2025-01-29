@@ -4,6 +4,12 @@ from gestioncamas.models import Servicio
 from django.shortcuts import get_object_or_404, redirect
 from .forms import PacienteForm
 from django.contrib.auth.decorators import login_required
+from teleenfermeria.views import (
+    group_required,
+    user_in_group,
+    no_permisos,
+    is_administrativo,
+)
 
 
 @login_required
@@ -19,6 +25,7 @@ def detallepaciente(request, id):
 
 
 @login_required
+@group_required("Administrativo")
 def pacientesporservicio(request):
     servicio_seleccionado = request.GET.get("servicio", None)
 
@@ -66,6 +73,7 @@ def nuevopaciente(request):
 
 
 @login_required
+@group_required("Administrativo")
 def editarpaciente(request, id):
     # Obtener el paciente correspondiente
     paciente = get_object_or_404(Paciente, pk=id)
