@@ -3,4 +3,4 @@
 .venv/
 .vscode/
 key.py
-.sqlite3
+db.sqlite3
