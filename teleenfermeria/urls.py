@@ -70,4 +70,14 @@ urlpatterns = [
         views.televacunas,
         name="tele_vacunas",
     ),
+    path(
+        "teleseguidosusuario/",
+        views.teleseguimientosusuario,
+        name="seguimientousuario",
+    ),
+    path(
+        "adminTeleseguimientos/",
+        views.administrar_teleseguimientos,
+        name="adminteleseguimientos",
+    ),
     ]

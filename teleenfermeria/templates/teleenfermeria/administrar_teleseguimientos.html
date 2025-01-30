@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Administrar Teleseguimientos{% endblock %}
+{% block main_content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Administrar Teleseguimientos</h4>
+        </div>
+        <div class="card-body ">
+            <form method="post" class="w-50">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
+            <hr>
+            {% if teleseguimientos %}
+            <h5>Resultados</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        
+                        <th>Paciente</th>
+                        <th>Descripción</th>
+                        <th>Diagnóstico</th>
+                        <th>Estado</th>
+                        <th>Fecha Solicitud</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teleseguimiento in teleseguimientos %}
+                    <tr>
+                        
+                        
+                        <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
+                        <td>{{ teleseguimiento.descripcion }}</td>
+                        <td>{{ teleseguimiento.diagnostico }}</td>
+                        <td>{{ teleseguimiento.estado }}</td>
+                        <td>{{ teleseguimiento.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No hay teleseguimientos para el usuario seleccionado.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

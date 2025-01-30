@@ -26,7 +26,6 @@ class ServicioAdmin(admin.ModelAdmin):
         "nivel_alerta_ocupacion",
     )
     ordering = ("nombre",)
-    
 
 
 class UbicacionAdmin(admin.ModelAdmin):
@@ -38,7 +37,7 @@ class UbicacionAdmin(admin.ModelAdmin):
 
 
 class CamaAdmin(admin.ModelAdmin):
-    list_display = ("numero", "estado", "activo", "ubicacion",'get_servicio',"notas")
+    list_display = ("numero", "estado", "activo", "ubicacion", 'get_servicio', "notas")
     list_filter = ("activo",)
     search_fields = ("numero", "estado")
     ordering = ('ubicacion__servicio__nombre', "ubicacion__nombre", "numero")
