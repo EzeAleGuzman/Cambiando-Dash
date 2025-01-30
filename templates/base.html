@@ -258,13 +258,28 @@
                 </a>
               </div>
               <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
-                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
-                </a>
+                <a href="{% url 'teleenfermeria:seguimientousuario' %}" class="text-decoration-none text-white btn w-100">
+                    <i class="bi bi-list-check"></i> Mis Teleseguimientos
+                  </a>
               </div>
               <div class="sub-box w-100">
                 <a href="{% url 'teleenfermeria:turnossemanales' %}" class="text-decoration-none text-white btn w-100">
                     <i class="bi bi-calendar-check-fill"></i> Solicitudes semanal de turnos
+                </a>
+              </div>
+                <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
+                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
+                </a>
+              </div>  
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:adminteleseguimientos' %}" class="text-decoration-none text-white btn w-100">
+                    <i class="bi bi-person-check-fill"></i> Teleseguimientos Coordinadora
+                </a>
+              </div>
+              <div class="sub-box w-100">
+                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
+                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
                 </a>
               </div>
             </div>

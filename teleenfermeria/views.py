@@ -9,7 +9,7 @@ from .models import (
     Turno,
 )
 from django.db.models import Count
-from .forms import TeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
+from .forms import TeleseguimientoForm,FiltrarTeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
 from django.utils.timezone import now
 from users.models import User
 from datetime import timedelta, datetime
@@ -183,8 +183,8 @@ def agregar_prescripcion(request, teleseguimiento_id):
 
 
 def teleseguimientosusuario(request):
-    user = User.objects.filter(groups__name="Teleenfermeria").first()
-    teleseguimientos = Teleseguimiento.objects.filter(usuario=request.user)
+    seguimientos = Seguimiento.objects.filter(usuario=request.user)
+    teleseguimientos = Teleseguimiento.objects.filter(id__in=seguimientos.values('teleseguimiento_id'))
     return render(
         request,
         "teleenfermeria/teleseguimientos_usuario.html",
@@ -277,6 +277,31 @@ def asignarturno(request, solicitud_id):
     else:
         form = AsignarTurnoForm()
     return render(request, 'teleenfermeria/asignar_turno.html', {'form': form, 'solicitud': solicitud})
+
+
+@login_required
+@group_required("CordinadoraTeleseguimientos")
+def administrar_teleseguimientos(request):
+    grupo_teleenfermeria = Group.objects.get(name='Teleenfermeria')
+    usuarios_teleenfermeria = User.objects.filter(groups=grupo_teleenfermeria)
+
+    if request.method == 'POST':
+        form = FiltrarTeleseguimientoForm(request.POST, usuarios=usuarios_teleenfermeria)
+        if form.is_valid():
+            usuario_seleccionado = form.cleaned_data['usuario']
+            seguimientos = Seguimiento.objects.filter(usuario=usuario_seleccionado)
+            teleseguimientos = Teleseguimiento.objects.filter(id__in=seguimientos.values('teleseguimiento_id'))
+        else:
+            teleseguimientos = Teleseguimiento.objects.none()
+    else:
+        form = FiltrarTeleseguimientoForm(usuarios=usuarios_teleenfermeria)
+        teleseguimientos = Teleseguimiento.objects.none()
+
+    context = {
+        'form': form,
+        'teleseguimientos': teleseguimientos,
+    }
+    return render(request, 'teleenfermeria/administrar_teleseguimientos.html', context)
 
 def rechazarsolicitud(request, solicitud_id):
     solicitud =get_object_or_404(SolicitudTurno, id=solicitud_id)

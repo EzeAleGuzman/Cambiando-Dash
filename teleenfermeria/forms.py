@@ -1,5 +1,5 @@
 from django import forms
-from .models import Teleseguimiento, Seguimiento, Prescripcion, Turno
+from .models import Teleseguimiento, Seguimiento, Prescripcion, Turno, User
 
 
 class TeleseguimientoForm(forms.ModelForm):
@@ -72,3 +72,20 @@ class AsignarTurnoForm(forms.ModelForm):
             'hora_turno': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'profesional': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class FiltrarTeleseguimientoForm(forms.Form):
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.none(),
+        required=True,
+        label='Usuario',
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Seleccione usuario'
+        })
+    )
+
+    def __init__(self, *args, **kwargs):
+        usuarios = kwargs.pop('usuarios', None)
+        super(FiltrarTeleseguimientoForm, self).__init__(*args, **kwargs)
+        if usuarios is not None:
+            self.fields['usuario'].queryset = usuarios
