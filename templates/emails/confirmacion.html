@@ -56,43 +56,17 @@
   <body>
     <div class="container">
       <div class="email-header">
-        <h1>Notificación de Actualización de Usuario</h1>
+        <h1>Su Cuenta se encuentra activada</h1>
       </div>
       <div class="email-body">
-        <p>Se ha <strong>{{ action }}</strong> el siguiente usuario:</p>
-        <table class="table">
-          <tr>
-            <th>Nombre</th>
-            <td>{{ name }}</td>
-          </tr>
-          <tr>
-            <th>Apellido</th>
-            <td>{{ lastname }}</td>
-          </tr>
-          <tr>
-            <th>Email</th>
-            <td>{{ email }}</td>
-          </tr>
-          <tr>
-            <th>Teléfono</th>
-            <td>{{ cellphone }}</td>
-          </tr>
-          <tr>
-            <th>Servicio</th>
-            <td>{{ servicio }}</td>
-          </tr>
-          <tr>
-            <th>Cargo</th>
-            <td>{{ cargo }}</td>
-          </tr>
-        </table>
-        <p>Para más detalles, puedes acceder al panel de administración:</p>
+        <p>Hola <strong>{{ name }} {{ lastname }}</strong> Desde salud digital te informamos que tu cuenta ha sido activada</p>
+        <p>Ya Puedes acceder a la plataforma</p>
         <a href="{{ contact_url }}" class="btn" style="text-decoration: none; color: white;"
-          >Ir al Panel de Administración</a>
+          >Ir a la plataforma</a>
       </div>
       <div class="email-footer">
         <p>
-          Gracias por utilizar nuestros servicios. Si tienes alguna duda o
+          Si tienes alguna duda o
           pregunta, no dudes en
           <a href="mailto:saluddigitalona@gmail.com">contactarnos</a>.
         </p>
