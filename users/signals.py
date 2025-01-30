@@ -67,3 +67,30 @@ def send_admin_notification_on_update(sender, instance, created, **kwargs):
             fail_silently=False,
             html_message=html_message,
         )
+
+@receiver(post_save, sender=User)
+def send_user_notification_on_activation(sender, instance, created, **kwargs):
+    if not created:
+        old_user = getattr(instance, "_old_user", None)
+        if old_user and not old_user.is_active and instance.is_active:
+            subject = "Tu cuenta ha sido activada"
+            html_message = render_to_string(
+            "emails/confirmacion.html",
+            {
+                "name": instance.name,
+                "lastname": instance.lastname,
+                "contact_url": "http://127.0.0.1:8000/admin/login/?next=/admin/",
+            },
+        )
+            plain_message = strip_tags(html_message)
+            from_email = "saluddigitalona@gmail.com"
+            to = [instance.email]
+
+            send_mail(
+                subject,
+                plain_message,
+                from_email,
+                to,
+                fail_silently=False,
+                html_message=html_message,
+            )
