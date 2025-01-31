@@ -58,7 +58,10 @@
     <!-- Lista de Pacientes -->
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title mb-0">Lista de Pacientes</h5>
+          
+            <h3 class="card-title mb-0"> 
+         {{ servicio_seleccionado|default_if_none:"Servicio" }}</h3>
+       
         </div>
         <div class="card-body">
             <table class="table table-hover">

@@ -27,13 +27,15 @@ def detallepaciente(request, id):
 @login_required
 @group_required("Administrativo")
 def pacientesporservicio(request):
-    servicio_seleccionado = request.GET.get("servicio", None)
+    servicio_seleccionado_id = request.GET.get("servicio", None)
+    servicio_seleccionado = None
 
-    if servicio_seleccionado:
+    if servicio_seleccionado_id:
+        servicio_seleccionado = get_object_or_404(Servicio, id=servicio_seleccionado_id)
         # Filtrar pacientes por servicio y asegurarse de que tienen una cama asignada
         pacientes = (
             Paciente.objects.filter(
-                pacientecama__cama__ubicacion__servicio_id=servicio_seleccionado,
+                pacientecama__cama__ubicacion__servicio=servicio_seleccionado,
                 pacientecama__fecha_liberacion__isnull=True,  # Asegurarse de que tienen una cama asignada
             )
             .order_by("pacientecama__cama__ubicacion__nombre")
@@ -55,7 +57,6 @@ def pacientesporservicio(request):
             "servicio_seleccionado": servicio_seleccionado,
         },
     )
-
 
 @login_required
 def nuevopaciente(request):
