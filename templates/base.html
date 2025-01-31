@@ -81,7 +81,7 @@
                         </span>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            
                             {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
                             {% else %}
@@ -128,7 +128,54 @@
                     </ul>
                 </li>
                 <li class="nav-item d-lg-none">
-                    <a class="nav-link" href="#">Tele Enfermería</a>
+                  <a class="nav-link" href="#subTeleenfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Teleenfermeria</a>
+                  <ul class="collapse list-unstyled" id="subTeleenfermeriaMobile">
+                      <li>
+                        <a
+                        href="{% url 'teleenfermeria:derivados' %}"
+                        class="nav-link"
+                      >
+                     Derivaciones
+                      </a>
+                      </li>
+                      <li>
+                        <a
+                        href="{% url 'teleenfermeria:en_proceso' %}"
+                        class="nav-link"
+                      >
+                     Teleseguimientos Activos
+                      </a>
+                      </li>
+                      <li>
+                        <a
+                        href="{% url 'teleenfermeria:seguimientousuario' %}"
+                        class="nav-link"
+                      >
+                     Mis Teleseguimientos
+                      </a>
+                      </li>
+                      <li>
+                        <aadminteleseguimientos
+                        href="{% url 'teleenfermeria:seguimientousuario' %}"
+                        class="nav-link"
+                      >
+                     Administración Teleseguimientos
+                      </a>
+                      </li>
+                      <li>
+                        <aadminteleseguimientos
+                        href="{% url 'teleenfermeria:turnossemanales' %}"
+                        class="nav-link"
+                      >
+                     Solicitudes semanal de turnos
+                      </a>
+                      </li>
+                      <li>
+                        <a
+                        href="{% url 'teleenfermeria:rechazados' %}"
+                        class="nav-link"
+                        > Rechazados</a>
+                  </ul>
                 </li>
             </ul>
           </div>
@@ -267,11 +314,6 @@
                     <i class="bi bi-calendar-check-fill"></i> Solicitudes semanal de turnos
                 </a>
               </div>
-                <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
-                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
-                </a>
-              </div>  
               <div class="sub-box w-100">
                 <a href="{% url 'teleenfermeria:adminteleseguimientos' %}" class="text-decoration-none text-white btn w-100">
                     <i class="bi bi-person-check-fill"></i> Teleseguimientos Coordinadora
