@@ -32,8 +32,7 @@
                             <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
 
                             <dt class="col-sm-4 ">Telefono: </dt>
-                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }} <button class="btn btn-success">
-                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
+                            <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone=+549{{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
                             </button></dd>
                               <dt class="col-sm-4">Obra Social: </dt>
                                 <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>  
