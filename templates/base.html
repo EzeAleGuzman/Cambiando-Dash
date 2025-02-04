@@ -4,6 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="{% static 'imagenes/logonuevo.ico' %}" type="image/x-icon">
     <title>{% block title %}PanelPrincipal{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link
@@ -57,7 +58,7 @@
                     HO
                 {% endif %}
             </span>
-              
+
             </div>
 
             <button
@@ -81,7 +82,7 @@
                         </span>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                            
+
                             {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
                             {% else %}
@@ -155,15 +156,15 @@
                       </a>
                       </li>
                       <li>
-                        <aadminteleseguimientos
-                        href="{% url 'teleenfermeria:seguimientousuario' %}"
+                        <a
+                        href="{% url 'teleenfermeria:adminteleseguimientos' %}"
                         class="nav-link"
                       >
                      Administración Teleseguimientos
                       </a>
                       </li>
                       <li>
-                        <aadminteleseguimientos
+                        <a
                         href="{% url 'teleenfermeria:turnossemanales' %}"
                         class="nav-link"
                       >
@@ -277,7 +278,7 @@
             </div>
           </div>
 
-        
+
               <!-- Tele Enfermeria -->
               <div
               class="box align-items-center justify-content-center w-100"
@@ -325,9 +326,9 @@
                 </a>
               </div>
             </div>
-           
-            
-            
+
+
+
 
 
         </div>

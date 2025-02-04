@@ -1,5 +1,4 @@
-{% extends 'base.html' %} {% block title %}Dashboard - Gestión de
-Camas{%endblock %} {% block main_content %}
+{% extends 'base.html' %} {% block title %}Salud Digital Oñativia{%endblock %} {% block main_content %}
 
 <style>
   .main-content {
@@ -74,7 +73,7 @@ Camas{%endblock %} {% block main_content %}
     </div>
   </div>
 
-    
+
     <div class="col-12">
       <div class="card">
         <div class="card-header">
@@ -101,7 +100,7 @@ Camas{%endblock %} {% block main_content %}
       url: "{% url 'gestioncamas:obtener_ocupacion' %}",
       method: "GET",
       success: function (data) {
-        
+
         var ocupacionData = data.ocupacion_data.sort((a, b) => a.servicio.localeCompare(b.servicio));
         console.log(ocupacionData);
         var labels = ocupacionData.map(function (item) {

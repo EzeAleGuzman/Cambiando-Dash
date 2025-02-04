@@ -24,7 +24,7 @@
                           <dl class="row mb-0">
                               <dt class="col-sm-4">Paciente:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
-                              
+
                               <dt class="col-sm-4">Fecha de solicitud:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
 
@@ -32,10 +32,11 @@
                             <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
 
                             <dt class="col-sm-4 ">Telefono: </dt>
-                            <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone=+549{{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }} <button class="btn btn-success">
+                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
                             </button></dd>
                               <dt class="col-sm-4">Obra Social: </dt>
-                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>  
+                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>
 
                               {% if teleseguimiento.paciente.nombre_tutor %}
                               <dt class="col-sm-4">Tutor:</dt>
@@ -45,7 +46,7 @@
                       </div>
                   </div>
               </div>
-              
+
               <div class="col-md-7">
                   <div class="card h-100 border-0 bg-light">
                       <div class="card-body">
@@ -57,7 +58,7 @@
                               <dt class="col-sm-4">Diagnostico:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.diagnostico}}</dd>
 
-                              
+
                             <!-- Formulario para actualizar vacunas -->
                             <dt class="col-sm-4">Vacunas:</dt>
                             <form method="POST" action="{% url 'teleenfermeria:tele_vacunas' teleseguimiento.id %}">
@@ -78,13 +79,13 @@
                                     </div>
                                 </div>
                             </form>
-                              
+
                               <dt class="col-sm-4 mt-2">Condición:</dt>
                               <dd class="col-sm-8 mt-2"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
-                              
+
                               <dt class="col-sm-4">Consentimiento:</dt>
                               <dd class="col-sm-8">
-                                <span class="badge 
+                                <span class="badge
                                 {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
                                     bg-success
                                 {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
@@ -101,7 +102,7 @@
                               </dd>
                               {% endif %}
                           </dl>
-                               
+
                                 </dd>
                           </dl>
                       </div>
@@ -178,7 +179,7 @@
         </form>
     </div>
     <div>
-       
+
         <table class="table table-striped table-hover">
             <thead>
                 <tr>

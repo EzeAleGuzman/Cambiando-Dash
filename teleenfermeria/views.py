@@ -57,7 +57,7 @@ def solicitarteleseguimiento(request, paciente_id):
     )
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria","Administrativo")
 def derivadosteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="Derivado")
     for teleseguimiento in teleseguimientos:
@@ -70,7 +70,7 @@ def derivadosteleseguimiento(request):
     )
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria", "Administrativo")
 def enprocesoteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="en_proceso")
     for teleseguimiento in teleseguimientos:
@@ -86,7 +86,7 @@ def enprocesoteleseguimiento(request):
     )
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria", "Administrativo")
 def telezeguimientosrechazados(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="no_realizado")
     return render(
@@ -104,8 +104,8 @@ def televacunas(request, teleseguimiento_id):
             "teleenfermeria:detalleteleseguimiento",
             teleseguimiento_id=teleseguimiento_id,
         )
-     
-    
+
+
 
 
 def detalleteleseguimiento(request, teleseguimiento_id):
@@ -137,7 +137,8 @@ def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
         "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
     )
 
-
+@login_required
+@group_required("Teleenfermeria")
 def crearseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     if request.method == "POST":
@@ -181,7 +182,8 @@ def agregar_prescripcion(request, teleseguimiento_id):
         {"form": form, "teleseguimiento": teleseguimiento},
     )
 
-
+@login_required
+@group_required("Teleenfermeria", "Administrativo")
 def teleseguimientosusuario(request):
     seguimientos = Seguimiento.objects.filter(usuario=request.user)
     teleseguimientos = Teleseguimiento.objects.filter(id__in=seguimientos.values('teleseguimiento_id'))
@@ -204,7 +206,7 @@ def solicitarturno(request, teleseguimiento_id):
     solicitudes_recientes = SolicitudTurno.objects.filter(
         fecha_solicitud__gte=start_of_week
     ).count()
-    
+
     if solicitudes_recientes >= 10:
         return render(
             request,
@@ -263,6 +265,8 @@ def turnosporsemana(request):
 
     return render(request, "teleenfermeria/solicitudesrecientes.html", context)
 
+@login_required
+@group_required("Turnera")
 def asignarturno(request, solicitud_id):
     solicitud = get_object_or_404(SolicitudTurno, id=solicitud_id)
     if request.method == "POST":

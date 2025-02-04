@@ -50,7 +50,7 @@ def send_admin_notification_on_update(sender, instance, created, **kwargs):
                 "cellphone": instance.cellphone,
                 "servicio": instance.servicio,
                 "cargo": instance.cargo,
-                "contact_url": "http://127.0.0.1:8000/admin/login/?next=/admin/",
+                "contact_url": "https://saluddigitalona.pythonanywhere.com/admin/users/user/",
                 "action": action,
             },
         )
@@ -79,7 +79,7 @@ def send_user_notification_on_activation(sender, instance, created, **kwargs):
             {
                 "name": instance.name,
                 "lastname": instance.lastname,
-                "contact_url": "http://127.0.0.1:8000/admin/login/?next=/admin/",
+                "contact_url": "https://saluddigitalona.pythonanywhere.com/",
             },
         )
             plain_message = strip_tags(html_message)
