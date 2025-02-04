@@ -9,7 +9,7 @@ from .models import (
     Turno,
 )
 from django.db.models import Count
-from .forms import TeleseguimientoForm,FiltrarTeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
+from .forms import DiagnosticoForm, TeleseguimientoForm,FiltrarTeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
 from django.utils.timezone import now
 from users.models import User
 from datetime import timedelta, datetime
@@ -105,14 +105,20 @@ def televacunas(request, teleseguimiento_id):
             teleseguimiento_id=teleseguimiento_id,
         )
 
-
-
-
 def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
     prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
     turnos_aceptados = Turno.objects.filter(solicitud_turno__teleseguimiento=teleseguimiento)
+
+    if request.method == 'POST':
+        form = DiagnosticoForm(request.POST, instance=teleseguimiento)
+        if form.is_valid():
+            form.save()
+            return redirect('teleenfermeria:detalleteleseguimiento', teleseguimiento_id=teleseguimiento_id)
+    else:
+        form = DiagnosticoForm(instance=teleseguimiento)
+
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
@@ -121,9 +127,9 @@ def detalleteleseguimiento(request, teleseguimiento_id):
             "seguimientos": seguimientos,
             "prescripciones": prescripciones,
             "turnos_aceptados": turnos_aceptados,
+            "form": form,
         },
     )
-
 
 def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
     teleseguimiento = get_object_or_404(Teleseguimiento, pk=teleseguimiento_id)

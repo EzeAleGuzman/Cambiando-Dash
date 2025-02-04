@@ -6,24 +6,23 @@ class TeleseguimientoForm(forms.ModelForm):
     class Meta:
         model = Teleseguimiento
         fields = [
-            "descripcion",
+            "motivo_consulta",
             "condicion",
-            "diagnostico",
         ]  # Incluye solo los campos que deseas mostrar en el formulario
         widgets = {
-            "descripcion": forms.Textarea(
+            "motivo_consulta": forms.Textarea(
                 attrs={
                     "class": "form-control",
                     "rows": 4,
-                    "placeholder": "Describe la Motivo de solicitud...",
-                    "style": "width: 50%; margin: 0 auto;",
+                    "placeholder": "Describe el motivo de consulta...",
+                    "style": "width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;",
                 }
             ),
-            "diagnostico": forms.Textarea(
+            "condicion": forms.Select(
                 attrs={
                     "class": "form-control",
-                    "rows": 4,
-                    "style": "width: 50%; margin: 0 auto;",
+                    "placeholder": "Seleccione condición",
+                    "style": "width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;",
                 }
             ),
         }
@@ -89,3 +88,18 @@ class FiltrarTeleseguimientoForm(forms.Form):
         super(FiltrarTeleseguimientoForm, self).__init__(*args, **kwargs)
         if usuarios is not None:
             self.fields['usuario'].queryset = usuarios
+
+class DiagnosticoForm(forms.ModelForm):
+    class Meta:
+        model = Teleseguimiento
+        fields = ['diagnostico']
+        widgets = {
+            'diagnostico': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 3,
+                    'placeholder': 'Ingrese el diagnóstico...',
+                    'style': 'width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;',
+                }
+            ),
+        }
