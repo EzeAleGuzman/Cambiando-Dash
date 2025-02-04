@@ -4,6 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="{% static 'imagenes/logonuevo.ico' %}" type="image/x-icon">
     <title>{% block title %}PanelPrincipal{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link
@@ -155,15 +156,15 @@
                       </a>
                       </li>
                       <li>
-                        <aadminteleseguimientos
-                        href="{% url 'teleenfermeria:seguimientousuario' %}"
+                        <a
+                        href="{% url 'teleenfermeria:adminteleseguimientos' %}"
                         class="nav-link"
                       >
                      Administración Teleseguimientos
                       </a>
                       </li>
                       <li>
-                        <aadminteleseguimientos
+                        <a
                         href="{% url 'teleenfermeria:turnossemanales' %}"
                         class="nav-link"
                       >
