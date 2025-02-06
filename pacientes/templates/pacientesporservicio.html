@@ -20,12 +20,16 @@
         border-top-right-radius: 10px;
     }
 
-    .table {
-        margin-bottom: 0;
-    }
-
     .table th {
         border-top: none;
+    }
+
+    /* Ajustar el ancho de las columnas en pantallas pequeñas */
+    @media (max-width: 768px) {
+        .table th, .table td {
+            font-size: 14px; /* Reducir el tamaño de la fuente */
+            white-space: nowrap; /* Evitar que el contenido se divida en varias líneas */
+        }
     }
 </style>
 
@@ -58,54 +62,55 @@
     <!-- Lista de Pacientes -->
     <div class="card">
         <div class="card-header">
-          
-            <h3 class="card-title mb-0"> 
-         {{ servicio_seleccionado|default_if_none:"Servicio" }}</h3>
-       
+            <h3 class="card-title mb-0">{{ servicio_seleccionado|default_if_none:"Servicio" }}</h3>
         </div>
         <div class="card-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Nombre y Apellido</th>
-                        <th>DNI</th>
-                        <th>Ubicación</th>
-                        <th>Cama</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for paciente in pacientes %}
-                    {% with info_cama=paciente.obtener_info_cama %}
-                    <tr>
-                        <td>{{ paciente.nombre_completo }}</td>
-                        <td>{{ paciente.dni }}</td>
-                        <td>{{ info_cama.ubicacion }}</td>
-                        <td>{{ info_cama.numero }}</td>
-                        <td>
-                            <a href="{% url 'pacientes:detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>                        </td>
-                    </tr>
-                    {% endwith %}
-                    {% endfor %}
-                </tbody>
-            </table>
+            <!-- Tabla responsive -->
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>DNI</th>
+                            <th>Ubicación</th>
+                            <th>Cama</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        {% with info_cama=paciente.obtener_info_cama %}
+                        <tr>
+                            <td>{{ paciente.nombre_completo }}</td>
+                            <td>{{ paciente.dni }}</td>
+                            <td>{{ info_cama.ubicacion }}</td>
+                            <td>{{ info_cama.numero }}</td>
+                            <td>
+                                <a href="{% url 'pacientes:detallepaciente' paciente.id %}" class="btn btn-primary">Ficha Paciente</a>
+                            </td>
+                        </tr>
+                        {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <!-- Modal para la ficha del paciente -->
-<div class="modal fade" id="fichaModal" tabindex="-1" aria-labelledby="fichaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="fichaModalLabel">Ficha del Paciente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="ficha-paciente">
-                <!-- Los detalles del paciente se cargarán aquí -->
+    <div class="modal fade" id="fichaModal" tabindex="-1" aria-labelledby="fichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fichaModalLabel">Ficha del Paciente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="ficha-paciente">
+                    <!-- Los detalles del paciente se cargarán aquí -->
+                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
 
-{% endblock main_content %}
+{% endblock %}

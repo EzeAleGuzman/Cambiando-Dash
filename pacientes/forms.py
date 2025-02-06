@@ -6,13 +6,13 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = [
-            'nombre_completo', 'dni', 'fecha_nacimiento', 'domicilio', 
-            'localidad', 'telefono', 'obra_social', 'fecha_ingreso', 
-            'diagnostico', 'causa_externa', 'arm', 'tipo_egreso', 
-            'fecha_egreso', 'nombre_tutor', 'dni_tutor', 'historia_clinica', 
+            'nombre_completo', 'dni', 'fecha_nacimiento', 'domicilio',
+            'localidad', 'telefono', 'obra_social', 'fecha_ingreso',
+            'diagnostico', 'causa_externa', 'arm', 'tipo_egreso',
+            'fecha_egreso', 'nombre_tutor', 'dni_tutor', 'historia_clinica',
             'pases', 'fecha_pase'
         ]
-        
+
     # Campos de fecha
     fecha_nacimiento = forms.DateField(
         widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -30,7 +30,7 @@ class PacienteForm(forms.ModelForm):
         widget=DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         required=False
     )
-    
+
     # Campos de texto
     nombre_completo = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -38,16 +38,18 @@ class PacienteForm(forms.ModelForm):
     )
     dni = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=20
+        max_length=20,
+        required=False
     )
+
     domicilio = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=255, 
+        max_length=255,
         required=False
     )
     localidad = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=100, 
+        max_length=100,
         required=False
     )
     telefono = forms.CharField(
@@ -56,7 +58,7 @@ class PacienteForm(forms.ModelForm):
     )
     obra_social = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=100, 
+        max_length=100,
         required=False
     )
     diagnostico = forms.CharField(
@@ -71,20 +73,20 @@ class PacienteForm(forms.ModelForm):
         widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
         required=False
         )
-   
+
     tipo_egreso = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=100, 
+        max_length=100,
         required=False
     )
     nombre_tutor = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=255, 
+        max_length=255,
         required=False
     )
     dni_tutor = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        max_length=20, 
+        max_length=20,
         required=False
     )
     historia_clinica = forms.CharField(
@@ -95,10 +97,16 @@ class PacienteForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         required=False
     )
-    
+
+    def clean_dni(self):
+        dni = self.cleaned_data.get('dni')
+        if not dni:  # Si el DNI está vacío
+            return None  # Lo tratamos como NULL
+        return dni
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         # Asegurarse de que las fechas ya guardadas se muestren correctamente en el formulario
         if self.instance and self.instance.fecha_nacimiento:
             self.fields['fecha_nacimiento'].initial = self.instance.fecha_nacimiento

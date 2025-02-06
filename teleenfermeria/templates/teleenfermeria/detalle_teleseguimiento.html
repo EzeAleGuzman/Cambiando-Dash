@@ -24,7 +24,7 @@
                           <dl class="row mb-0">
                               <dt class="col-sm-4">Paciente:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
-                              
+
                               <dt class="col-sm-4">Fecha de solicitud:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
 
@@ -32,10 +32,11 @@
                             <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
 
                             <dt class="col-sm-4 ">Telefono: </dt>
-                            <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone=+549{{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }} <button class="btn btn-success">
+                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
                             </button></dd>
                               <dt class="col-sm-4">Obra Social: </dt>
-                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>  
+                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>
 
                               {% if teleseguimiento.paciente.nombre_tutor %}
                               <dt class="col-sm-4">Tutor:</dt>
@@ -45,71 +46,86 @@
                       </div>
                   </div>
               </div>
-              
+
               <div class="col-md-7">
-                  <div class="card h-100 border-0 bg-light">
-                      <div class="card-body">
-                          <h6 class="text-white mb-2 bg-primary">Estado del Seguimiento</h6>
-                          <dl class="row mb-0">
-                              <dt class="col-sm-4">Descripción:</dt>
-                              <dd class="col-sm-8">{{ teleseguimiento.descripcion}}</dd>
+                   <!-- Estado del Seguimiento -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h6 class="text-white mb-2 bg-primary p-2 rounded">Estado del Seguimiento</h6>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Motivo de Consulta:</dt>
+                <dd class="col-sm-8">{{ teleseguimiento.motivo_consulta|default_if_none:"S/D" }}</dd>
+            </dl>
+            <hr class="my-2">
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Condición:</dt>
+                <dd class="col-sm-8"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
+                <dt class="col-sm-4">Consentimiento:</dt>
+                <dd class="col-sm-8">
+                    <span class="badge
+                    {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
+                        bg-success
+                    {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
+                        bg-danger
+                    {% else %}
+                        bg-warning text-dark
+                    {% endif %}
+                    ">{{ teleseguimiento.consentimiento_seguimiento }}</span>
+                    {% if teleseguimiento.consentimiento_seguimiento != "aceptado" %}
+                    <div class="mt-2">
+                        <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
+                        <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'Rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
+                    </div>
+                    {% endif %}
+                </dd>
+            </dl>
 
-                              <dt class="col-sm-4">Diagnostico:</dt>
-                              <dd class="col-sm-8">{{ teleseguimiento.diagnostico}}</dd>
+            <!-- Diagnóstico -->
+            <hr class="my-4">
+            <h6 class="text-white mb-2 bg-primary p-2 rounded">Diagnóstico</h6>
+            {% if teleseguimiento.diagnostico %}
+                <p><strong><h6>{{ teleseguimiento.diagnostico }}</h6></strong></p>
+            {% else %}
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            {{ form.diagnostico }}
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
 
-                              
-                            <!-- Formulario para actualizar vacunas -->
-                            <dt class="col-sm-4">Vacunas:</dt>
-                            <form method="POST" action="{% url 'teleenfermeria:tele_vacunas' teleseguimiento.id %}">
-                                {% csrf_token %}
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <select name="vacunas" class="form-select" required>
-                                            <option value="">{{ teleseguimiento.vacunas }}</option>
-                                            <option value="En Proceso">En Proceso</option>
-                                            <option value="Completo">Completo</option>
-                                            <option value="Incompleto">Incompleto</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-save me-2"></i>Guardar
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                              
-                              <dt class="col-sm-4 mt-2">Condición:</dt>
-                              <dd class="col-sm-8 mt-2"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
-                              
-                              <dt class="col-sm-4">Consentimiento:</dt>
-                              <dd class="col-sm-8">
-                                <span class="badge 
-                                {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
-                                    bg-success
-                                {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
-                                    bg-danger
-                                {% else %}
-                                    bg-warning text-dark
-                                {% endif %}
-                            ">{{ teleseguimiento.consentimiento_seguimiento}}</span>
-                            {% if teleseguimiento.consentimiento_seguimiento != "aceptado" %}
-                                  <div class="mt-2">
-                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
-                                      <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'Rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
-                                  </div>
-                              </dd>
-                              {% endif %}
-                          </dl>
-                               
-                                </dd>
-                          </dl>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+
+            <!-- Vacunas -->
+            <hr class="my-4">
+            <h6 class="text-white mb-2 bg-primary p-2 rounded">Vacunas</h6>
+            <form method="POST" action="{% url 'teleenfermeria:tele_vacunas' teleseguimiento.id %}">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <select name="vacunas" class="form-select" required>
+                            <option value="">{{ teleseguimiento.vacunas }}</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Completo">Completo</option>
+                            <option value="Incompleto">Incompleto</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save me-2"></i>Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Medicacion -->
   <div class="card mt-4 shadow-sm">
@@ -178,7 +194,7 @@
         </form>
     </div>
     <div>
-       
+
         <table class="table table-striped table-hover">
             <thead>
                 <tr>

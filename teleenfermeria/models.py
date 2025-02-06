@@ -15,7 +15,7 @@ class Teleseguimiento(models.Model):
     id = models.AutoField(primary_key=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha_solicitud = models.DateTimeField(default=timezone.now)
-    descripcion = models.TextField(max_length=1000, blank=True, null=True)
+    motivo_consulta = models.TextField(max_length=1000, blank=True, null=True, verbose_name="Motivo de consulta")
     condicion = models.CharField(
         max_length=100,
         choices=[

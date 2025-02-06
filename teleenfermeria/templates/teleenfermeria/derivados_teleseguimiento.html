@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block title %}Derivados a Teleseguimientos{% endblock %}
 {% block main_content %}
 <style>
@@ -22,8 +22,8 @@
         <tr>
           <th>Paciente</th>
           <th>Fecha de Solicitud</th>
-          <th>Descripción</th>
-          <th>Diagnóstico</th>
+          <th>Motivo de Consulta</th>
+
           <th>Acciones</th>
         </tr>
       </thead>
@@ -34,8 +34,7 @@
         >
           <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
           <td>{{ teleseguimiento.fecha_solicitud|default_if_none:"Sin Datos" }}</td>
-          <td>{{ teleseguimiento.diagnostico }}</td>
-          <td>{{ teleseguimiento.descripcion }}</td>
+          <td>{{ teleseguimiento.motivo_consulta }}</td>
           <td>
             <a
               href="{% url 'teleenfermeria:detalleteleseguimiento' teleseguimiento.id %}"

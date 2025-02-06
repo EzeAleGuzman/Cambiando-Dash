@@ -12,7 +12,7 @@ class AsignacionCamaForm(forms.ModelForm):
             'id': 'select-servicio'
         })
     )
-    
+
     ubicacion = forms.ModelChoiceField(
         queryset=Ubicacion.objects.none(),
         empty_label="Seleccione una ubicación...",
@@ -39,7 +39,7 @@ class AsignacionCamaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if 'servicio' in self.data:
             try:
                 servicio_id = int(self.data.get('servicio'))
@@ -63,5 +63,12 @@ class AsignacionCamaForm(forms.ModelForm):
 
 
 class LiberarCamaForm(forms.Form):
-    motivo_liberacion = forms.CharField(max_length=255, widget=forms.Textarea, label="Motivo de liberación")
-    observaciones = forms.CharField(max_length=255, widget=forms.Textarea, label="Observaciones")
+    motivo_liberacion = forms.CharField(
+        max_length=255,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',  # Clase de Bootstrap para campos de formulario
+            'rows': 4,  # Definir la altura del textarea
+            'placeholder': 'Escribe el motivo de liberación...',  # Texto de ejemplo
+        }),
+        label="Motivo de liberación"
+    )

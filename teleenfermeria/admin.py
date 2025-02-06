@@ -22,7 +22,7 @@ class TeleseguimientoAdmin(admin.ModelAdmin):
     fields = (
         "paciente",
         "fecha_solicitud",
-        "descripcion",
+        "motivo_consulta",
         "condicion",
         "consentimiento_seguimiento",
         "estado",

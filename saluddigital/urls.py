@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from gestioncamas import views
 
 urlpatterns = [
+    path("", views.dashboard, name="dashboard"),
     path("admin/", admin.site.urls),
     path("", include("internos.urls")),
     path("", include("ProtocolosDigitales.urls")),

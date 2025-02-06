@@ -10,6 +10,7 @@ from .models import (
 )
 from django.db.models import Count
 from .forms import (
+    DiagnosticoForm,
     TeleseguimientoForm,
     FiltrarTeleseguimientoForm,
     SeguimientoForm,
@@ -70,21 +71,27 @@ def solicitarteleseguimiento(request, paciente_id):
 
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria", "Administrativo")
 def derivadosteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="Derivado")
-    for teleseguimiento in teleseguimientos:
+
+    # Filtrar teleseguimientos que no tienen seguimientos
+    teleseguimientos_sin_seguimiento = teleseguimientos.exclude(
+        id__in=Seguimiento.objects.values("teleseguimiento")
+    )
+
+    for teleseguimiento in teleseguimientos_sin_seguimiento:
         teleseguimiento.tiempo_espera = now() - teleseguimiento.fecha_solicitud
 
     return render(
         request,
         "teleenfermeria/derivados_teleseguimiento.html",
-        {"teleseguimientos": teleseguimientos},
+        {"teleseguimientos": teleseguimientos_sin_seguimiento},
     )
 
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria", "Administrativo")
 def enprocesoteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="en_proceso")
     for teleseguimiento in teleseguimientos:
@@ -101,7 +108,7 @@ def enprocesoteleseguimiento(request):
 
 
 @login_required
-@group_required("Teleenfermeria")
+@group_required("Teleenfermeria", "Administrativo")
 def telezeguimientosrechazados(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="no_realizado")
     return render(
@@ -126,9 +133,22 @@ def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
     prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
+
     turnos_aceptados = Turno.objects.filter(
         solicitud_turno__teleseguimiento=teleseguimiento
     )
+
+    if request.method == "POST":
+        form = DiagnosticoForm(request.POST, instance=teleseguimiento)
+        if form.is_valid():
+            form.save()
+            return redirect(
+                "teleenfermeria:detalleteleseguimiento",
+                teleseguimiento_id=teleseguimiento_id,
+            )
+    else:
+        form = DiagnosticoForm(instance=teleseguimiento)
+
     return render(
         request,
         "teleenfermeria/detalle_teleseguimiento.html",
@@ -137,23 +157,41 @@ def detalleteleseguimiento(request, teleseguimiento_id):
             "seguimientos": seguimientos,
             "prescripciones": prescripciones,
             "turnos_aceptados": turnos_aceptados,
+            "form": form,
         },
     )
 
 
+@login_required
 def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
     teleseguimiento = get_object_or_404(Teleseguimiento, pk=teleseguimiento_id)
-    teleseguimiento.consentimiento_seguimiento = nuevo_estado
-    if nuevo_estado == "aceptado":
-        teleseguimiento.estado = "en_proceso"
-    elif nuevo_estado == "Rechazado":
-        teleseguimiento.estado = "no_realizado"
-    teleseguimiento.save()
-    return redirect(
-        "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
-    )
+
+    # Convertir el nuevo estado a minúsculas para asegurarse de que coincida con los valores definidos
+    nuevo_estado = nuevo_estado.lower()
+
+    if nuevo_estado in dict(
+        Teleseguimiento._meta.get_field("consentimiento_seguimiento").choices
+    ):
+        teleseguimiento.consentimiento_seguimiento = nuevo_estado
+        if nuevo_estado == "aceptado":
+            teleseguimiento.estado = "en_proceso"
+        elif nuevo_estado == "rechazado":
+            teleseguimiento.estado = "no_realizado"
+        teleseguimiento.save()
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento",
+            teleseguimiento_id=teleseguimiento_id,
+        )
+    else:
+        # Si el nuevo estado no es válido, podrías agregar un mensaje de error
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento",
+            teleseguimiento_id=teleseguimiento_id,
+        )
 
 
+@login_required
+@group_required("Teleenfermeria")
 def crearseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     if request.method == "POST":
@@ -198,6 +236,8 @@ def agregar_prescripcion(request, teleseguimiento_id):
     )
 
 
+@login_required
+@group_required("Teleenfermeria", "Administrativo")
 def teleseguimientosusuario(request):
     seguimientos = Seguimiento.objects.filter(usuario=request.user)
     teleseguimientos = Teleseguimiento.objects.filter(
@@ -283,6 +323,8 @@ def turnosporsemana(request):
     return render(request, "teleenfermeria/solicitudesrecientes.html", context)
 
 
+@login_required
+@group_required("Turnera")
 def asignarturno(request, solicitud_id):
     solicitud = get_object_or_404(SolicitudTurno, id=solicitud_id)
     if request.method == "POST":
