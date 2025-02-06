@@ -9,14 +9,22 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
 
+
 @login_required
 def dashboard(request):
     total_pacientes = Paciente.objects.count()
+
+    # Filtrar las camas que no están en la ubicación 'pasillo'
     camas_ocupadas = Cama.objects.filter(estado='OCUPADA').count()
-    camas_libres = Cama.objects.filter(estado='LIBRE').count()
-    total_camas_funcionales = camas_ocupadas + camas_libres  # Total de camas funcionales es la suma de camas ocupadas y libres
+    camas_libres = Cama.objects.filter(estado='LIBRE').exclude(ubicacion__nombre__iexact='pasillo').count()
+
+    # Total de camas funcionales es la suma de camas ocupadas y libres, excluyendo las ubicaciones 'pasillo'
+    total_camas_funcionales = camas_ocupadas + camas_libres
+
     pacientes_internados = PacienteCama.objects.filter(fecha_liberacion__isnull=True).count()  # Pacientes con cama asignada y fecha de egreso null
+
     print(camas_ocupadas)
+
     context = {
         'total_pacientes': total_pacientes,
         'camas_ocupadas': camas_ocupadas,
@@ -24,6 +32,7 @@ def dashboard(request):
         'total_camas_funcionales': total_camas_funcionales,
         'pacientes_internados': pacientes_internados,
     }
+
     return render(request, 'gestioncamas/dashboard.html', context)
 
 
@@ -32,11 +41,19 @@ def obtener_ocupacion(request):
     ocupacion_data = []
 
     for servicio in servicios:
-        camas_totales = Cama.objects.filter(ubicacion__servicio=servicio).count()
+        # Contar camas totales excluyendo ubicaciones llamadas "PASILLO"
+        camas_totales = Cama.objects.filter(ubicacion__servicio=servicio).exclude(ubicacion__nombre__iexact='PASILLO').count()
+
+        # Filtrar las camas ocupadas desde PacienteCama, accediendo a la ubicación a través de la cama
         camas_ocupadas = PacienteCama.objects.filter(
-            cama__ubicacion__servicio=servicio, fecha_liberacion__isnull=True
+            cama__ubicacion__servicio=servicio,  # Relación con la cama y ubicación
+            fecha_liberacion__isnull=True  # Solo contar camas ocupadas
         ).count()
+
+        # Calcular camas libres
         camas_libres = camas_totales - camas_ocupadas
+
+        # Añadir datos a la lista de ocupación
         ocupacion_data.append(
             {
                 "servicio": servicio.nombre,
@@ -46,6 +63,7 @@ def obtener_ocupacion(request):
         )
 
     return JsonResponse({"ocupacion_data": ocupacion_data})
+
 
 
 @login_required
@@ -166,7 +184,6 @@ def liberar_cama(request, paciente_id):
             cama.notas = (
                 f"Liberada el {timezone.now().strftime('%d/%m/%Y %H:%M')}. "
                 f"Motivo: {form.cleaned_data['motivo_liberacion']}. "
-                f"Observaciones: {form.cleaned_data['observaciones']}"
             )
             cama.estado = "LIBRE"
             cama.save()

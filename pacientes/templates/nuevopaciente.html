@@ -125,7 +125,7 @@
                     <div class="row mb-3">
                         <div class="col-sm-4"><strong>DNI:</strong></div>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" name="dni" value="{{ paciente.dni }}" required>
+                            <input type="text" class="form-control" name="dni" value="{{ paciente.dni }}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -211,35 +211,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Información de Cama</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Servicio:</strong></div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="servicio" value="{{ paciente.obtener_info_cama.servicio }}">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Ubicación:</strong></div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="ubicacion" value="{{ paciente.obtener_info_cama.ubicacion }}">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-4"><strong>Número de Cama:</strong></div>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" name="numero_cama" value="{{ paciente.obtener_info_cama.numero }}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-md-6">
@@ -271,10 +242,25 @@
         </div>
     </div>
 
+    {% if form.errors %}
+    <ul class="errorlist">
+      {% for field in form %}
+        {% if field.errors %}
+          <li>{{ field.label }}: {{ field.errors }}</li>
+        {% endif %}
+      {% endfor %}
+      {% if form.non_field_errors %}
+        <li>{{ form.non_field_errors }}</li>
+      {% endif %}
+    </ul>
+  {% endif %}
+
     <div class="btn-group">
         <button type="submit" class="btn btn-outline-primary">Guardar Cambios</button>
     </div>
 </form>
 </form>
+
+
 
 {% endblock %}

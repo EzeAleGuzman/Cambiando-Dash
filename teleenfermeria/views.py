@@ -57,16 +57,20 @@ def solicitarteleseguimiento(request, paciente_id):
     )
 
 @login_required
-@group_required("Teleenfermeria","Administrativo")
+@group_required("Teleenfermeria", "Administrativo")
 def derivadosteleseguimiento(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="Derivado")
-    for teleseguimiento in teleseguimientos:
+
+    # Filtrar teleseguimientos que no tienen seguimientos
+    teleseguimientos_sin_seguimiento = teleseguimientos.exclude(id__in=Seguimiento.objects.values('teleseguimiento'))
+
+    for teleseguimiento in teleseguimientos_sin_seguimiento:
         teleseguimiento.tiempo_espera = now() - teleseguimiento.fecha_solicitud
 
     return render(
         request,
         "teleenfermeria/derivados_teleseguimiento.html",
-        {"teleseguimientos": teleseguimientos},
+        {"teleseguimientos": teleseguimientos_sin_seguimiento},
     )
 
 @login_required
@@ -131,17 +135,28 @@ def detalleteleseguimiento(request, teleseguimiento_id):
         },
     )
 
+@login_required
 def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
     teleseguimiento = get_object_or_404(Teleseguimiento, pk=teleseguimiento_id)
-    teleseguimiento.consentimiento_seguimiento = nuevo_estado
-    if nuevo_estado == "aceptado":
-        teleseguimiento.estado = "en_proceso"
-    elif nuevo_estado == "Rechazado":
-        teleseguimiento.estado = "no_realizado"
-    teleseguimiento.save()
-    return redirect(
-        "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
-    )
+
+    # Convertir el nuevo estado a minúsculas para asegurarse de que coincida con los valores definidos
+    nuevo_estado = nuevo_estado.lower()
+
+    if nuevo_estado in dict(Teleseguimiento._meta.get_field('consentimiento_seguimiento').choices):
+        teleseguimiento.consentimiento_seguimiento = nuevo_estado
+        if nuevo_estado == "aceptado":
+            teleseguimiento.estado = "en_proceso"
+        elif nuevo_estado == "rechazado":
+            teleseguimiento.estado = "no_realizado"
+        teleseguimiento.save()
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
+        )
+    else:
+        # Si el nuevo estado no es válido, podrías agregar un mensaje de error
+        return redirect(
+            "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
+        )
 
 @login_required
 @group_required("Teleenfermeria")

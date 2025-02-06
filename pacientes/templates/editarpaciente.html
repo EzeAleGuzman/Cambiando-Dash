@@ -145,8 +145,7 @@
                     type="text"
                     class="form-control"
                     name="dni"
-                    value="{{ paciente.dni }}"
-                    required
+                    value="{{ paciente.dni|default:'' }}"
                   />
                 </div>
               </div>
@@ -263,15 +262,9 @@
                   <input
                     type="checkbox"
                     name="arm"
-                    {%
-                    if
-                    paciente.arm
-                    %}
-                    checked="checked"
-                    {%
-                    endif
-                    %}
-                  />
+                    {% if paciente.arm %}
+                     checked="checked"
+                    {% endif%}/>
                 </div>
               </div>
               <div class="row mb-3">
@@ -390,6 +383,42 @@
           </div>
         </div>
       </div>
+
+       {% if paciente.obtener_info_cama.servicio == "Pedriatria" or paciente.obtener_info_cama.servicio == "Neo" %}
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Datos Tutor-Paciente {{ paciente.obtener_info_cama.servicio }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Nombre tutor:</strong></div>
+                        <div class="col-sm-8">
+                            <input
+                            type="text"
+                            class="form-control"
+                            name="nombre_tutor"
+                            value="{{ paciente.nombre_tutor }}"
+                            />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Dni Tutor:</strong></div>
+                        <div class="col-sm-8">
+                            <input
+                            type="text"
+                            class="form-control"
+                            name="dni_tutor"
+                            value="{{ paciente.dni_tutor }}"
+                            />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
       <div class="btn-group">
         <button type="submit" class="btn btn-outline-primary">

@@ -61,13 +61,18 @@ def nuevopaciente(request):
     if request.method == "POST":
         form = PacienteForm(request.POST)
         if form.is_valid():
-            paciente = form.save()
+            paciente = form.save(commit=False)
+            if not paciente.dni:  # Si no se ha proporcionado un DNI
+                paciente.dni = None  # Guardar como NULL en lugar de una cadena vacía
+            paciente.save()
             return redirect("pacientes:Pacientes")
+        else:
+            # Imprimir los errores en la consola (para depuración)
+            print(form.errors)
+            # Renderizar la misma plantilla mostrando los errores del formulario
+            return render(request, "nuevopaciente.html", {"form": form})
     else:
-        # Instanciar el formulario vacío
-
         form = PacienteForm()
-        print(form.errors)
     return render(request, "nuevopaciente.html", {"form": form})
 
 
