@@ -28,7 +28,10 @@ class TeleseguimientoForm(forms.ModelForm):
                 }
             ),
             "agente": forms.Select(
-                attrs={"class": "form-control", "style": "width: 100%; border-radius: 5px;"}
+                attrs={
+                    "class": "form-control",
+                    "style": "width: 100%; border-radius: 5px;",
+                }
             ),
         }
 
@@ -43,7 +46,10 @@ class TeleseguimientoForm(forms.ModelForm):
 
         # Set the queryset for the agente field to all users
         if "agente" in self.fields:
-            self.fields["agente"].queryset = User.objects.filter(groups__name="Teleenfermeria")
+            self.fields["agente"].queryset = User.objects.filter(
+                groups__name="Teleenfermeria"
+            )
+
 
 class SeguimientoForm(forms.ModelForm):
     class Meta:
@@ -63,28 +69,36 @@ class SeguimientoForm(forms.ModelForm):
 class MedicacionForm(forms.ModelForm):
     class Meta:
         model = Medicacion
-        fields = ['nombre']
+        fields = ["nombre"]
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del medicamento'})
+            "nombre": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Nombre del medicamento"}
+            )
         }
+
 
 class PrescripcionForm(forms.ModelForm):
     nueva_medicacion = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Si no encuentra la medicación, ingrese el nombre aquí'
-        })
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Si no encuentra la medicación, ingrese el nombre aquí",
+            }
+        ),
     )
+
     class Meta:
         model = Prescripcion
         fields = ("medicacion", "tipo", "dosis", "via", "indicacion")
         widgets = {
-            "medicacion": forms.Select(attrs={
-                "class": "form-control",
-                "data-toggle": "tooltip",
-                "title": "Seleccione una medicación existente o ingrese una nueva abajo"
-            }),
+            "medicacion": forms.Select(
+                attrs={
+                    "class": "form-control",
+                    "data-toggle": "tooltip",
+                    "title": "Seleccione una medicación existente o ingrese una nueva abajo",
+                }
+            ),
             "tipo": forms.Select(attrs={"class": "form-control"}),
             "dosis": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Dosis"}
@@ -93,15 +107,14 @@ class PrescripcionForm(forms.ModelForm):
             "indicacion": forms.Select(attrs={"class": "form-control"}),
         }
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['medicacion'].required = False
+        self.fields["medicacion"].required = False
 
     def clean(self):
         cleaned_data = super().clean()
-        medicacion = cleaned_data.get('medicacion')
-        nueva_medicacion = cleaned_data.get('nueva_medicacion')
+        medicacion = cleaned_data.get("medicacion")
+        nueva_medicacion = cleaned_data.get("nueva_medicacion")
 
         if not medicacion and not nueva_medicacion:
             raise forms.ValidationError(
@@ -113,7 +126,7 @@ class PrescripcionForm(forms.ModelForm):
             medicacion, created = Medicacion.objects.get_or_create(
                 nombre=nueva_medicacion
             )
-            cleaned_data['medicacion'] = medicacion
+            cleaned_data["medicacion"] = medicacion
             return cleaned_data
 
         if not medicacion:
@@ -122,7 +135,7 @@ class PrescripcionForm(forms.ModelForm):
             )
 
         return cleaned_data
-=======
+
 
 class AsignarTurnoForm(forms.ModelForm):
     class Meta:

@@ -4,3 +4,5 @@
 .vscode/
 key.py
 db.sqlite3
+.env
+saluddigital/settings.py
