@@ -18,35 +18,42 @@
 <!-- seccion datos de paciente   -->
           <div class="row g-3">
               <div class="col-md-5">
-                  <div class="card h-100 border-0 bg-light">
+                  <div class="card h-100 border bg-light">
                       <div class="card-body">
                           <h6 class=" mb-2 bg-primary text-white">Información del Paciente</h6>
                           <dl class="row mb-0">
 
                               <dt class="col-sm-4">Fecha de solicitud:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
-
+                              <hr class="my-2">
                               <dt class="col-sm-4">Paciente:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
 
-                            <dt class="col-sm-4">Edad:</dt>
-                             <dd class="col-sm-8">{{ edad_years }} años y {{ edad_months }} meses</dd>
+                              <dt class="col-sm-4">Fecha de Nacimiento:</dt>
+                             <dd class="col-sm-8">{{ teleseguimiento.paciente.fecha_nacimiento}} </dd>
+
+                             <dt class="col-sm-4">Edad:</dt>
+                             <dd class="col-sm-8">
+                                {% if edad_years > 0 %}
+                                {{ edad_years }} años {% else %}  {{ edad_months }} meses
+                                {% endif %}
+                            </dd>
 
                             <dt class="col-sm-4 ">DNI: </dt>
                             <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
-
+                            <hr class="my-2">
                             <dt class="col-sm-4 ">Telefono: </dt>
-                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }}
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }}</dd>
                            <!-- Botón debajo de los números de teléfono -->
-    <div class="mt-2">
-        <button class="btn btn-success">
-            <!-- Enlace para pantallas pequeñas (móviles) -->
-            <i class="fab fa-whatsapp me-2"></i>
+       <!-- Botón debajo de los números de teléfono -->
+       <div class="mt-1 d-flex justify-content-center">
+        <!-- Enlace para pantallas pequeñas (móviles) -->
+        <button class="btn btn-success w-50 d-flex align-items-center justify-content-center">            <i class="fab fa-whatsapp me-2"></i>
             <a href="https://api.whatsapp.com/send?phone=+549{{ teleseguimiento.paciente.telefono|default_if_none:'' }}"
                class="d-block d-sm-none"
                target="_blank"
                style="text-decoration: none; color: aliceblue;">
-                Enviar mensaje de WhatsApp
+               Enviar mensaje de WhatsApp
             </a>
 
             <!-- Enlace para pantallas grandes -->
@@ -54,18 +61,43 @@
                class="d-none d-sm-block"
                target="_blank"
                style="text-decoration: none; color: aliceblue;">
-                Enviar mensaje de WhatsApp
+               Enviar mensaje de WhatsApp
             </a>
         </button>
     </div>
-                              <dt class="col-sm-4">Obra Social: </dt>
-                                <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>
-
+   
+                             
                               {% if teleseguimiento.paciente.nombre_tutor %}
                               <dt class="col-sm-4">Tutor:</dt>
                                 <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_tutor }}</dd>
                                 {% endif %}
                           </dl>
+                          <dl class="row mb-0">
+                            <hr class="my-2">
+                            <dt class="col-sm-4">Consentimiento:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge
+                                {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
+                                    bg-success
+                                {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
+                                    bg-danger
+                                {% else %}
+                                    bg-warning text-dark
+                                {% endif %}
+                                ">{{ teleseguimiento.consentimiento_seguimiento }}</span>
+            
+                                <div class="mt-2">
+                                   <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'en_espera' %}" class="btn btn-warning btn-sm">En espera</a>
+            <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
+            <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
+                                </div>
+            
+                            </dd>
+                            <hr class="my-2">
+                        <dt class="col-sm-4 mt-2">Obra Social: </dt>
+                        <dd class="col-sm-8 mt-2">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>
+
+                    </dl>
                       </div>
                   </div>
               </div>
@@ -76,32 +108,28 @@
         <div class="card-body">
             <h6 class="text-white mb-2 bg-primary p-2 rounded">Estado del Seguimiento</h6>
             <dl class="row mb-0">
+                <dt class="col-sm-4">Condición:</dt>
+                <dd class="col-sm-8">
+                    <span {% if teleseguimiento.condicion == "Otro"%}
+                    class="badge bg-warning"
+                    {% elif teleseguimiento.condicion == " Alta Medica" %}
+                    class="badge bg-success"
+                    {% else %}
+                    class="badge bg-primary"
+                    {% endif %}
+                    >{{ teleseguimiento.condicion }}</span>
+                    <div class= "mt-1 d-flex justify-content-center w-100">
+                        <a href="{% url 'teleenfermeria:modificar_estado' teleseguimiento.id 'Otro' %}" class="btn btn-warning btn-sm m-1">Otro</a>
+                        <a href="{% url 'teleenfermeria:modificar_estado' teleseguimiento.id ' Alta Medica' %}" class="btn btn-success btn-sm m-1">Alta Medica</a>
+                        <a href="{% url 'teleenfermeria:modificar_estado' teleseguimiento.id 'Alta Teleseguimiento' %}" class="btn btn-primary btn-sm m-1">Alta Teleseguimiento</a>
+                                        </div></dd>
+     
                 <dt class="col-sm-4">Motivo de Consulta:</dt>
                 <dd class="col-sm-8">{{ teleseguimiento.motivo_consulta|default_if_none:"S/D" }}</dd>
             </dl>
             <hr class="my-2">
             <dl class="row mb-0">
-                <dt class="col-sm-4">Condición:</dt>
-                <dd class="col-sm-8"><span class="badge bg-warning">{{ teleseguimiento.condicion }}</span></dd>
-                <dt class="col-sm-4">Consentimiento:</dt>
-                <dd class="col-sm-8">
-                    <span class="badge
-                    {% if teleseguimiento.consentimiento_seguimiento == 'aceptado' %}
-                        bg-success
-                    {% elif teleseguimiento.consentimiento_seguimiento == 'Rechazado' %}
-                        bg-danger
-                    {% else %}
-                        bg-warning text-dark
-                    {% endif %}
-                    ">{{ teleseguimiento.consentimiento_seguimiento }}</span>
-
-                    <div class="mt-2">
-                       <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'en_espera' %}" class="btn btn-warning btn-sm">En espera</a>
-<a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
-<a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
-                    </div>
-
-                </dd>
+            
             </dl>
 
             <!-- Diagnóstico -->

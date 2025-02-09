@@ -1,378 +1,288 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="{% static 'imagenes/logonuevo.ico' %}" type="image/x-icon">
-    <title>{% block title %}PanelPrincipal{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  </head>
 
-  <body class="bg-dark">
-    <!-- Navbar -->
-    <nav
-      class="navbar navbar-dark bg-dark navbar-expand-lg fixed-top custom-border-bottom mr-1"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"
-          ><img
-            src="{% static 'imagenes/icono.png' %}"
-            alt=""
-            size="100"
-            height="50"
-        /></a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#offcanvasDarkNavbar"
-          aria-controls="offcanvasDarkNavbar"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="offcanvas offcanvas-end text-bg-dark"
-          tabindex="-1"
-          id="offcanvasDarkNavbar"
-          aria-labelledby="offcanvasDarkNavbarLabel"
-        >
-          <div class="offcanvas-header">
-            <div class="user-circle" id="userCircle">
-              <span id="userInitials" class="user-initials">
-                {% if user.is_authenticated %}
-                    {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
-                {% else %}
-                    HO
-                {% endif %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="{% static 'imagenes/logonuevo.ico' %}" type="image/x-icon">
+  <title>{% block title %}PanelPrincipal{% endblock %}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+
+<body class="bg-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark navbar-expand-lg fixed-top custom-border-bottom mr-1">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="{% static 'imagenes/icono.png' %}" alt="" size="100" height="50" /></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+        aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+        aria-labelledby="offcanvasDarkNavbarLabel">
+        <div class="offcanvas-header">
+          <div class="user-circle" id="userCircle">
+            <span id="userInitials" class="user-initials">
+              {% if user.is_authenticated %}
+              {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
+              {% else %}
+              HO
+              {% endif %}
             </span>
 
-            </div>
-
-            <button
-              type="button"
-              class="btn-close btn-close-white"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            ></button>
           </div>
-          <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto" style="list-style: none;">
-                    <div class="dropdown">
-                        <div class="user-circle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <span id="userInitials" class="user-initials">
-                            {% if user.is_authenticated %}
-                                {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
-                            {% else %}
-                                HO
-                            {% endif %}
-                        </span>
-                        </div>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
 
-                            {% if user.is_authenticated %}
-                                <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
-                            {% else %}
-                                <li><a class="dropdown-item" href="{% url 'users:login' %}">Iniciar Sesión</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item mx-lg-2 d-lg-block d-none ms-auto" style="list-style: none;">
+              <div class="dropdown">
+                <div class="user-circle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span id="userInitials" class="user-initials">
+                    {% if user.is_authenticated %}
+                    {{ user.name|slice:":1" }}{{ user.lastname|slice:":1" }}
+                    {% else %}
+                    HO
+                    {% endif %}
+                  </span>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+
+                  {% if user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'users:logout' %}">Salir</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="{% url 'users:login' %}">Iniciar Sesión</a></li>
+                  {% endif %}
+                </ul>
+              </div>
+            </li>
+            <!-- Menú móvil replicado -->
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="{% url 'gestioncamas:dashboard' %}">Home</a>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="#subServiciosMobile" data-bs-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Gestión de Pacientes</a>
+              <ul class="collapse list-unstyled" id="subServiciosMobile">
+                <li>
+                  <a class="nav-link" href="{% url 'pacientes:nuevopaciente' %}">Nuevo Paciente</a>
                 </li>
-                <!-- Menú móvil replicado -->
-                <li class="nav-item d-lg-none" >
-                    <a class="nav-link" href="{% url 'gestioncamas:dashboard' %}">Home</a>
+                <li>
+                  <a class="nav-link" href="{% url 'pacientes:Pacientes' %}">Busqueda Paciente</a>
                 </li>
-                <li class="nav-item d-lg-none">
-                    <a class="nav-link" href="#subServiciosMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Gestión de Pacientes</a>
-                    <ul class="collapse list-unstyled" id="subServiciosMobile">
-                        <li>
-                            <a class="nav-link" href="{% url 'pacientes:nuevopaciente' %}">Nuevo Paciente</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="{% url 'pacientes:Pacientes' %}">Busqueda Paciente</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="{% url 'pacientes:pacientes_por_servicio' %}">Mostrar Servicios</a>
-                        </li>
-                    </ul>
+                <li>
+                  <a class="nav-link" href="{% url 'pacientes:pacientes_por_servicio' %}">Mostrar Servicios</a>
                 </li>
-                <li class="nav-item d-lg-none">
-                    <a class="nav-link" href="#subEnfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Enfermería</a>
-                    <ul class="collapse list-unstyled" id="subEnfermeriaMobile">
-                        <li>
-                            <a class="nav-link" href="{% url 'documento_list' %}">Protocolos Digitales</a>
-                        </li>
-                    </ul>
+              </ul>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="#subEnfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Enfermería</a>
+              <ul class="collapse list-unstyled" id="subEnfermeriaMobile">
+                <li>
+                  <a class="nav-link" href="{% url 'documento_list' %}">Protocolos Digitales</a>
                 </li>
-                <li class="nav-item d-lg-none">
-                    <a class="nav-link" href="#subServiciosGeneralesMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Servicios Generales</a>
-                    <ul class="collapse list-unstyled" id="subServiciosGeneralesMobile">
-                        <li>
-                            <a class="nav-link" href="{% url 'internos' %}">Internos</a>
-                        </li>
-                        <li>
-                            <a class="nav-link" href="#">Plaza Automotor</a>
-                        </li>
-                    </ul>
+              </ul>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="#subServiciosGeneralesMobile" data-bs-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Servicios Generales</a>
+              <ul class="collapse list-unstyled" id="subServiciosGeneralesMobile">
+                <li>
+                  <a class="nav-link" href="{% url 'internos' %}">Internos</a>
                 </li>
-                <li class="nav-item d-lg-none">
-                  <a class="nav-link" href="#subTeleenfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Teleenfermeria</a>
-                  <ul class="collapse list-unstyled" id="subTeleenfermeriaMobile">
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:derivados' %}"
-                        class="nav-link"
-                      >
-                     Derivaciones
-                      </a>
-                      </li>
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:en_proceso' %}"
-                        class="nav-link"
-                      >
-                     Teleseguimientos Activos
-                      </a>
-                      </li>
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:seguimientousuario' %}"
-                        class="nav-link"
-                      >
-                     Mis Teleseguimientos
-                      </a>
-                      </li>
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:adminteleseguimientos' %}"
-                        class="nav-link"
-                      >
-                     Administración Teleseguimientos
-                      </a>
-                      </li>
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:turnossemanales' %}"
-                        class="nav-link"
-                      >
-                     Solicitudes semanal de turnos
-                      </a>
-                      </li>
-                      <li>
-                        <a
-                        href="{% url 'teleenfermeria:rechazados' %}"
-                        class="nav-link"
-                        > Rechazados</a>
-                  </ul>
+                <li>
+                  <a class="nav-link" href="#">Plaza Automotor</a>
                 </li>
-            </ul>
-          </div>
+              </ul>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a class="nav-link" href="#subTeleenfermeriaMobile" data-bs-toggle="collapse" aria-expanded="false"
+                class="dropdown-toggle">Teleenfermeria</a>
+              <ul class="collapse list-unstyled" id="subTeleenfermeriaMobile">
+                <li>
+                  <a href="{% url 'teleenfermeria:derivados' %}" class="nav-link">
+                    Derivaciones
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:misderivados' %}" class="nav-link">
+                    Mis Derivaciones
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:en_proceso' %}" class="nav-link">
+                    Teleseguimientos Activos
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:seguimientousuario' %}" class="nav-link">
+                    Mis Teleseguimientos
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:adminteleseguimientos' %}" class="nav-link">
+                    Administración Teleseguimientos
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:turnossemanales' %}" class="nav-link">
+                    Solicitudes semanal de turnos
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'teleenfermeria:rechazados' %}" class="nav-link"> Rechazados</a>
+              </ul>
+            </li>
+          </ul>
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <main class="main-content">
-      <div class="row max-expanded-width mg-auto flex-grow">
-        <!-- Sidebar -->
-        <div
-          class="menu col-sm-3 col-lg-2 bg-dark d-none d-lg-block text-center align-items-center"
-        >
-          <div class="box align-items-center justify-content-center">
-            <a
-              href="{% url 'gestioncamas:dashboard' %}"
-              class="text-decoration-none text-white w-100"
-            >
-              <i class="bi bi-house-door-fill"></i> Home
+  <main class="main-content">
+    <div class="row max-expanded-width mg-auto flex-grow">
+      <!-- Sidebar -->
+      <div class="menu col-sm-3 col-lg-2 bg-dark d-none d-lg-block text-center align-items-center">
+        <div class="box align-items-center justify-content-center">
+          <a href="{% url 'gestioncamas:dashboard' %}" class="text-decoration-none text-white w-100">
+            <i class="bi bi-house-door-fill"></i> Home
+          </a>
+        </div>
+
+        <!-- Servicios -->
+        <div class="box align-items-center justify-content-center" id="Servicios" onclick="submenu('subServicios')">
+          <i class="bi bi-person-badge"></i> Gestión de Pacientes
+        </div>
+        <div id="subServicios" class="sub-boxes" style="display: none">
+          <div class="sub-box">
+            <a href="{% url 'pacientes:nuevopaciente' %}" class="text-decoration-none text-white">Nuevo Paciente</a>
+          </div>
+          <div class="sub-box">
+            <a href="{% url 'pacientes:Pacientes' %}" class="text-decoration-none text-white">Busqueda Paciente</a>
+          </div>
+          <div class="sub-box">
+            <a href="{% url 'pacientes:pacientes_por_servicio' %}" class="text-decoration-none text-white">Mostrar
+              Servicios</a>
+          </div>
+        </div>
+
+        <!-- Servicios Enfermería -->
+        <div class="box align-items-center justify-content-center w-100" id="Enfermeria"
+          onclick="submenu('subEnfermeria')">
+          <i class="bi bi-activity"></i> Enfermeria
+        </div>
+        <div id="subEnfermeria" class="sub-boxes" style="display: none">
+          <div class="sub-box w-100">
+            <a href="{% url 'documento_list' %}" class="text-decoration-none text-white">
+              <i class="bi bi-file-earmark"></i> Protocolos Digitales
             </a>
           </div>
+        </div>
 
-          <!-- Servicios -->
-          <div
-            class="box align-items-center justify-content-center"
-            id="Servicios"
-            onclick="submenu('subServicios')"
-          >
-            <i class="bi bi-person-badge"></i> Gestión de Pacientes
+        <!-- Servicios Generales -->
+        <div class="box align-items-center justify-content-center w-100" id="serviciosGenerales"
+          onclick="submenu('subServiciosGenerales')">
+          <i class="bi bi-person-fill-gear"></i> Servicios Generales
+        </div>
+        <div id="subServiciosGenerales" class="sub-boxes" style="display: none">
+          <div class="sub-box w-100">
+            <a href="{% url 'internos' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-telephone"></i> Internos
+            </a>
           </div>
-          <div id="subServicios" class="sub-boxes" style="display: none">
-            <div class="sub-box">
-              <a
-                href="{% url 'pacientes:nuevopaciente' %}"
-                class="text-decoration-none text-white"
-                >Nuevo Paciente</a
-              >
-            </div>
-            <div class="sub-box">
-              <a
-                href="{% url 'pacientes:Pacientes' %}"
-                class="text-decoration-none text-white"
-                >Busqueda Paciente</a
-              >
-            </div>
-            <div class="sub-box">
-              <a
-                href="{% url 'pacientes:pacientes_por_servicio' %}"
-                class="text-decoration-none text-white"
-                >Mostrar Servicios</a
-              >
-            </div>
+          <div class="sub-box w-100">
+            <a href="" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-car-front-fill"></i> Plaza Automotor
+            </a>
           </div>
-
-          <!-- Servicios Enfermería -->
-          <div
-            class="box align-items-center justify-content-center w-100"
-            id="Enfermeria"
-            onclick="submenu('subEnfermeria')"
-          >
-            <i class="bi bi-activity"></i> Enfermeria
-          </div>
-          <div id="subEnfermeria" class="sub-boxes" style="display: none">
-            <div class="sub-box w-100">
-              <a
-                href="{% url 'documento_list' %}"
-                class="text-decoration-none text-white"
-              >
-                <i class="bi bi-file-earmark"></i> Protocolos Digitales
-              </a>
-            </div>
-          </div>
-
-          <!-- Servicios Generales -->
-          <div
-            class="box align-items-center justify-content-center w-100"
-            id="serviciosGenerales"
-            onclick="submenu('subServiciosGenerales')"
-          >
-            <i class="bi bi-person-fill-gear"></i> Servicios Generales
-          </div>
-          <div
-            id="subServiciosGenerales"
-            class="sub-boxes"
-            style="display: none"
-          >
-            <div class="sub-box w-100">
-              <a
-                href="{% url 'internos' %}"
-                class="text-decoration-none text-white btn w-100"
-              >
-                <i class="bi bi-telephone"></i> Internos
-              </a>
-            </div>
-            <div class="sub-box w-100">
-              <a href="" class="text-decoration-none text-white btn w-100">
-                <i class="bi bi-car-front-fill"></i> Plaza Automotor
-              </a>
-            </div>
-          </div>
-
-
-              <!-- Tele Enfermeria -->
-              <div
-              class="box align-items-center justify-content-center w-100"
-              id="teleenfermeria"
-              onclick="submenu('subTeleenfermeria')"
-            >
-              <i class="bi bi-person-fill-gear"></i> Tele Enfermeria
-            </div>
-            <div
-              id="subTeleenfermeria"
-              class="sub-boxes"
-              style="display: none"
-            >
-              <div class="sub-box w-100">
-                <a
-                  href="{% url 'teleenfermeria:derivados' %}"
-                  class="text-decoration-none text-white btn w-100"
-                >
-                    <i class="bi bi-arrow-right-circle"></i> Derivaciones
-                </a>
-              </div>
-                <div class="sub-box w-100">
-                <a
-                  href="{% url 'teleenfermeria:misderivados' %}"
-                  class="text-decoration-none text-white btn w-100"
-                >
-                    <i class="bi bi-arrow-right-circle"></i>Mis Derivaciones
-                </a>
-              </div>
-              <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:en_proceso' %}" class="text-decoration-none text-white btn w-100">
-                    <i class="bi bi-check-circle-fill"></i> Teleseguimientos Activos
-                </a>
-              </div>
-              <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:seguimientousuario' %}" class="text-decoration-none text-white btn w-100">
-                    <i class="bi bi-list-check"></i> Mis Teleseguimientos
-                  </a>
-              </div>
-              <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:turnossemanales' %}" class="text-decoration-none text-white btn w-100">
-                    <i class="bi bi-calendar-check-fill"></i> Solicitudes semanal de turnos
-                </a>
-              </div>
-              <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:adminteleseguimientos' %}" class="text-decoration-none text-white btn w-100">
-                    <i class="bi bi-person-check-fill"></i> Teleseguimientos Coordinadora
-                </a>
-              </div>
-              <div class="sub-box w-100">
-                <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
-                  <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
-                </a>
-              </div>
-            </div>
-
-
-
-
-
         </div>
 
 
-        <!-- Contenido Principal -->
-        <div
-          class="contenido-principal col-m-12 col-lg-10 bg-light align-items-center"
-        >
-          <div class="row max-expanded-width mg-auto flex-grow text-center">
-            <div class="container p-4">
-              {% block main_content %} {% endblock %}
-            </div>
+        <!-- Tele Enfermeria -->
+        <div class="box align-items-center justify-content-center w-100" id="teleenfermeria"
+          onclick="submenu('subTeleenfermeria')">
+          <i class="bi bi-person-fill-gear"></i> Tele Enfermeria
+        </div>
+        <div id="subTeleenfermeria" class="sub-boxes" style="display: none">
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:derivados' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-arrow-right-circle"></i> Derivaciones
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:misderivados' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-arrow-right-circle"></i>Mis Derivaciones
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:en_proceso' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-check-circle-fill"></i> Teleseguimientos Activos
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:seguimientousuario' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-list-check"></i> Mis Teleseguimientos
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:turnossemanales' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-calendar-check-fill"></i> Solicitudes semanal de turnos
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:adminteleseguimientos' %}"
+              class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-person-check-fill"></i> Teleseguimientos Coordinadora
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
+              <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
+            </a>
+          </div>
+        </div>
+
+
+
+
+
+      </div>
+
+
+      <!-- Contenido Principal -->
+      <div class="contenido-principal col-m-12 col-lg-10 bg-light align-items-center">
+        <div class="row max-expanded-width mg-auto flex-grow text-center">
+          <div class="container p-4">
+            {% block main_content %} {% endblock %}
           </div>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <footer class="bg-dark text-center">
-      <div class="text-white">
-        <p>Salud Digital</p>
-        <p>Hospital Dr Arturo Oñativia</p>
-      </div>
-    </footer>
+  <footer class="bg-dark text-center">
+    <div class="text-white">
+      <p>Salud Digital</p>
+      <p>Hospital Dr Arturo Oñativia</p>
+    </div>
+  </footer>
 
-    <script src="{% static 'js/script.js' %}"></script>
-    <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+  <script src="{% static 'js/script.js' %}"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

@@ -46,7 +46,7 @@ urlpatterns = [
         "solicitar_turno/<int:teleseguimiento_id>/",
         views.solicitarturno,
         name="solicitar_turno",
-        ),
+    ),
     path(
         "turnossolicitados/",
         views.turnosporsemana,
@@ -82,9 +82,14 @@ urlpatterns = [
         views.administrar_teleseguimientos,
         name="adminteleseguimientos",
     ),
-    path
-        ("misDerivados/",
+    path(
+        "misDerivados/",
         views.teleseguimientos_mis_derivados,
         name="misderivados",
     ),
-    ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path(
+        "modificar_estado/<int:teleseguimiento_id>/<str:nuevo_estado>/",
+        views.modificarestado,
+        name="modificar_estado",
+    ),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

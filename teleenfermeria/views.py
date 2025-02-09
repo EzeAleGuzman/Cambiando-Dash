@@ -50,6 +50,15 @@ def no_permisos(request):
     return render(request, "teleenfermeria/no_permisos.html")
 
 
+def buscar_teleseguimiento(query, queryset):
+    if query:
+        queryset = queryset.filter(
+            Q(paciente__nombre_completo__icontains=query)
+            | Q(paciente__dni__icontains=query)
+        )
+    return queryset
+
+
 @login_required
 @group_required("Administrativo")
 def solicitarteleseguimiento(request, paciente_id):
@@ -74,33 +83,38 @@ def solicitarteleseguimiento(request, paciente_id):
 @login_required
 @group_required("Teleenfermeria", "Administrativo")
 def derivadosteleseguimiento(request):
-    teleseguimientos = Teleseguimiento.objects.filter(estado="Derivado")
-
-    # Filtrar teleseguimientos que no tienen seguimientos
-    teleseguimientos_sin_seguimiento = teleseguimientos.exclude(
-        id__in=Seguimiento.objects.values("teleseguimiento")
+    teleseguimientos = Teleseguimiento.objects.filter(
+        Q(consentimiento_seguimiento="En espera")
+        | Q(consentimiento_seguimiento="en_espera")
     )
 
-    for teleseguimiento in teleseguimientos_sin_seguimiento:
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
+
+    for teleseguimiento in teleseguimientos:
         teleseguimiento.tiempo_espera = now() - teleseguimiento.fecha_solicitud
 
     return render(
         request,
         "teleenfermeria/derivados_teleseguimiento.html",
-        {"teleseguimientos": teleseguimientos_sin_seguimiento},
+        {"teleseguimientos": teleseguimientos},
     )
 
 
 @login_required
 @group_required("Teleenfermeria", "Administrativo")
 def enprocesoteleseguimiento(request):
-    teleseguimientos = Teleseguimiento.objects.filter(estado="en_proceso")
+    teleseguimientos = Teleseguimiento.objects.filter(
+        estado="en_proceso", condicion="Otro"
+    )
     for teleseguimiento in teleseguimientos:
         ultimo_seguimiento_fecha = teleseguimiento.fecha_ultimo_seguimiento()
         if ultimo_seguimiento_fecha:
             teleseguimiento.tiempo_espera = now() - ultimo_seguimiento_fecha
         else:
             teleseguimiento.tiempo_espera = None
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
     return render(
         request,
         "teleenfermeria/en_proceso_teleseguimiento.html",
@@ -112,6 +126,9 @@ def enprocesoteleseguimiento(request):
 @group_required("Teleenfermeria", "Administrativo")
 def telezeguimientosrechazados(request):
     teleseguimientos = Teleseguimiento.objects.filter(estado="no_realizado")
+
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
     return render(
         request,
         "teleenfermeria/rechazados_teleseguimiento.html",
@@ -292,6 +309,8 @@ def teleseguimientosusuario(request):
 def teleseguimientos_mis_derivados(request):
     # Filtramos los teleseguimientos donde el agente logueado es el agente asignado
     teleseguimientos = Teleseguimiento.objects.filter(agente=request.user)
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
 
     return render(
         request,
@@ -432,6 +451,13 @@ def administrar_teleseguimientos(request):
         "usuario_seleccionado": usuario_seleccionado,
     }
     return render(request, "teleenfermeria/administrar_teleseguimientos.html", context)
+
+
+def modificarestado(request, teleseguimiento_id, nuevo_estado):
+    teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
+    teleseguimiento.condicion = nuevo_estado
+    teleseguimiento.save()
+    return redirect("teleenfermeria:detalleteleseguimiento", teleseguimiento_id)
 
 
 def rechazarsolicitud(request, solicitud_id):

@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% block title %}Derivados a Teleseguimientos{% endblock %}
-{% block main_content %}
+{% extends "base.html" %} {% block title %}Derivados a
+Teleseguimientos{%endblock %} {% block main_content %}
 <style>
   .table-warning {
     background-color: #fff3cd;
@@ -15,7 +14,23 @@
   }
 </style>
 <div class="container mt-4">
-  <h2 class="mb-4">Derivados a Teleseguimientos</h2>
+  <h2 class="mb-4">Derivados</h2>
+  <form method="GET" action="{% url 'teleenfermeria:derivados' %}">
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <input
+          type="text"
+          name="q"
+          class="form-control"
+          placeholder="Buscar por DNI o Apellido"
+          value="{{ query|default:'' }}"
+        />
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-primary w-100" type="submit">Buscar</button>
+      </div>
+    </div>
+  </form>
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
@@ -30,10 +45,12 @@
       <tbody>
         {% for teleseguimiento in teleseguimientos %}
         <tr
-            class="{% if teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}"
+          class="{% if teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}"
         >
           <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
-          <td>{{ teleseguimiento.fecha_solicitud|default_if_none:"Sin Datos" }}</td>
+          <td>
+            {{ teleseguimiento.fecha_solicitud|default_if_none:"Sin Datos" }}
+          </td>
           <td>{{ teleseguimiento.motivo_consulta }}</td>
           <td>
             <a

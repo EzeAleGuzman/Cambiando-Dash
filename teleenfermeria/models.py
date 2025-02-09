@@ -15,12 +15,14 @@ class Teleseguimiento(models.Model):
     id = models.AutoField(primary_key=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha_solicitud = models.DateTimeField(default=timezone.now)
-    motivo_consulta = models.TextField(max_length=1000, blank=True, null=True, verbose_name="Motivo de consulta")
+    motivo_consulta = models.TextField(
+        max_length=1000, blank=True, null=True, verbose_name="Motivo de consulta"
+    )
     condicion = models.CharField(
         max_length=100,
         choices=[
             (" Alta Medica", " Alta Medica"),
-            ("Internado", "Internado"),
+            ("Alta Teleseguimiento", "Alta Teleseguimiento"),
             ("Otro", "Otro"),
         ],
         default="Alta Medica",
@@ -28,10 +30,10 @@ class Teleseguimiento(models.Model):
     consentimiento_seguimiento = models.CharField(
         max_length=100,
         choices=[
-            ("aceptado", "Aceptado"),
+            ("Aceptado", "Aceptado"),
             ("Rechazado", "Rechazado"),
             ("En espera", "En espera"),
-            ("pasivo", "Pasivo"),
+            ("Pasivo", "Pasivo"),
         ],
         default="en_espera",
     )
@@ -56,7 +58,12 @@ class Teleseguimiento(models.Model):
         ],
         default="En proceso",
     )
-    agente = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True,)
+    agente = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"Teleseguimiento de {self.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
@@ -150,7 +157,7 @@ class SolicitudTurno(models.Model):
             ("oftalmologia", "Oftalmología"),
         ],
     )
-    imagen_orden = models.ImageField(upload_to='ordenes/', null=True, blank=True)
+    imagen_orden = models.ImageField(upload_to="ordenes/", null=True, blank=True)
 
     def __str__(self):
         return f"Solicitud de turno para {self.teleseguimiento.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')} - {self.especialidad}"
