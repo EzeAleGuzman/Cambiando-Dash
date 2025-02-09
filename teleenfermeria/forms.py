@@ -76,7 +76,6 @@ class PrescripcionForm(forms.ModelForm):
             'placeholder': 'Si no encuentra la medicación, ingrese el nombre aquí'
         })
     )
-
     class Meta:
         model = Prescripcion
         fields = ("medicacion", "tipo", "dosis", "via", "indicacion")
@@ -87,10 +86,13 @@ class PrescripcionForm(forms.ModelForm):
                 "title": "Seleccione una medicación existente o ingrese una nueva abajo"
             }),
             "tipo": forms.Select(attrs={"class": "form-control"}),
-            "dosis": forms.TextInput(attrs={"class": "form-control", "placeholder": "Dosis"}),
+            "dosis": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Dosis"}
+            ),
             "via": forms.Select(attrs={"class": "form-control"}),
             "indicacion": forms.Select(attrs={"class": "form-control"}),
         }
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,45 +122,47 @@ class PrescripcionForm(forms.ModelForm):
             )
 
         return cleaned_data
+=======
 
 class AsignarTurnoForm(forms.ModelForm):
     class Meta:
         model = Turno
-        fields = ['fecha_turno', 'hora_turno', 'profesional']
+        fields = ["fecha_turno", "hora_turno", "profesional"]
         widgets = {
-            'fecha_turno': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'hora_turno': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-            'profesional': forms.TextInput(attrs={'class': 'form-control'}),
+            "fecha_turno": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}
+            ),
+            "hora_turno": forms.TimeInput(
+                attrs={"class": "form-control", "type": "time"}
+            ),
+            "profesional": forms.TextInput(attrs={"class": "form-control"}),
         }
+
 
 class FiltrarTeleseguimientoForm(forms.Form):
     usuario = forms.ModelChoiceField(
-        queryset=User.objects.none(),
-        required=True,
-        label='Usuario',
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-            'placeholder': 'Seleccione usuario'
-        })
+        queryset=User.objects.none(), required=False, label="Usuario"
     )
 
     def __init__(self, *args, **kwargs):
-        usuarios = kwargs.pop('usuarios', None)
+        usuarios = kwargs.pop("usuarios", None)
         super(FiltrarTeleseguimientoForm, self).__init__(*args, **kwargs)
         if usuarios is not None:
-            self.fields['usuario'].queryset = usuarios
+
+            self.fields["usuario"].queryset = usuarios
+
 
 class DiagnosticoForm(forms.ModelForm):
     class Meta:
         model = Teleseguimiento
-        fields = ['diagnostico']
+        fields = ["diagnostico"]
         widgets = {
-            'diagnostico': forms.TextInput(
+            "diagnostico": forms.TextInput(
                 attrs={
-                    'class': 'form-control',
-                    'rows': 3,
-                    'placeholder': 'Ingrese el diagnóstico...',
-                    'style': 'width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;',
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "Ingrese el diagnóstico...",
+                    "style": "width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;",
                 }
             ),
         }
