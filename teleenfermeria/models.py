@@ -52,10 +52,11 @@ class Teleseguimiento(models.Model):
         choices=[
             ("completo", "Completo"),
             ("en_proceso", "En Proceso"),
-            ("incompleto", "Incompleto"),   
+            ("incompleto", "Incompleto"),
         ],
         default="En proceso",
     )
+    agente = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True,)
 
     def __str__(self):
         return f"Teleseguimiento de {self.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')}"
@@ -149,6 +150,7 @@ class SolicitudTurno(models.Model):
             ("oftalmologia", "Oftalmología"),
         ],
     )
+    imagen_orden = models.ImageField(upload_to='ordenes/', null=True, blank=True)
 
     def __str__(self):
         return f"Solicitud de turno para {self.teleseguimiento.paciente.nombre_completo} - {self.fecha_solicitud.strftime('%Y-%m-%d %H:%M')} - {self.especialidad}"

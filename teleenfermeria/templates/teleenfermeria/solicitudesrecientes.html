@@ -68,6 +68,12 @@
                   <i class="fas fa-times"></i> Rechazar
                 </a>
                 {% endif %} {% endif %}
+  {% if solicitud.imagen_orden %}
+    <a href="{{ solicitud.imagen_orden.url }}" target="_blank" class="btn btn-sm btn-success">
+      <i class="fas fa-image"></i> Ver Orden
+    </a>
+  {% endif %}
+
               </td>
             </tr>
             {% empty %}
@@ -83,5 +89,24 @@
     </div>
   </div>
 </div>
+
+<!-- Modal de la imagen -->
+<div class="modal fade" id="modalImagen{{ solicitud.id }}" tabindex="-1" aria-labelledby="modalImagenLabel{{ solicitud.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalImagenLabel{{ solicitud.id }}">Imagen de la Orden</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="{{ solicitud.imagen_orden.url }}" class="img-fluid" alt="Imagen de la orden">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}

@@ -7,3 +7,5 @@ from .models import Paciente
 @admin.register(Paciente)
 class PacienteAdmin(ImportExportModelAdmin):
     resource_class = PacienteResource
+    ordering = ["nombre_completo"]
+    search_fields = ["nombre_completo", "dni"]

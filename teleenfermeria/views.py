@@ -4,11 +4,9 @@ from .models import (
     Teleseguimiento,
     Seguimiento,
     Prescripcion,
-    Medicacion,
     SolicitudTurno,
     Turno,
 )
-from django.db.models import Count
 from .forms import DiagnosticoForm, TeleseguimientoForm,FiltrarTeleseguimientoForm, SeguimientoForm, PrescripcionForm, AsignarTurnoForm
 from django.utils.timezone import now
 from users.models import User
@@ -17,6 +15,8 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
+from datetime import date
+
 
 
 def group_required(*group_names):
@@ -109,11 +109,30 @@ def televacunas(request, teleseguimiento_id):
             teleseguimiento_id=teleseguimiento_id,
         )
 
+
 def detalleteleseguimiento(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
     seguimientos = Seguimiento.objects.filter(teleseguimiento=teleseguimiento)
     prescripciones = Prescripcion.objects.filter(teleseguimiento=teleseguimiento)
     turnos_aceptados = Turno.objects.filter(solicitud_turno__teleseguimiento=teleseguimiento)
+    hoy = date.today()
+
+    # Cálculo de la edad en años y meses
+    fecha_nacimiento = teleseguimiento.paciente.fecha_nacimiento
+    edad_years = hoy.year - fecha_nacimiento.year
+    edad_months = hoy.month - fecha_nacimiento.month
+
+    # Ajuste si el mes actual es anterior al mes de nacimiento
+    if edad_months < 0:
+        edad_years -= 1
+        edad_months += 12
+
+    # Ajuste si aún no ha cumplido el día de nacimiento este año
+    if hoy.day < fecha_nacimiento.day:
+        edad_months -= 1
+        if edad_months < 0:
+            edad_years -= 1
+            edad_months += 12
 
     if request.method == 'POST':
         form = DiagnosticoForm(request.POST, instance=teleseguimiento)
@@ -132,31 +151,45 @@ def detalleteleseguimiento(request, teleseguimiento_id):
             "prescripciones": prescripciones,
             "turnos_aceptados": turnos_aceptados,
             "form": form,
+            "edad_years": edad_years,
+            "edad_months": edad_months,
         },
     )
+
 
 @login_required
 def modificar_consentimiento(request, teleseguimiento_id, nuevo_estado):
     teleseguimiento = get_object_or_404(Teleseguimiento, pk=teleseguimiento_id)
 
-    # Convertir el nuevo estado a minúsculas para asegurarse de que coincida con los valores definidos
-    nuevo_estado = nuevo_estado.lower()
+    # Normalizar el nuevo estado a minúsculas para comparar de manera consistente
+    nuevo_estado = nuevo_estado.strip().lower()
 
-    if nuevo_estado in dict(Teleseguimiento._meta.get_field('consentimiento_seguimiento').choices):
-        teleseguimiento.consentimiento_seguimiento = nuevo_estado
+    # Mapeo para manejar valores actuales y normalizados
+    estado_map = {
+        "aceptado": "aceptado",
+        "rechazado": "Rechazado",  # Mantener la capitalización existente
+        "en_espera": "En espera",
+        "pasivo": "pasivo"
+    }
+
+    # Comprobar si el estado ingresado es válido (ignorando mayúsculas/minúsculas y espacios)
+    if nuevo_estado in estado_map:
+        teleseguimiento.consentimiento_seguimiento = estado_map[nuevo_estado]
+
+        # Actualizar el estado del teleseguimiento basado en el nuevo consentimiento
         if nuevo_estado == "aceptado":
             teleseguimiento.estado = "en_proceso"
         elif nuevo_estado == "rechazado":
             teleseguimiento.estado = "no_realizado"
+        else:
+            teleseguimiento.estado = "derivado"  # Si es "en espera" o "pasivo"
+
         teleseguimiento.save()
-        return redirect(
-            "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
-        )
+        return redirect("teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id)
     else:
-        # Si el nuevo estado no es válido, podrías agregar un mensaje de error
-        return redirect(
-            "teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id
-        )
+        # Si el nuevo estado no es válido, puedes agregar un mensaje de error o manejarlo aquí
+        return redirect("teleenfermeria:detalleteleseguimiento", teleseguimiento_id=teleseguimiento_id)
+
 
 @login_required
 @group_required("Teleenfermeria")
@@ -214,6 +247,17 @@ def teleseguimientosusuario(request):
         {"teleseguimientos": teleseguimientos},
     )
 
+@login_required
+@group_required("Teleenfermeria", "Administrativo")  # Asegúrate de que el usuario esté en el grupo adecuado
+def teleseguimientos_mis_derivados(request):
+    # Filtramos los teleseguimientos donde el agente logueado es el agente asignado
+    teleseguimientos = Teleseguimiento.objects.filter(agente=request.user)
+
+    return render(
+        request,
+        "teleenfermeria/teleseguimientos_misderivados.html",  # El nombre de tu template
+        {"teleseguimientos": teleseguimientos},
+    )
 
 def solicitarturno(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
@@ -240,8 +284,10 @@ def solicitarturno(request, teleseguimiento_id):
 
     if request.method == "POST":
         especialidad = request.POST.get("especialidad")
+        imagen_orden = request.FILES.get('imagen_orden')
+         # Crear la solicitud de turno
         solicitud_turno = SolicitudTurno.objects.create(
-            teleseguimiento=teleseguimiento, especialidad=especialidad
+            teleseguimiento=teleseguimiento, especialidad=especialidad, imagen_orden=imagen_orden,
         )
         return redirect(
             "teleenfermeria:detalleteleseguimiento",

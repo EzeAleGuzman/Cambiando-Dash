@@ -22,19 +22,42 @@
                       <div class="card-body">
                           <h6 class=" mb-2 bg-primary text-white">Información del Paciente</h6>
                           <dl class="row mb-0">
-                              <dt class="col-sm-4">Paciente:</dt>
-                              <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
 
                               <dt class="col-sm-4">Fecha de solicitud:</dt>
                               <dd class="col-sm-8">{{ teleseguimiento.fecha_solicitud }}</dd>
+
+                              <dt class="col-sm-4">Paciente:</dt>
+                              <dd class="col-sm-8">{{ teleseguimiento.paciente.nombre_completo }}</dd>
+
+                            <dt class="col-sm-4">Edad:</dt>
+                             <dd class="col-sm-8">{{ edad_years }} años y {{ edad_months }} meses</dd>
 
                             <dt class="col-sm-4 ">DNI: </dt>
                             <dd class="col-sm-8">{{ teleseguimiento.paciente.dni }}</dd>
 
                             <dt class="col-sm-4 ">Telefono: </dt>
-                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }} <button class="btn btn-success">
-                                <i class="fab fa-whatsapp me-2"></i><a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:"Sin datos" }}" target="_blank" style="text-decoration: none; color: aliceblue;">Enviar mensaje de WhatsApp</a>
-                            </button></dd>
+                            <dd class="col-sm-8">{{ teleseguimiento.paciente.telefono }} / {{ teleseguimiento.paciente.telefono2 }}
+                           <!-- Botón debajo de los números de teléfono -->
+    <div class="mt-2">
+        <button class="btn btn-success">
+            <!-- Enlace para pantallas pequeñas (móviles) -->
+            <i class="fab fa-whatsapp me-2"></i>
+            <a href="https://api.whatsapp.com/send?phone=+549{{ teleseguimiento.paciente.telefono|default_if_none:'' }}"
+               class="d-block d-sm-none"
+               target="_blank"
+               style="text-decoration: none; color: aliceblue;">
+                Enviar mensaje de WhatsApp
+            </a>
+
+            <!-- Enlace para pantallas grandes -->
+            <a href="https://api.whatsapp.com/send?phone={{ teleseguimiento.paciente.telefono|default_if_none:'' }}"
+               class="d-none d-sm-block"
+               target="_blank"
+               style="text-decoration: none; color: aliceblue;">
+                Enviar mensaje de WhatsApp
+            </a>
+        </button>
+    </div>
                               <dt class="col-sm-4">Obra Social: </dt>
                                 <dd class="col-sm-8">{% if teleseguimiento.paciente.obra_social == '' or teleseguimiento.paciente.obra_social == "None" %}<p>Sin Datos</p>{%else%}{{ teleseguimiento.paciente.obra_social }}{% endif %}</dd>
 
@@ -71,12 +94,13 @@
                         bg-warning text-dark
                     {% endif %}
                     ">{{ teleseguimiento.consentimiento_seguimiento }}</span>
-                    {% if teleseguimiento.consentimiento_seguimiento != "aceptado" %}
+
                     <div class="mt-2">
-                        <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
-                        <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'Rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
+                       <a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'en_espera' %}" class="btn btn-warning btn-sm">En espera</a>
+<a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'aceptado' %}" class="btn btn-success btn-sm">Aceptado</a>
+<a href="{% url 'teleenfermeria:modificar_consentimiento' teleseguimiento.id 'rechazado' %}" class="btn btn-danger btn-sm">Rechazado</a>
                     </div>
-                    {% endif %}
+
                 </dd>
             </dl>
 
@@ -170,28 +194,31 @@
         <h5 class="mb-0">Solicitud de Turno</h5>
     </div>
     <div class="card-body">
-        <form method="POST" action="{% url 'teleenfermeria:solicitar_turno' teleseguimiento.id %}">
-            {% csrf_token %}
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <select name="especialidad" class="form-select" required>
-                        <option value="">Seleccione una especialidad</option>
-                        <option value="Otorrinolaringología">Otorrinolaringología</option>
-                        <option value="Cardiología">Cardiología</option>
-                        <option value="Dermatología">Dermatología</option>
-                        <option value="Neurología">Neurología</option>
-                        <option value="Pediatría">Pediatría</option>
-                        <option value="Psiquiatría">Psiquiatría</option>
-                        <option value="Traumatología">Traumatología</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-calendar-plus me-2"></i>Solicitar Turno
-                    </button>
-                </div>
-            </div>
-        </form>
+        <form method="POST" action="{% url 'teleenfermeria:solicitar_turno' teleseguimiento.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <select name="especialidad" class="form-select" required>
+                <option value="">Seleccione una especialidad</option>
+                <option value="Otorrinolaringología">Otorrinolaringología</option>
+                <option value="Cardiología">Cardiología</option>
+                <option value="Dermatología">Dermatología</option>
+                <option value="Neurología">Neurología</option>
+                <option value="Pediatría">Pediatría</option>
+                <option value="Psiquiatría">Psiquiatría</option>
+                <option value="Traumatología">Traumatología</option>
+            </select>
+        </div>
+        <div class="col-md-8 mt-3">
+            <label for="imagen_orden" class="form-label">Subir Imagen de Orden (opcional)</label>
+            <input type="file" name="imagen_orden" class="form-control" id="imagen_orden" accept="image/*">
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-calendar-plus me-2"></i> Solicitar Turno
+            </button>
+        </div>
+    </div>
     </div>
     <div>
 

@@ -9,7 +9,42 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    Por favor corrija los errores indicados.
+                </div>
+                {% endif %}
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.medicacion.id_for_label }}">Medicación Existente:</label>
+                    {{ form.medicacion }}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.nueva_medicacion.id_for_label }}">Nueva Medicación:</label>
+                    {{ form.nueva_medicacion }}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+                    {{ form.tipo }}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.dosis.id_for_label }}">Dosis:</label>
+                    {{ form.dosis }}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.via.id_for_label }}">Vía:</label>
+                    {{ form.via }}
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="{{ form.indicacion.id_for_label }}">Indicación:</label>
+                    {{ form.indicacion }}
+                </div>
+
                 <button type="submit" class="btn btn-primary">Guardar</button>
             </form>
         </div>
