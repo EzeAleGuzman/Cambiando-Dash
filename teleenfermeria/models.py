@@ -25,7 +25,7 @@ class Teleseguimiento(models.Model):
             ("Alta Teleseguimiento", "Alta Teleseguimiento"),
             ("Otro", "Otro"),
         ],
-        default="Alta Medica",
+        default="Otro",
     )
     consentimiento_seguimiento = models.CharField(
         max_length=100,

@@ -92,4 +92,14 @@ urlpatterns = [
         views.modificarestado,
         name="modificar_estado",
     ),
+    path(
+        "altasteleseguimientos/",
+        views.altasteleseguimientos,
+        name="altasteleseguimientos",
+    ),
+    path(
+        "altamedicateleseguimientos/",
+        views.altasmedicasseguimientos,
+        name="altasmedicasseguimientos",
+    ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

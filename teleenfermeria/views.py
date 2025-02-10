@@ -93,6 +93,8 @@ def derivadosteleseguimiento(request):
 
     for teleseguimiento in teleseguimientos:
         teleseguimiento.tiempo_espera = now() - teleseguimiento.fecha_solicitud
+        teleseguimiento.tiempo_espera = teleseguimiento.tiempo_espera.days
+        teleseguimiento.save()
 
     return render(
         request,
@@ -465,3 +467,25 @@ def rechazarsolicitud(request, solicitud_id):
     solicitud.estado = "rechazado"
     solicitud.save()
     return redirect("teleenfermeria:turnossemanales")
+
+def altasteleseguimientos(request):
+    teleseguimientos = Teleseguimiento.objects.filter(condicion="Alta Teleseguimiento")
+
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
+    return render(
+        request,
+        "teleenfermeria/teleseguimientos_de_alta.html",
+        {"teleseguimientos": teleseguimientos},
+    )
+
+def altasmedicasseguimientos(request):
+    teleseguimientos = Teleseguimiento.objects.filter(condicion=" Alta Medica")
+
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
+    return render(
+        request,
+        "teleenfermeria/teleseguimientos_de_alta_medica.html",
+        {"teleseguimientos": teleseguimientos},
+    )

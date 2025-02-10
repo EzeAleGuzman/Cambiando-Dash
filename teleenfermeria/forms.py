@@ -8,7 +8,6 @@ class TeleseguimientoForm(forms.ModelForm):
         model = Teleseguimiento
         fields = [
             "motivo_consulta",
-            "condicion",
             "agente",
         ]
         widgets = {
@@ -17,13 +16,6 @@ class TeleseguimientoForm(forms.ModelForm):
                     "class": "form-control",
                     "rows": 4,
                     "placeholder": "Describe el motivo de consulta...",
-                    "style": "width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;",
-                }
-            ),
-            "condicion": forms.Select(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Seleccione condición",
                     "style": "width: 100%; margin: 0 auto; border-radius: 5px; padding: 10px;",
                 }
             ),

@@ -1,16 +1,16 @@
 {% extends "base.html" %} {% block title %}Derivados a
 Teleseguimientos{%endblock %} {% block main_content %}
 <style>
-  .table-warning {
-    background-color: #fff3cd;
+   .table-warning2 {
+    background-color: #ddb01f;
   }
 
-  .table-danger {
-    background-color: #f8d7da;
+  .table-danger2 {
+    background-color: #ad3e47;
   }
 
-  .table-success {
-    background-color: #d4edda;
+  .table-success2 {
+    background-color: #7db58a;
   }
 </style>
 <div class="container mt-4">
@@ -44,14 +44,12 @@ Teleseguimientos{%endblock %} {% block main_content %}
       </thead>
       <tbody>
         {% for teleseguimiento in teleseguimientos %}
-        <tr
-          class="{% if teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 7 %}table-danger{% elif teleseguimiento.tiempo_espera and teleseguimiento.tiempo_espera.days >= 3 %}table-warning{% else %}table-success{% endif %}"
-        >
+        <tr class="{% if teleseguimiento.tiempo_espera >= 7 %}table-danger2{% elif teleseguimiento.tiempo_espera >= 3 %}table-warning{% else %}table-success{% endif %}">
           <td>{{ teleseguimiento.paciente.nombre_completo }}</td>
           <td>
             {{ teleseguimiento.fecha_solicitud|default_if_none:"Sin Datos" }}
           </td>
-          <td>{{ teleseguimiento.motivo_consulta }}</td>
+          <td>{{ teleseguimiento.motivo_consulta }}</td> 
           <td>
             <a
               href="{% url 'teleenfermeria:detalleteleseguimiento' teleseguimiento.id %}"

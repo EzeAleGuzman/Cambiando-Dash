@@ -140,6 +140,12 @@
                 <li>
                   <a href="{% url 'teleenfermeria:rechazados' %}" class="nav-link"> Rechazados</a>
               </ul>
+              <li>
+                <a href="{% url 'teleenfermeria:altasmedicasseguimientos' %}" class="nav-link"> Altas Medicas Teleseguimientos</a>
+            </ul>
+            <li>
+              <a href="{% url 'teleenfermeria:altasteleseguimientos' %}" class="nav-link"> Altas Teleseguimientos</a>
+          </ul>
             </li>
           </ul>
         </div>
@@ -246,6 +252,16 @@
           <div class="sub-box w-100">
             <a href="{% url 'teleenfermeria:rechazados' %}" class="text-decoration-none text-white btn w-100">
               <i class="bi bi-x-circle-fill"></i> Teleseguimientos Rechazados
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:altasmedicasseguimientos' %}" class="text-decoration-none text-white btn w-100">
+                <i class="bi bi-file-medical-fill"></i> Altas Medicas Teleseguimientos
+            </a>
+          </div>
+          <div class="sub-box w-100">
+            <a href="{% url 'teleenfermeria:altasteleseguimientos' %}" class="text-decoration-none text-white btn w-100">
+                <i class="bi bi-file-earmark-check-fill"></i> Altas Teleseguimientos
             </a>
           </div>
         </div>
