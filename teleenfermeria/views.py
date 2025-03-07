@@ -52,6 +52,7 @@ def no_permisos(request):
 
 def buscar_teleseguimiento(query, queryset):
     if query:
+        query = query.lower()
         queryset = queryset.filter(
             Q(paciente__nombre_completo__icontains=query)
             | Q(paciente__dni__icontains=query)
@@ -78,7 +79,6 @@ def solicitarteleseguimiento(request, paciente_id):
         "teleenfermeria/crear_teleseguimiento.html",
         {"form": form, "paciente": paciente},
     )
-
 
 @login_required
 @group_required("Teleenfermeria", "Administrativo")
@@ -268,6 +268,25 @@ def crearseguimiento(request, teleseguimiento_id):
         {"form": form, "teleseguimiento": teleseguimiento},
     )
 
+@login_required
+def editarseguimiento(request, seguimiento_id):
+    seguimiento = get_object_or_404(Seguimiento, id=seguimiento_id)
+    teleseguimiento = seguimiento.teleseguimiento
+    
+    if request.method == "POST":
+        form = SeguimientoForm(request.POST, instance=seguimiento)
+        if form.is_valid():
+            form.save()
+            return redirect('teleenfermeria:detalleteleseguimiento', 
+                          teleseguimiento_id=teleseguimiento.id)
+    else:
+        form = SeguimientoForm(instance=seguimiento)
+    
+    return render(request, 'teleenfermeria/editar_seguimiento.html', {
+        'form': form,
+        'seguimiento': seguimiento,
+        'teleseguimiento': teleseguimiento
+    })
 
 def agregar_prescripcion(request, teleseguimiento_id):
     teleseguimiento = get_object_or_404(Teleseguimiento, id=teleseguimiento_id)
@@ -297,6 +316,8 @@ def teleseguimientosusuario(request):
     teleseguimientos = Teleseguimiento.objects.filter(
         id__in=seguimientos.values("teleseguimiento_id")
     )
+    query = request.GET.get("q")
+    teleseguimientos = buscar_teleseguimiento(query, teleseguimientos)
     return render(
         request,
         "teleenfermeria/teleseguimientos_usuario.html",

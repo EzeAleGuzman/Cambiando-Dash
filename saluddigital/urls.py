@@ -13,4 +13,5 @@ urlpatterns = [
     path("", include(("pacientes.urls", "pacientes"), namespace="pacientes")),
     path("", include(("users.urls", "users"), namespace="users")),
     path("", include("teleenfermeria.urls"), name="teleenfermeria"),
+    path("", include("aislamientos.urls"), name="aislamientos"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

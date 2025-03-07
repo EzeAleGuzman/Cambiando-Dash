@@ -8,7 +8,7 @@ from teleenfermeria.views import (
     group_required,
 
 )
-
+from aislamientos.models import Aislamiento
 
 @login_required
 def Pacientes(request):
@@ -19,8 +19,24 @@ def Pacientes(request):
 @login_required
 def detallepaciente(request, id):
     paciente = Paciente.objects.get(pk=id)
-    return render(request, "detallepaciente.html", {"paciente": paciente})
-
+    aislamiento_activo = Aislamiento.objects.filter(
+        cama_paciente__paciente=paciente, 
+        fecha_fin__isnull=True
+    ).first()
+    
+    # Verificamos que tengamos el aislamiento y su ID
+    if aislamiento_activo:
+        color_aislamiento = aislamiento_activo.tipo.color
+        print(f"ID del aislamiento activo: {aislamiento_activo.id}")  # Debug
+    else:
+        color_aislamiento = "bg-light"
+        print("No hay aislamiento activo")  # Debug
+        
+    return render(request, "detallepaciente.html", {
+        "paciente": paciente, 
+        "aislamiento_activo": aislamiento_activo,
+        "color_aislamiento": color_aislamiento
+    })
 
 @login_required
 @group_required("Administrativo")
@@ -34,24 +50,29 @@ def pacientesporservicio(request):
         pacientes = (
             Paciente.objects.filter(
                 pacientecama__cama__ubicacion__servicio=servicio_seleccionado,
-                pacientecama__fecha_liberacion__isnull=True,  # Asegurarse de que tienen una cama asignada
+                pacientecama__fecha_liberacion__isnull=True,
             )
             .order_by("pacientecama__cama__ubicacion__nombre")
             .distinct()
         )
+        
+        # Agregar información de aislamiento a cada paciente
+        for paciente in pacientes:
+            aislamiento = Aislamiento.objects.filter(
+                cama_paciente__paciente=paciente,
+                fecha_fin__isnull=True
+            ).first()
+            paciente.color_aislamiento = aislamiento.tipo.color if aislamiento else "bg-light"
+            paciente.tiene_aislamiento = True if aislamiento else False
     else:
-        # Si no se seleccionó servicio, no se muestran pacientes
         pacientes = []
-
-    # Obtener todos los servicios para el filtro
-    servicios = Servicio.objects.all()
 
     return render(
         request,
         "pacientesporservicio.html",
         {
             "pacientes": pacientes,
-            "servicios": servicios,
+            "servicios": Servicio.objects.all(),
             "servicio_seleccionado": servicio_seleccionado,
         },
     )

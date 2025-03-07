@@ -41,8 +41,17 @@
         transition: all 0.3s ease;
     }
 
+   
+
     .card:hover {
-        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background-color: #3498db;
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
 
     .card-header {
@@ -120,10 +129,53 @@
                     <a href= "{% url 'teleenfermeria:crear_teleseguimiento' paciente.id %}">
                     <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fas fa-print"></i> Teleseguimiento</button>
                     </a>
+                    {% if not aislamiento_activo %}
+                    <a href= "{% url 'aislamientos:crearaislamiento' paciente.id %}">
+                        <button type="button" class="btn btn-sm btn-outline-danger"><i class="fas fa-print"></i> Aislamiento</button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
+        <!-- <--Datos de Aislamiento --> 
+            
+        {% if aislamiento_activo %}
+        <div class="card mb-4 shadow border-bottom {{ color_aislamiento }} rounded-3 transition">
+            <div class="card-header {{ color_aislamiento }}">
+                <h5 class="card-title mb-0 fw-bold text-black">Aislamiento Activo</h5>
+            </div>
+            <div class="card-body shadow">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Tipo de Aislamiento:</strong></div>
+                    <div class="col-sm-8">{{ aislamiento_activo.tipo.nombre }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>Fecha de Inicio:</strong></div>
+                    <div class="col-sm-8">{{ aislamiento_activo.fecha_inicio|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="row">
+                    
+                </div>
+            </div>
+           
+        </div>
+        <div class="col-sm-12">
+            <p> <a href="{{ aislamiento_activo.tipo.imagen_ilustracion.url }}" class="btn btn-secondary" target="_blank">
+                Ver Imagen del Tipo de Aislamiento
+            </a>
+            
+            <form method="POST" action="{% url 'aislamientos:finalizaraislamiento' aislamiento_activo.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Finalizar Aislamiento</button>
+            </form></p>
+           
+
+        </div>
+        {% endif %}
+
+
+        <!-- Información del paciente -->
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4 shadow-sm">
@@ -194,6 +246,7 @@
             </div>
         </div>
 
+        <!-- Información de Cama -->
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4 shadow-sm">

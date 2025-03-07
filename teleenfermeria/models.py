@@ -122,7 +122,7 @@ class Seguimiento(models.Model):
     teleseguimiento = models.ForeignKey(Teleseguimiento, on_delete=models.CASCADE)
     usuario = models.ForeignKey(
         User, on_delete=models.CASCADE
-    )  # Asignar directamente del usuario logueado
+    ) 
     fecha = models.DateTimeField(default=timezone.now)
     descripcion = models.TextField(max_length=1000)
 

@@ -102,4 +102,7 @@ urlpatterns = [
         views.altasmedicasseguimientos,
         name="altasmedicasseguimientos",
     ),
+    path("editar_seguimiento/<int:seguimiento_id>/",
+        views.editarseguimiento,
+        name="editar_seguimiento"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
